@@ -1,7 +1,3 @@
-
-
-![](https://raw.githubusercontent.com/qiubaiying/qiubaiying.github.io/master/img/readme-home.png)
-
 [![Build Status](https://travis-ci.org/qiubaiying/qiubaiying.github.io.svg?branch=master)](https://travis-ci.org/qiubaiying/qiubaiying.github.io)
 [![codebeat badge](https://codebeat.co/badges/5f031df3-f6c1-4ec0-911a-ff6617ca50b9)](https://codebeat.co/projects/github-com-qiubaiying-qiubaiying-github-io-master)
 [![GitHub issues](https://img.shields.io/github/issues/qiubaiying/qiubaiying.github.io.svg?style=flat)](https://github.com/qiubaiying/qiubaiying.github.io/issues)
@@ -15,7 +11,15 @@
 更为详细的教程戳这 [《利用 GitHub Pages 快速搭建个人博客》](http://www.jianshu.com/p/e68fba58f75c) 或 [wiki](https://github.com/qiubaiying/qiubaiying.github.io/wiki/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B)
 
 >
-### [查看博客戳这里 👆](http://qiubaiying.github.io)
+### [查看博客戳这里 👆](http://btbsja.github.io)
+
+这个博客将用来记录在学习过程中的笔记和感想，欢迎大家与我交流数据分析方面的知识~~
+
+**郑重声明**: 本博客所有文章均采用[署名-非商业性使用-相同方式共享 3.0 中国大陆许可协议 (CC BY-NC-SA 3.0 CN)](https://creativecommons.org/licenses/by-nc-sa/3.0/cn/)，分享、演绎需准守以下原则:
+**署名**: 您需要标出原文链接和作者信息;如果更改了原文章内容,需要说明.
+非商业使用: 您不得将本作品用于商业目的.
+相同方式共享: 基于本博客文章修改的作品需适用同一类型的许可协议.
+署名-非商业性使用-相同方式共享”许可协议该项许可协议规定，只要他人注明您的姓名并在以您的作品为基础创作的新作品上适用同一类型的许可协议，该他人就可基于非商业目的对您的作品重新编排、节选或者以您的作品为基础进行创作。基于您的作品创作的所有新作品都要适用同一类型的许可协议，因此适用该项协议，则对任何以您的原作为基础创作的演绎作品自然同样都不得进行商业性使用。
 
 
 
