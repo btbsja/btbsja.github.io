@@ -38,4 +38,4 @@ Global 全局模式
 
 详细教程请参考：[Clash for Windows](https://docs.cfw.lbyczf.com/)
 
-机场推荐请移步：[自用机场推荐]()
+机场推荐请移步：[自用机场推荐](http://btbsja.ml/2020/02/20/%E8%87%AA%E7%94%A8%E6%9C%BA%E5%9C%BA%E6%8E%A8%E8%8D%90/)
