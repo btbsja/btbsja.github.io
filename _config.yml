@@ -18,13 +18,14 @@ sidebar-avatar: /img/bg-me.jpg      # use absolute URL, seeing it's used in both
 
 # SNS settings
 RSS: false
-#weibo_username:     weibo/%25E7%2599%25BD%25E5%25A4%25A9%25E4%25B8%258D%25E7%259D%25A1%25E8%25A7%2589%25E5%2595%258A?topnav=1&wvr=6&b=1
-#zhihu_username:     jin-kou-xiao-zu-zong-40
+
+
 github_username:    btbsja
 #facebook_username:  
 #jianshu_username:   
 #twitter_username:   
-
+zhihu_username:     jin-kou-xiao-zu-zong-40
+weibo_username:     5646197451
 
 
 
