@@ -12,8 +12,8 @@ tags:								#标签
 ---
 
 ## Clash for Windows 汉化以及快速上手
- #### 资源：
-Clash for Windows 下载链接：[GitHub](https://github.com/Fndroid/clash_for_windows_pkg/releases) 或者 [CSDN](https://download.csdn.net/download/Btbsja/12174353)
+### 资源：
+Clash for Windows 下载链接：[GitHub](https://github.com/Fndroid/clash_for_windows_pkg/releases) 或者 [CSDN](https://download.csdn.net/download/Btbsja/12174353)  
 汉化中文包：[下载](https://download.csdn.net/download/Btbsja/12174350)
 
 #### 1. 下载-安装
