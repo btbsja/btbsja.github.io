@@ -2,7 +2,7 @@
 layout:     post   				    # 使用的布局（不需要改）
 title:      Clash for Windows 汉化以及快速上手				    # 标题 
 subtitle:                 #副标题
-date:       2020-02-20 				# 时间
+date:       2020-02-20 	13:00			# 时间
 author:     Btbsja					# 作者
 header-img: img/bg-2020-02-201.jpg 	    #这篇文章标题背景图片
 catalog: true 						# 是否归档
