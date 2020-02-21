@@ -4,11 +4,11 @@ SEOTitle: Btbsja Blog
 header-img: img/bg-home.jpg
 email: a17731018520@gmail.com
 description: "Every failure is leading towards success."
-keyword: "iOS, Apple, iPhone"
+keyword: "blog"
 url: "http://btbsja.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/btbsja/btbsja.github.io.git" # you code repository
-coding_repo: "https://e.coding.net/btbsja/btbsja.coding.net.git"
+coding_repo: "https://e.coding.me/btbsja/btbsja.coding.me.git"
 
 # Sidebar settings
 sidebar: ture                           # whether or not using Sidebar.
