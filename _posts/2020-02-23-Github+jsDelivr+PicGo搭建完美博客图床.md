@@ -64,7 +64,8 @@ tags:                #标签
 
 2.  安装后打开 GitHub 图床设置
 
-   <img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png" style="zoom:200%;" />
+![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png)
+
 
 3.  把第一步得到的数据填入其中
 
