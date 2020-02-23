@@ -24,6 +24,8 @@ tags:                #标签
 
 ![图片来源于网络 侵删](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223131843.jpg)
 
+【图片来源于网络 侵删】
+
 ## 前言
 
 由于最近刚刚搭建了个人博客，急需一个个人图床，经过对七牛云、又拍云、SM.MS等等得对比发现并不稳定并且存在流量和空间得限制，最后确定出 Github + jsDelivr + picGo 的完美解决方案。
