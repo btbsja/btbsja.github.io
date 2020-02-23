@@ -1,4 +1,4 @@
-I"9<h2 id="clash-for-windows-汉化以及快速上手">Clash for Windows 汉化以及快速上手</h2>
+I"6<h2 id="clash-for-windows-汉化以及快速上手">Clash for Windows 汉化以及快速上手</h2>
 <h3 id="资源">资源：</h3>
 <p>Clash for Windows 下载链接：<a href="https://github.com/Fndroid/clash_for_windows_pkg/releases">GitHub</a> 或者 <a href="https://download.csdn.net/download/Btbsja/12174353">CSDN</a><br />
 汉化中文包：<a href="https://download.csdn.net/download/Btbsja/12174350">下载</a></p>
@@ -16,14 +16,15 @@
 <h4 id="3-添加配置文件">3. 添加配置文件</h4>
 <ol>
   <li>机场直接提供 Clash 托管配置，直接复制托管。</li>
-  <li>若托管不成功，则尝试下载 yaml 文件直接拖入。
-    <h4 id="4-选择代理">4. 选择代理</h4>
-    <p>进入 <strong>代理</strong> 栏<br />
-Rule PAC模式<br />
-Global 全局模式</p>
-    <h4 id="5-打开系统代理开机启动">5. 打开系统代理/开机启动</h4>
-  </li>
+  <li>若托管不成功，则尝试下载 yaml 文件直接拖入。</li>
 </ol>
+
+<h4 id="4-选择代理">4. 选择代理</h4>
+<p>进入 <strong>代理</strong> 栏<br />
+Rule——PAC模式<br />
+Global——全局模式</p>
+
+<h4 id="5-打开系统代理开机启动">5. 打开系统代理/开机启动</h4>
 
 <p>详细教程请参考：<a href="https://docs.cfw.lbyczf.com/">Clash for Windows</a></p>
 

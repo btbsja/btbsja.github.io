@@ -42,13 +42,9 @@ tags:                #标签
 
 1.  新建一个仓库。
 
-2.  在个人设置里找到 Developer settings
-
-   ![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223120957.png)
-
-3.  点击 Personal access tokens
-
-   ![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121109.png)
+2.  在个人设置里找到 Developer settings![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223120957.png)
+   
+3.  点击 Personal access tokens![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121109.png)
 
 4.  Generate new token
 
@@ -62,13 +58,11 @@ tags:                #标签
 
 1.  下载 [PicGo](https://github.com/Molunerfinn/picgo/releases)
 
-2.  安装后打开 GitHub 图床设置
-
-![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png)
+2.  安装后打开 GitHub 图床设置![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png)
 
 
 3.  把第一步得到的数据填入其中
 
-4.  自定义域名：由于使用jsDelivr加速访问，所以将自定义域名设置为”https://cdn.jsdelivr.net/gh/用户名/图床仓库名 “。
+4.  自定义域名：由于使用 jsDelivr 加速访问，所以将自定义域名设置为”https://cdn.jsdelivr.net/gh/用户名/图床仓库名 “。
 
 5.  请您愉快的使用图床，或移步安装插件，或进行相应的重命名设置。

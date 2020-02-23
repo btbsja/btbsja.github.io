@@ -1,0 +1,47 @@
+I"_<p>-–</p>
+
+<p>layout:  post     # 使用的布局（不需要改）</p>
+
+<p>title:  Test1     # 标题</p>
+
+<p>subtitle: Blog     #副标题</p>
+
+<p>date:  2020-02-23    # 时间</p>
+
+<p>author:  Btbsja     # 作者</p>
+
+<p>header-img: img/bg-2020-02-231.jpg     #这篇文章标题背景图片</p>
+
+<p>catalog: true      # 是否归档</p>
+
+<p>tags:        #标签</p>
+
+<p>- Blog</p>
+
+<p>-–</p>
+
+<h1 id="test">test</h1>
+
+<ol>
+  <li>
+    <p>第三方</p>
+  </li>
+  <li>
+    <p>十分士大夫</p>
+  </li>
+  <li>
+    <p>ef<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png" alt="" /></p>
+  </li>
+  <li>
+    <p>法沙发沙发</p>
+  </li>
+  <li>
+    <p>啊实打实大大</p>
+
+    <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png" alt="" /></p>
+  </li>
+  <li>
+    <p>似懂非懂v发</p>
+  </li>
+</ol>
+:ET

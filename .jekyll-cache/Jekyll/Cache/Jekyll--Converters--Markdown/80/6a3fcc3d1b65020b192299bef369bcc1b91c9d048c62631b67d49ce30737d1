@@ -1,0 +1,68 @@
+I"�<h1 id="githubjsdelivrpicgo搭建完美博客图床">Github+jsDelivr+PicGo搭建完美博客图床</h1>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223131843.jpg" alt="图片来源于网络 侵删" /></p>
+
+<p>【图片来源于网络 侵删】</p>
+
+<h2 id="前言">前言</h2>
+
+<p>由于最近刚刚搭建了个人博客，急需一个个人图床，经过对七牛云、又拍云、SM.MS等等得对比发现并不稳定并且存在流量和空间得限制，最后确定出 Github + jsDelivr + picGo 的完美解决方案。</p>
+
+<ul>
+  <li>
+    <p>Github——数据仓库</p>
+  </li>
+  <li>
+    <p>jsDelivr——CDN加速</p>
+  </li>
+  <li>
+    <p>PicGo——图床上传工具</p>
+  </li>
+</ul>
+
+<h2 id="一-github-仓库">一、 Github 仓库</h2>
+
+<ol>
+  <li>
+    <p>新建一个仓库。</p>
+  </li>
+  <li>
+    <p>在个人设置里找到 Developer settings<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223120957.png" alt="" /></p>
+  </li>
+  <li>
+    <p>点击 Personal access tokens<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121109.png" alt="" /></p>
+  </li>
+  <li>
+    <p>Generate new token</p>
+  </li>
+  <li>
+    <p>勾选 repo</p>
+  </li>
+  <li>
+    <p>完成</p>
+  </li>
+  <li>
+    <p>记下 token ，他只显示一次。</p>
+  </li>
+</ol>
+
+<h2 id="二-picgo">二、 PicGo</h2>
+
+<ol>
+  <li>
+    <p>下载 <a href="https://github.com/Molunerfinn/picgo/releases">PicGo</a></p>
+  </li>
+  <li>
+    <p>安装后打开 GitHub 图床设置<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png" alt="" /></p>
+  </li>
+  <li>
+    <p>把第一步得到的数据填入其中</p>
+  </li>
+  <li>
+    <p>自定义域名：由于使用 jsDelivr 加速访问，所以将自定义域名设置为”https://cdn.jsdelivr.net/gh/用户名/图床仓库名 “。</p>
+  </li>
+  <li>
+    <p>请您愉快的使用图床，或移步安装插件，或进行相应的重命名设置。</p>
+  </li>
+</ol>
+:ET
