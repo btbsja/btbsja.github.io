@@ -1,0 +1,394 @@
+I"�.<h1 id="c语言基础入门">C语言基础入门</h1>
+<ol>
+  <li>输出</li>
+  <li>颜色</li>
+  <li>加法</li>
+  <li>变量</li>
+  <li>数据输出</li>
+  <li>读入</li>
+  <li>数据类型</li>
+  <li>注释</li>
+  <li>运算符</li>
+  <li>if else语句</li>
+  <li>while语句</li>
+  <li>for语句</li>
+  <li>数组</li>
+  <li>字符</li>
+  <li>标识符</li>
+</ol>
+
+<h2 id="输出">输出</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>printf("hello");
+</code></pre></div></div>
+
+<p><strong>printf</strong> 等同于中文里的<strong>说</strong>。<br />
+()等同于我们的嘴巴。<br />
+“” 等同于我们中文里的双引号。<br />
+; 等同于中文里的句号。<br />
+<u>注：代码里的标点为英文的</u><br />
+其次在这个输出语句之外还应有一个完整的框架：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C001
+#include &lt;stdio.h&gt;  
+#include &lt;stdlib.h&gt;  
+int main ()  
+{  
+     printf("hello");  
+     return 0;  
+}  
+</code></pre></div></div>
+
+<p><strong>例题</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C002
+*
+**
+***
+//C003
+输出 早上好
+</code></pre></div></div>
+
+<p><u>注：**\n** 表示换行</u></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>system("pause");//可以使Dos窗口暂停不闪退
+sleep(5000);//可以使窗口暂停5秒
+</code></pre></div></div>
+
+<h2 id="颜色">颜色</h2>
+<p>黑底紫字</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//COO4
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    system("color 5");
+    printf("hello");
+    return 0;
+} 白底紫字
+
+//C005
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    system("color f5");
+    printf("hello");
+    return 0;
+} 在 color 后面有两个一位数字，第一位表示背景颜色，第二位表示文字颜色。如果只有一位则表示文字颜色。一位数字用十六进制表示。  
+
+system("color 12");
+</code></pre></div></div>
+
+<h2 id="加法">加法</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C006
+int a,b,c;//定义三个变量
+a=1;
+b=2;//赋值符号 ```=```,并非数学中的等于
+c=a+b;
+printf("%d",c);// %d 代表要输出一个具体数值 **例题** * 321-123   //C007 * 5+3+1=    //C008 * 2782*2132 //C009
+</code></pre></div></div>
+
+<h2 id="变量">变量</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int a；
+int a,b,c; ```int``` 是 integer（整数） 的缩写。
+
+float a；//定义浮点数
+a=1.5;
+printf("%f",a);//输出整数用 %d ，输出小数用 %f  **例题** * 1.2*1.5   //C010 * 5.2+3.1   //C011 * 1.2*(10*10)   //C012
+</code></pre></div></div>
+
+<h2 id="数据输出">数据输出</h2>
+<p>如何输出整个等式 如：1+2=3
+<code class="highlighter-rouge">printf("%d+%d=%d",a,b,c);</code>
+printf 语句只会输出双引号里面的部分双引号之外的部分起补充说明的部分。</p>
+
+<h2 id="读入">读入</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scanf ("%d",&amp;a);
+scanf ("%d",&amp;b);
+
+scanf ("%d %d",&amp;a,&amp;b); scanf 和 printf 语法类似， &amp; 为取地址符。
+</code></pre></div></div>
+
+<p><strong>例题</strong></p>
+<ul>
+  <li>写一个加法计算器  \C013</li>
+</ul>
+
+<h2 id="数据类型">数据类型</h2>
+<p>|数据类型|数据|
+|-|-|
+|int|整数|
+|float|浮点数|
+|double|极大和极小的浮点数|
+|char|字符|</p>
+
+<p>double 的占位符是 %lf
+float 的占位符是 %f
+且 double 比 float 更加精确
+char 定义字符</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char c='x';//字符两边要加单引号
+</code></pre></div></div>
+
+<h2 id="注释">注释</h2>
+<p>// 只能注释到本行末尾
+/* */ 可以跨行</p>
+
+<h2 id="运算符">运算符</h2>
+<p>|符号|名称|
+|-|-|
+|+|乘|
+|-|减|
+|*|乘|
+|/|除|
+|==|等于|
+|&gt;|大于|
+|&lt;|小于|
+|&gt;=|大于等于|
+|&lt;=|小于等于|
+|!=|不等于|
+|&amp;&amp;|与|
+|ll|或|
+|！|非|</p>
+
+<h2 id="大于小于还是等于">大于小于还是等于</h2>
+<p>|符号|名称|
+|-|-|
+|=|赋值|
+|==|等于|
+|&gt;|大于|
+|&lt;|小于|
+|&gt;=|大于等于|
+|&lt;=|小于等于|
+|!=|不等于|
+<u>注：只有大于等于小于等于没有~~等于小于等于大于~~  </u></p>
+
+<h2 id="并且-或">并且 或</h2>
+<p>判断一个数是7的倍数或者是末尾有7  //C016</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+int a;
+scanf("%d",&amp;a);
+if (a%10==7||a%7==0)
+    printf("yes");
+else
+    printf("no");
+return 0;
+}
+</code></pre></div></div>
+
+<p>&amp;&amp; 表示并且
+|| 表示或者</p>
+
+<h2 id="if-和-else-的用法">if 和 else 的用法</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//如果 a 大于 0 ，则显示 yes 应该怎么表示
+if (a&gt;0)
+    printf("yes");
+else
+    printf("no"); if 表示如果， else 表示否则。  
+
+if （条件） 语句；
+else    语句； **例题** * 判断一个数是否为正数  //C014  
+</code></pre></div></div>
+
+<h2 id="余数">余数</h2>
+<p>余数的符号为 %</p>
+
+<p><strong>例题</strong></p>
+<ul>
+  <li>判断一个数是否为偶数  //C015</li>
+</ul>
+
+<h2 id="while语句">while语句</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while(条件)
+{
+    语句
+} 当条件为真，则不断执行语句
+
+while(1&gt;0)
+{
+    printf("hi");
+} **例题** * 不断输出0 1   //C017
+</code></pre></div></div>
+
+<p>如果我们只想让它成立10次呢！这个时候我们需要变量使其不断循环10次。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int a;
+a=1;
+while(a&lt;=10&gt;)
+{
+    printf("hi");
+    a=a+1;
+}
+</code></pre></div></div>
+
+<h2 id="暂停语句">暂停语句</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sleep(1000);//1000毫秒为1秒
+</code></pre></div></div>
+
+<h2 id="清屏语句">清屏语句</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>system("cls");
+</code></pre></div></div>
+
+<h2 id="for-语句">for 语句</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(a=1;a&lt;=10;a=a+1) **例题** * 1×······×10的乘积 //C018
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">break</code> 可提前终止 for 、while 、do-while 循环</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i=1;i&lt;=10;i++)
+{
+    if(i=6)
+    {
+        break;
+    }
+}
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">continue</code> 强迫程序提前进入下一轮循环</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i=1;i&lt;=100;i++)
+{
+    if(i%2==1)
+    {
+        continue;
+    }
+}
+</code></pre></div></div>
+
+<h2 id="数组">数组</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int a[10];
+</code></pre></div></div>
+
+<p>数组可以一次定义多个变量， [ ] 中的数为定义变量的个数。如上这10个变量分别用a[0] a[1] a[2] a[3] a[4] a[5] a[6] a[7] a[8] a[9] 来表示。
+<strong>例题</strong></p>
+
+<ul>
+  <li>输出5个数然后逆向输出 //C019</li>
+</ul>
+
+<h2 id="二维数组">二维数组</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int a[3][4];
+</code></pre></div></div>
+
+<p>|a[0][0]|a[0][1]|a[0][2]|a[0][3]|
+|-|-|-|-|
+|<strong>a[1][0]</strong>|||
+|<strong>a[2][0]</strong>|||
+上面为一个3行4列的矩阵</p>
+
+<p><strong>例题</strong></p>
+<ul>
+  <li>如何为这个二维数组赋值（提示：两个for循环嵌套）   //C020</li>
+</ul>
+
+<h2 id="数组的初始化">数组的初始化</h2>
+<p>申请一个大小为10的整数数组依次初始化为0~9</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int a[10],i;
+for(i=0;i&lt;=9;i++)
+    a[i]=i; -------------------------
+int a[10]={0,1,2,3,4,5,6,7,8,9}; 假如将数组里所有位置都初始化为0：
+
+int a[10]={0};
+</code></pre></div></div>
+
+<p>但是如果全部初始化为别的就不可以这样了，编译器从a[0]开始按顺序赋值，没有具体值的将默认为0。
+如果不进行初始化则默认值为随机值。</p>
+
+<p><strong>二位数组的初始化</strong>
+<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200224192300.png" alt="" /></p>
+
+<p>每一个大括号代表一行</p>
+
+<h2 id="读取字符">读取字符</h2>
+<p>最原始的方法</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char a;
+scanf("/c",&amp;a);
+</code></pre></div></div>
+
+<p>新方法</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char a;
+a=getchar() //读取一个字符后等待用户回车结束
+a=getche()  //读取一个字符不用回车
+a=getch()   //读取一个字符不用回车
+</code></pre></div></div>
+
+<h2 id="字符的本质">字符的本质</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C021
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int i;
+    for(i=0;i&lt;=127;i++)
+    {
+        printf("%d %c\n",i,i);
+    }
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+
+<p>我们观察发现
+字符的数字代表不同的含义：
+十进制的48至57代表字符0至9</p>
+
+<h2 id="读取字符串">读取字符串</h2>
+<p>下述数组有10个小空间a[0]~a[9],虽然有10个小空间但是我们只能存储9个字符，最后一个小空间需要用来存储字符串的结束标记 ‘\0’ 。特别，这里的a之前没有取址符 &amp; 。
+读取字符串时我们就要用到之前所学的数组</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char a[10];
+scanf("%s",a); 或者
+
+char a[10;]
+gets(a); 两者的区别是前者遇到空格就会停止而后者会读取一整行 同样输出字符串时除 ```printf```以外还有
+
+puts(a);//其输出时会在末尾自动切换下一行，相当于
+printf("%s\n",a); 如何给一个字符数组赋初始值
+
+char a[10]={"hello"};
+</code></pre></div></div>
+
+<h2 id="字符数组">字符数组</h2>
+<p>字符数组和二维数组类似</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char a[5][11];
+</code></pre></div></div>
+
+<p>可以存储5个长度不超过10的字符串
+字符数组初始化</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>char a[2][10]={"hello"
+               "world"};
+</code></pre></div></div>
+
+<p>输出时我们可以用到 for 循环和 puts()</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i=0;i&lt;=1;i++)
+    puts(a[i]);
+</code></pre></div></div>
+
+<h1 id="标识符">标识符</h1>
+<p>保留字
+-
+char short int unsigned long float double struct union void enum signed const volatile typedef auto register static extern break case continue default do else for goto if return switch while sizeof _Bool _Complex _Imaginary inline restrict</p>
+
+<h2 id="预定义标识">预定义标识</h2>
+<p>指C语言中有特定含义的标识符，例如函数printf、scanf、sin、isalum等。</p>
+
+<h2 id="用户标识符">用户标识符</h2>
+<p>（1）必须是字母（A～Z及a～z）、数字（0～9）和下画线的组合。
+（2）首字符不能是数字，但可以是字母或者下画线。
+（3）不能与保留字相同。
+（4）标识符对大小写敏感，即严格区分大小写。</p>
+:ET
