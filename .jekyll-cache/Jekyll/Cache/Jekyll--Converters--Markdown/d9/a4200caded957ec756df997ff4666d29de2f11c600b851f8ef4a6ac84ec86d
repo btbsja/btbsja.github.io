@@ -1,0 +1,27 @@
+I"�<h2 id="思维挑战11摘苹果问题-一维数组">思维挑战11：摘苹果问题-一维数组</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155122">代码资源</a></p>
+
+<p>输入所有苹果的高度以及人手可以举到的高度判断可以摘到几个苹果。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C036
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int h,a[10],i,sum;
+    for(i=0;i&lt;=9;i++)
+        scanf("%d",&amp;a[i]);
+        scanf("%d",&amp;h);
+    sum=0;
+    for(i=0;i&lt;=9;i++)
+    {
+        if(h&gt;=a[i])
+        sum++;
+    }
+    printf("%d",sum);
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

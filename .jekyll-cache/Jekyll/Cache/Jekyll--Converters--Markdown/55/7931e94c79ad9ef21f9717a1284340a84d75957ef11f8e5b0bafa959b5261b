@@ -1,0 +1,45 @@
+I"�<h2 id="思维挑战3排序">思维挑战3：排序</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155097">代码资源</a></p>
+
+<p>我们如何从键盘任意输入3个数，并将这3个数从大到小排序？
+第一种我们可以用一个比较笨的方法依次比较，如：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if(a&gt;=b &amp;&amp; b&gt;=c)
+    printf("%d %d %d",a,b,c);
+</code></pre></div></div>
+
+<p>但是这种方法过于直接，我们介绍一种“换位法”。
+即，分别比较 a ，b 与 a ，c的大小将最大的数放在 a 中，同里比较 b ，c 。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C027
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int a,b,c,t;
+    scanf("%d %d %d",&amp;a,&amp;b,&amp;c);
+    if(a&lt;b)
+    {
+        t=a;
+        a=b;
+        b=t;
+    }
+    if(a&lt;c)
+    {
+        t=a;
+        a=c;
+        c=t;
+    }
+    if(b&lt;c)
+    {
+        t=b;
+        b=c;
+        c=t;
+    }
+    printf("%d %d %d",a,b,c);
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

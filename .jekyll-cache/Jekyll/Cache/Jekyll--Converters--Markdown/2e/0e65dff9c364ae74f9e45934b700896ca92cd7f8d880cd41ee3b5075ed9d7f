@@ -1,0 +1,33 @@
+I"�<h2 id="思维挑战5奔跑的字母--while-语句">思维挑战5：奔跑的字母- while 语句</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155105">代码资源</a></p>
+
+<p>如果我们希望字母不断前移动，那么就要借助空格不断向后移动
+即借助 while 循环不断输入字母，再借助 while 循环不断增加字母前面的空格。
+这时我们就要借助 while 循环。
+代码如下    //C029</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;windows.h&gt;
+int main()
+{
+    int a=0,b;
+    while(a&lt;=10)
+    {
+        system("cls");
+        b=1;
+        while(b&lt;=a)
+        {
+            printf(" ");
+            b++;
+        }
+        printf("H");
+        Sleep(500);
+        a++;
+    }
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

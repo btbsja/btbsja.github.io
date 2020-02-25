@@ -1,0 +1,34 @@
+I"K<h2 id="思维挑战14字母排序-字符数组">思维挑战14：字母排序-字符数组</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155131">代码资源</a></p>
+
+<p>字母的本质即为整数</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C039
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt; //strlen()函数
+int main()
+{
+    char a[101],t;    //假设读入字符不超过100个
+    gets(a);
+    int len,i,j;
+    len=strlen(a);  //字符长度
+    for(i=0;i&lt;len-2;i++)
+    {
+        for(j=i+1;j&lt;=len-1;j++)
+        {
+            if(a[i]&gt;a[j])
+            {
+                t=a[i];
+                a[i]=a[j];
+                a[j]=t;
+            }
+        }
+    }
+    puts(a);
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

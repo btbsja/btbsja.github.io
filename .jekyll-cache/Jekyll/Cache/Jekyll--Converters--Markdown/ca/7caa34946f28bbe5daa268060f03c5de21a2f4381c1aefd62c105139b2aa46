@@ -1,0 +1,30 @@
+I"�<h1 id="思维挑战4倒计时--while-语句">思维挑战4：倒计时- while 语句</h1>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155101">代码资源</a></p>
+
+<p>既然是倒计时那么就要每过一秒输出一个数，而不是一下把所有的数都一起打印出来那么简单。
+等待语句：<code class="highlighter-rouge">sleep(1000);</code>就是一秒。
+清除语句：<code class="highlighter-rouge">system("cls");</code>
+那么紧接着我们就将这些写进一个循环里面，每过一个循环就让数字减一</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C028
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;windows.h&gt;
+int main()
+{
+    int a;
+    printf("请输入倒计时时间（秒）：");
+    scanf("%d",&amp;a);
+    while(a&gt;=0)
+    {
+        system("cls");
+        printf("%d秒",a);
+        Sleep(1000);
+        a--;
+    }
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

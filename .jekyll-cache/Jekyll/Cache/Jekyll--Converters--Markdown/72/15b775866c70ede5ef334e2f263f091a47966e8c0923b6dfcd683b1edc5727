@@ -1,0 +1,44 @@
+I"�<h2 id="思维挑战16走迷宫-二维数组">思维挑战16：走迷宫-二维数组</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155134">代码资源</a></p>
+
+<p>一个完整的小游戏“走迷宫”
+首先我们创造一个小迷宫，并输出他们</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C041
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    char a[50][50]={"######",
+                    "#O #  ",
+                    "# ## #",
+                    "#  # #",
+                    "##   #",
+                    "######",
+                    };
+    int i,x,y,p,q;
+    x=1;y=1;p=1;q=5;
+    for(i=0;i&lt;=5;i++)
+        puts(a[i]);
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+
+<p>那么，我们如何控制小球的移动呢？</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if(ch=='s')     //输入 s 使小球向下走
+        {
+            if(a[x+1][y]!='#')
+            {
+                a[x][y]=' ';        //小球原来的位置变为空格
+                x++;
+                a[x][y]='O';        //下一个位置变为小球
+            }
+        }
+</code></pre></div></div>
+
+<p>完整迷宫代码    //C042</p>
+
+:ET

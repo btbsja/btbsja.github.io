@@ -1,0 +1,34 @@
+I"�<h2 id="思维挑战10猜数游戏">思维挑战10：猜数游戏</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155121">代码资源</a></p>
+
+<p>计算机随即给出0~99之间的一个整数，每猜一次，计算机都会告诉你大还是小了，直到才出来为止。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C035
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;time.h&gt;
+int main()
+{
+    int a,b;
+    srand((unsigned)time(NULL));    //srand 初始化随机种子数
+    a=rand()%100;   //输出一个0~99之间的随机数
+    
+    while(1)    //不断循环输入
+    {
+        scanf("%d",&amp;b);
+        if(b&gt;a)
+        printf("大啦\n");
+        if(a&gt;b)
+        printf("小啦\n");
+        if(a==b)
+        {
+            printf("恭喜你！");
+            break;
+    }
+    }
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

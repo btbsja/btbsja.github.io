@@ -1,4 +1,4 @@
-I"�.<h1 id="c语言基础入门">C语言基础入门</h1>
+I"�/<h1 id="c语言基础入门">C语言基础入门</h1>
 <ol>
   <li>输出</li>
   <li>颜色</li>
@@ -16,6 +16,8 @@
   <li>字符</li>
   <li>标识符</li>
 </ol>
+
+<h3 id="代码资源c语言编程安装包-和-c语言入门代码">代码资源：<a href="https://download.csdn.net/download/Btbsja/12149271">C语言编程安装包</a> 和 <a href="https://download.csdn.net/download/Btbsja/12149263">C语言入门代码</a></h3>
 
 <h2 id="输出">输出</h2>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>printf("hello");

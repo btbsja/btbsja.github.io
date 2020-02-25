@@ -1,0 +1,45 @@
+I"�<h2 id="思维挑战2如何从3个数中找出最大的数--if-语句">思维挑战2：如何从3个数中找出最大的数- if 语句</h2>
+<p><a href="https://download.csdn.net/download/Btbsja/12155095">代码资源</a></p>
+
+<p>我们如何从3个数中找出最大的数呢？
+第一个方法我们可以采用 if 语句以及临时变量依次比较：    //C025</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int a,b,c,d;
+    scanf("%d %d %d",&amp;a,&amp;b,&amp;c);
+    if(a&gt;b)
+        d=a;
+        else
+        d=b;
+    if(d&gt;c)
+        printf("%d",d);
+        else
+        printf("%d",c);
+    return 0;
+}
+</code></pre></div></div>
+
+<p>第二种方法我们可以采取 if 语句以及 &amp;&amp; 全面比较：    //C026</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int a,b,c,d;
+    scanf("%d %d %d",&amp;a,&amp;b,&amp;c);
+    if(a&gt;b&amp;&amp;a&gt;c)
+        printf("%d",a);
+    else
+    {
+        if(b&gt;a&amp;&amp;b&gt;c)
+        printf("%d",b);
+        else
+        printf("%d",c);
+    }
+    return 0;
+}
+</code></pre></div></div>
+:ET

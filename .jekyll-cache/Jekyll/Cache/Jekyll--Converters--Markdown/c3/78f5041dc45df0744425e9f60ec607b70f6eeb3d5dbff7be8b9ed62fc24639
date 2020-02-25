@@ -1,0 +1,63 @@
+I"�<h2 id="思维挑战1交换变量中的数">思维挑战1：交换变量中的数</h2>
+
+<p>现在我们有两个变量 a 和 b ，并且它们都有一个初始值，现在我们希望将它们中的值交换。</p>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155093">代码链接</a></p>
+
+<p>首先我们读入并顺序输出它们  //C022</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int a,b;
+    scanf("%d %d",&amp;a,&amp;b);
+    printf("%d %d",a,b);
+
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+
+<p>接下来，我们尝试交换两个数，借助另一个临时变量 t    //C023</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int a,b,t;
+    scanf("%d %d",&amp;a,&amp;b);
+    t=a;
+    a=b;
+    b=t;
+    printf("%d %d",a,b);
+    
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+
+<p>但是如果我们不借助临时变量呢？
+设 a，b
+a1=b-a
+b1=b-a1=b-b+a=a
+a2=a1+b1=b-a+a=b
+则  //C024</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main( )
+{
+    int a, b, t;
+    scanf("%d%d", &amp;a, &amp;b);
+    a=b-a;
+    b=b-a;
+    a=b+a;
+    
+    printf("%d %d", a, b);
+    
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

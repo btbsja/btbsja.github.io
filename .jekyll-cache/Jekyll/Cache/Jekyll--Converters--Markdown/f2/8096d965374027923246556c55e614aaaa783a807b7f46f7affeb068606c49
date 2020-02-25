@@ -1,0 +1,31 @@
+I"P<h2 id="思维挑战12一个萝卜一个坑-一维数组">思维挑战12：一个萝卜一个坑-一维数组</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155126">代码资源</a></p>
+
+<p>随机输入几个0~9内的几个数，输出没有输入的数</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C037
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int a[10],i,t;
+    for(i=0; i&lt;=9; i++)
+    a[i]=0;     //初始化每个小房间为0
+    
+    for(i=1; i&lt;=5; i++)
+    {
+        scanf("%d", &amp;t);    //依次读入5个数
+        a[t]=1;     //把对应的小房间改为1
+    }
+    
+    for(i=0; i&lt;=9; i++)
+    if(a[i]==0)      //输出没有出现过的数
+    
+    printf("%d ", i);
+    
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

@@ -1,0 +1,29 @@
+I"�<h2 id="思维挑战13选择排序-一维数组">思维挑战13：选择排序-一维数组</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155129">代码资源</a></p>
+
+<p>输入5个数，从小到大排序</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C038
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int main()
+{
+    int a[5], i, t, j;
+    for(i=0; i&lt;=4; i++)
+        scanf("%d", &amp;a[i]);
+    for(i=0; i&lt;=3; i++)
+    {
+        for(j=i+1; j&lt;=5; j++)
+        {
+            if(a[i]&gt;a[j])
+        { t=a[i]; a[i]=a[j]; a[j]=t; }
+        }
+    }
+    for(i=0; i&lt;=4; i++)
+    printf("%d ", a[i]);
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET

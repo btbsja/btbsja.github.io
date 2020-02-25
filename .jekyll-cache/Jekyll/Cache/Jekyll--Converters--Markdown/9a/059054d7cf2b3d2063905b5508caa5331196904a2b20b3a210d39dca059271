@@ -1,0 +1,35 @@
+I"�<h2 id="思维挑战15字典序-函数strcmp">思维挑战15：字典序-函数strcmp()</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12155132">代码资源</a></p>
+
+<p>输入两个单词按字典顺序输出
+<code class="highlighter-rouge">strcmp（a, b)</code>就是比较字符串a和字
+符串b在字典中的顺序。
+如果字符串a和字符串b完全相同，那么返回值为0。
+如果字符串a在字典中比字符串b先出现，那么返回值小于0。
+如果字符串a在字典中比字符串b后出现，那么返回值大于0。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//C040
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+int main()
+{
+    char a[101],b[101];
+    gets(a);
+    gets(b);
+    if(strcmp(a,b)&lt;=0)
+    {
+        puts(a);
+        puts(b);
+    }
+    else
+    {
+        puts(b);
+        puts(a);
+    }
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+:ET
