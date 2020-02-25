@@ -1,0 +1,626 @@
+I"qj<h1 id="python-基础语法元素">Python 基础语法元素</h1>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200226061324.png" alt="" /></p>
+
+<h1 id="第一部分-数据类型">第一部分 数据类型</h1>
+
+<h2 id="1-基本类型数字字符串布尔">1. 基本类型：数字、字符串、布尔</h2>
+<h3 id="11-数字类型">1.1 数字类型</h3>
+<ul>
+  <li>int 整型  整数</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2
+</code></pre></div></div>
+
+<ul>
+  <li>float 浮点型  带小数的数</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">2.0</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2.0
+</code></pre></div></div>
+
+<ul>
+  <li>comples 复数  a+bj</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span><span class="o">+</span><span class="mf">4j</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(3+4j)
+</code></pre></div></div>
+
+<h3 id="12-字符串类型">1.2 字符串类型</h3>
+<ul>
+  <li>str 字符串  视作文本</li>
+  <li>组成：由数字、字母、空格、其他字符等组合而成</li>
+  <li>表达：用 “” 或 ‘’</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"python 123"</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'python 123'
+</code></pre></div></div>
+
+<h3 id="13-布尔类型">1.3 布尔类型</h3>
+<ul>
+  <li>bool 布尔类型</li>
+  <li>主要用于逻辑运算</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="mi">1</span>
+<span class="n">y</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>False
+</code></pre></div></div>
+
+<p>上述类型均可定义单个数据。
+但如果我们有一组数据呢？</p>
+
+<h2 id="2-组合类型列表元组字典集合">2. 组合类型：列表、元组、字典、集合</h2>
+<h3 id="21-列表">2.1 列表</h3>
+<ul>
+  <li>list 列表  序列类型：数据有位置顺序</li>
+  <li>表示方式：[data1,data2…]</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+</code></pre></div></div>
+
+<h3 id="22-元组">2.2 元组</h3>
+<ul>
+  <li>tuple 元组  序列类型</li>
+  <li>表示方式：(data1,data2…)</li>
+  <li>元素不支持修改–“不可变的列表”</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">b</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+</code></pre></div></div>
+
+<h3 id="23-字典">2.3 字典</h3>
+<ul>
+  <li>dict 字典  映射类型：通过 键:值 的映射实现数据存储和查找</li>
+  <li>表示方式：{key1:value1,key2:value2,…}</li>
+  <li>无序</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">student</span><span class="o">=</span><span class="p">{</span><span class="mi">201</span><span class="p">:</span><span class="s">"ming"</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">"uzi"</span><span class="p">,</span><span class="mi">203</span><span class="p">:</span><span class="s">"mlxg"</span><span class="p">}</span>
+<span class="n">student</span><span class="p">[</span><span class="mi">202</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'uzi'
+</code></pre></div></div>
+
+<h3 id="24-集合">2.4 集合</h3>
+<ul>
+  <li>set 集合 一系列互不相等元素的集合，无序的</li>
+  <li>表示方式：{data1,data2…}</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">s</span><span class="o">=</span><span class="p">{</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">}</span>
+<span class="n">s</span><span class="o">=</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  File "&lt;ipython-input-13-d16b538eb3d8&gt;", line 2
+    s=
+      ^
+SyntaxError: invalid syntax
+</code></pre></div></div>
+
+<p>在程序中，我们如何来引用这些数据？</p>
+
+<p><strong>赋值给一个变量</strong></p>
+
+<p># 第二部分 变量
+ ## 1.变量的概念</p>
+<ul>
+  <li>“量” 实实在在的对象：数据、抽象</li>
+  <li>“变” 可变性：增、删、查、改</li>
+  <li>变量定义二要素： 变量名、赋值</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="o">=</span><span class="mi">1</span>
+</code></pre></div></div>
+
+<h2 id="2-变量的命名">2. 变量的命名</h2>
+<h3 id="21-变量名">2.1 变量名</h3>
+<ul>
+  <li>大小写字母、数字、下划线、汉字及其组合。</li>
+  <li>严格区分大小写</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Python_is_</span><span class="err">最好的语言</span><span class="o">=</span><span class="bp">True</span>
+<span class="n">Python_is_</span><span class="err">最好的语言</span><span class="o">=</span><span class="bp">False</span>
+</code></pre></div></div>
+
+<h3 id="22不被允许的情况">2.2不被允许的情况</h3>
+
+<ul>
+  <li>首字母不被允许数字</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="n">_RNG</span><span class="o">=</span><span class="s">"uzi"</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  File "&lt;ipython-input-12-d9fd9256b3f9&gt;", line 1
+    1_RNG="uzi"
+     ^
+SyntaxError: invalid token
+</code></pre></div></div>
+
+<ul>
+  <li>变量名中间不能有空格</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">F</span> <span class="n">RNG</span><span class="o">=</span><span class="s">"uzi"</span> 
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  File "&lt;ipython-input-11-cb634fb0e9a3&gt;", line 1
+    F RNG="uzi"
+        ^
+SyntaxError: invalid syntax
+</code></pre></div></div>
+
+<ul>
+  <li>不能与33个 Python 保留字的相同</li>
+</ul>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200224173805.png" alt="" /></p>
+
+<h3 id="23-变量名定义技巧">2.3 变量名定义技巧</h3>
+<ul>
+  <li>实际意义</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">]</span>
+<span class="n">age_of_students</span><span class="o">=</span><span class="p">[</span><span class="mi">17</span><span class="p">,</span><span class="mi">18</span><span class="p">]</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>下划线（推荐：变量和函数名）变量名由多个单词组成：用 _ 连接多个单词</p>
+  </li>
+  <li>
+    <p>驼峰体（推荐：类名）变量名由多个单词组成：单词首字母大写</p>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">AgeOfStudents</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---------------------------------------------------------------------------
+
+NameError                                 Traceback (most recent call last)
+
+&lt;ipython-input-19-b99c10bdabd7&gt; in &lt;module&gt;
+----&gt; 1 AgeOfStudents
+
+
+NameError: name 'AgeOfStudents' is not defined
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>尽量避免用中文和拼音做变量名</p>
+  </li>
+  <li>
+    <p>特殊变量：常量  变量名所有字母均大写</p>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">π</span>
+</code></pre></div></div>
+
+<h2 id="3-变量的赋值">3. 变量的赋值</h2>
+<h3 id="31-一般赋值">3.1 一般赋值</h3>
+<ul>
+  <li>通过等号自右向左进行赋值</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="o">=</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span>
+<span class="n">x</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3
+</code></pre></div></div>
+
+<h3 id="32-增量赋值">3.2 增量赋值</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="o">=</span><span class="mi">10</span>
+<span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="o">+</span><span class="mi">10</span>
+<span class="n">x</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>20
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="o">+=</span><span class="mi">10</span>
+<span class="n">x</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>30
+</code></pre></div></div>
+
+<h3 id="33-打包赋值">3.3 打包赋值</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span>
+<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 2
+</code></pre></div></div>
+
+<h1 id="第三部分-控制流程">第三部分 控制流程</h1>
+
+<h2 id="1-顺序流程">1. 顺序流程</h2>
+<ul>
+  <li>自上而下依次运行</li>
+</ul>
+
+<h3 id="实现1到5的整数求和">实现1到5的整数求和</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># res=1+2+3+4+5
+</span><span class="n">res</span><span class="o">=</span><span class="mi">0</span>  <span class="c1">#赋初始值
+</span><span class="n">res</span><span class="o">+=</span><span class="mi">1</span>
+<span class="n">res</span><span class="o">+=</span><span class="mi">2</span>
+<span class="n">res</span><span class="o">+=</span><span class="mi">3</span>
+<span class="n">res</span><span class="o">+=</span><span class="mi">4</span>
+<span class="n">res</span><span class="o">+=</span><span class="mi">5</span>
+<span class="n">res</span>   <span class="c1"># 显示结果
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>15
+</code></pre></div></div>
+
+<h2 id="2-循环流程遍历循环for">2. 循环流程——遍历循环（for）</h2>
+<h3 id="主要形式">主要形式：</h3>
+<ul>
+  <li>for 元素 in 可迭代对象:
+      执行语句</li>
+</ul>
+
+<h3 id="执行过程">执行过程：</h3>
+<ul>
+  <li>从可迭代对象中，依次取出每一个元素，并进行相应操作</li>
+</ul>
+
+<h3 id="实现1到5的整数求和-1">实现1到5的整数求和</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="o">=</span><span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="n">res</span><span class="o">+=</span><span class="n">i</span>
+<span class="n">res</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>15
+</code></pre></div></div>
+
+<h2 id="3-循环过程无限循环while">3. 循环过程——无限循环（while）</h2>
+<h3 id="主要形式-1">主要形式：</h3>
+<ul>
+  <li>while 判断条件：</li>
+  <li>条件为真，执行语句</li>
+  <li>条件为假， while 循环结束</li>
+</ul>
+
+<h3 id="实现1到5的整数求和-2">实现1到5的整数求和</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">res</span><span class="o">=</span><span class="mi">0</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;=</span><span class="mi">5</span><span class="p">:</span>
+    <span class="n">res</span><span class="o">+=</span><span class="n">i</span>
+    <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+<span class="n">res</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>15
+</code></pre></div></div>
+
+<h2 id="4-分支流程if">4. 分支流程（if）</h2>
+<h3 id="最简单的形式">最简单的形式：</h3>
+<ul>
+  <li>if 判断条件：
+    <ul>
+      <li>条件为真，执行语句</li>
+    </ul>
+  </li>
+  <li>else：
+    <ul>
+      <li>条件为假，执行语句</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span><span class="o">=</span><span class="mi">18</span>
+<span class="k">if</span> <span class="n">age</span><span class="o">&gt;</span><span class="mi">22</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"结婚"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"再等等"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>再等等
+</code></pre></div></div>
+
+<h1 id="第四部分-输入输出">第四部分 输入输出</h1>
+
+<p>## 1. 数据从哪里来？
+ ### 1. 外部文件导入
+ ### 2. 程序中定义</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span> <span class="mi">18</span>
+</code></pre></div></div>
+
+<h3 id="3-动态交互输入-input">3. 动态交互输入 input</h3>
+<ul>
+  <li>在程序运行过程中输入</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="o">=</span><span class="nb">input</span><span class="p">(</span><span class="s">"请输入一个数字："</span><span class="p">)</span>
+<span class="n">x</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>请输入一个字母：4
+
+
+
+
+
+'4'
+</code></pre></div></div>
+
+<ul>
+  <li>eval()去掉引号</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"输入一个数字："</span><span class="p">))</span>
+<span class="n">x</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>输入一个数字：4
+
+
+
+
+
+4
+</code></pre></div></div>
+
+<h2 id="2-数据到哪里去">2. 数据到哪里去？</h2>
+<h3 id="1-存储到本地">1. 存储到本地</h3>
+
+<h3 id="2-打印输出-print">2. 打印输出 print</h3>
+<ul>
+  <li>直接打印数据</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1234
+</code></pre></div></div>
+
+<ul>
+  <li>打印变量</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="o">=</span><span class="mi">1024</span>
+<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1024
+</code></pre></div></div>
+
+<ul>
+  <li>print 默认换行</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+2
+</code></pre></div></div>
+
+<ul>
+  <li>不想换行</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s">"2"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>123
+</code></pre></div></div>
+
+<ul>
+  <li>组合输出</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PI</span><span class="o">=</span><span class="mf">3.1415926</span>
+<span class="n">E</span><span class="o">=</span><span class="mf">2.71828</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"PI= "</span><span class="p">,</span><span class="n">PI</span><span class="p">,</span><span class="s">"E= "</span><span class="p">,</span><span class="n">E</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>PI=  3.1415926 E=  2.71828
+</code></pre></div></div>
+
+<h3 id="3格式化输出方法-format">3.格式化输出方法 format</h3>
+
+<ul>
+  <li>
+    <p>基本格式：”字符{0}字符{1}字符”.format(v0,v1)</p>
+  </li>
+  <li>
+    <p>修饰性输出</p>
+  </li>
+</ul>
+
+<ol>
+  <li>填充输出</li>
+</ol>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#__3.14__
+</span><span class="k">print</span><span class="p">(</span><span class="s">"{0:_^20}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">PI</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_____3.1415926______
+</code></pre></div></div>
+
+<ol>
+  <li>数字千分位分隔符</li>
+</ol>
+
+<ul>
+  <li>显示1，000，000</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"{0:,}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="mi">10000000</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>10,000,000
+</code></pre></div></div>
+
+<ol>
+  <li>浮点数简化输出</li>
+</ol>
+
+<ul>
+  <li>留2位小数</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"{0:.2f}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">PI</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3.14
+</code></pre></div></div>
+
+<ul>
+  <li>百分比输出</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"{0:.1</span><span class="si">%</span><span class="s">}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">PI</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>314.2%
+</code></pre></div></div>
+
+<ul>
+  <li>科学计数法</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"{0:.2e}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">PI</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3.14e+00
+</code></pre></div></div>
+
+<h3 id="4-整数的进制转换输出">4. 整数的进制转换输出</h3>
+
+<ul>
+  <li>进制转换</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"二进制{0:b},Unicode码:{0:c},十进制{0:d},八进制{0:o},十六进制{0:x}"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'二进制110010000,Unicode码:Ɛ,十进制400,八进制620,十六进制190'
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200224172912.png" alt="" /></p>
+
+<h1 id="第五部分">第五部分</h1>
+
+<h2 id="1-行最大长度">1. 行最大长度</h2>
+<p>所有行限制的最大子符数位79</p>
+
+<h2 id="2-缩进">2. 缩进</h2>
+
+<ul>
+  <li>用缩进来表示语句间的逻辑</li>
+  <li>for while if def class :缩进表从属关系</li>
+  <li>4个字符</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"打印结束"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+2
+3
+打印结束
+</code></pre></div></div>
+
+<h2 id="3-使用空格">3. 使用空格</h2>
+
+<ul>
+  <li>运算符两边加空格</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">=</span> <span class="mi">2</span>
+</code></pre></div></div>
+
+<ul>
+  <li>最低优先级周围加空格</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+</code></pre></div></div>
+
+<ul>
+  <li>在逗号后面加空格</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+</code></pre></div></div>
+
+<ul>
+  <li>不要使用一个以上的空格</li>
+</ul>
+
+<h2 id="4-避免使用空格">4. 避免使用空格</h2>
+
+<ul>
+  <li>给参数赋值的时候避免使用空格</li>
+</ul>
+
+<h2 id="5-注释">5. 注释</h2>
+
+<ul>
+  <li>单行注释
+#</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="o">=</span><span class="mi">1</span> <span class="c1">#我是注释
+</span></code></pre></div></div>
+
+<ul>
+  <li>多行注释 “”” “””</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"""
+我是注释
+"""</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'\n我是注释\n'
+</code></pre></div></div>
+:ET
