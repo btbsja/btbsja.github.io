@@ -1,0 +1,776 @@
+I"F�<h1 id="python基本数字类型">Python基本数字类型</h1>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200225170012.png" alt="" /></p>
+
+<h1 id="第一部分-数字类型">第一部分 数字类型</h1>
+<h2 id="11-数字类型的组成">1.1 数字类型的组成</h2>
+<h3 id="111-整数不同进制的转换">1.1.1 整数——不同进制的转换</h3>
+<ul>
+  <li>默认输入十进制</li>
+  <li>二进制0b、八进制0o、十六进制0x</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">16</span> <span class="o">==</span> <span class="mb">0b10000</span> <span class="o">==</span> <span class="mo">0o20</span> <span class="o">==</span> <span class="mh">0x10</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<ul>
+  <li>十进制与其他进制的转换</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="nb">bin</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="c1"># 转二进制
+</span><span class="n">b</span> <span class="o">=</span> <span class="nb">oct</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="c1"># 转八进制
+</span><span class="n">c</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="c1"># 转十六进制
+</span><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0b10000 0o20 0x10
+</code></pre></div></div>
+
+<p><strong>注意</strong>：转换后的结果为字符串类型。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="o">==</span> <span class="n">c</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>False
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>str
+</code></pre></div></div>
+
+<ul>
+  <li>其他进制转换为十进制</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">d</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">e</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">e</span><span class="p">,</span><span class="n">f</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>16 16 16
+</code></pre></div></div>
+
+<h3 id="112-浮点数不确定性">1.1.2 浮点数——不确定性</h3>
+<ul>
+  <li>不确定小数问题</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mf">0.1</span><span class="o">+</span><span class="mf">0.2</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.3</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>False
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">0.1</span><span class="o">+</span><span class="mf">0.2</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.30000000000000004
+</code></pre></div></div>
+
+<p><strong>计算机采用二进制来表示浮点小数部分</strong></p>
+<ul>
+  <li>
+    <p>部分小数不能用二进制完全表示</p>
+  </li>
+  <li>
+    <p>通常情况下不会影响计算速度</p>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">0.1</span><span class="o">+</span><span class="mf">0.7</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.7999999999999999
+</code></pre></div></div>
+
+<ul>
+  <li>四舍五入</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.3
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">b</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">==</span> <span class="mf">0.3</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0.3
+
+
+
+
+
+True
+</code></pre></div></div>
+
+<h3 id="113-复数abj">1.1.3 复数——a+bj</h3>
+
+<ul>
+  <li>
+    <p>j/J无关大小写</p>
+  </li>
+  <li>
+    <p>虚部系数为1，需要显式写出</p>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="o">+</span><span class="mf">1j</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(2+1j)
+</code></pre></div></div>
+
+<h2 id="12-数字运算操作符a操作符b">1.2 数字运算操作符（a操作符b）</h2>
+
+<ul>
+  <li>加减乘除</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">2</span><span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span><span class="o">/</span><span class="mi">5</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-1.8
+</code></pre></div></div>
+
+<ul>
+  <li>取反</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="o">-</span><span class="n">x</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-1
+</code></pre></div></div>
+
+<ul>
+  <li>乘方运算</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="o">**</span><span class="mi">3</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>8
+</code></pre></div></div>
+
+<ul>
+  <li>整数商 和 模运算</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">13</span><span class="o">//</span><span class="mi">5</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">13</span><span class="o">%</span><span class="mi">5</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3
+</code></pre></div></div>
+
+<ul>
+  <li>整数与浮点数运算结果为浮点数</li>
+  <li>除法运算的结果是浮点数</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">8</span><span class="o">/</span><span class="mi">4</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2.0
+</code></pre></div></div>
+
+<h2 id="13-数字运算操作函数-functionx">1.3 数字运算操作函数 function(x,…)</h2>
+
+<ul>
+  <li>求绝对值 abs()</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">abs</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">abs</span><span class="p">(</span><span class="mi">3</span><span class="o">+</span><span class="mf">4j</span><span class="p">)</span> <span class="c1">#平方和取根号
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5.0
+</code></pre></div></div>
+
+<ul>
+  <li>幂次方 pow(x,n)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># 2的5次幂
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>32
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># 2的5次幂对3求余数
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2
+</code></pre></div></div>
+
+<ul>
+  <li>四舍五入 round(x,n)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="mf">3.1415926</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3
+3.14
+</code></pre></div></div>
+
+<ul>
+  <li>整数商和模运算 divmod(x,y) 等价于(x/y,x%y)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">divmod</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(4, 2)
+</code></pre></div></div>
+
+<ul>
+  <li>序列最值 max() min()</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"max:"</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"min:"</span><span class="p">,</span><span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>max: 5
+min: 1
+</code></pre></div></div>
+
+<ul>
+  <li>求和sum()</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sum</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>6
+</code></pre></div></div>
+
+<ul>
+  <li><strong>借助科学计算库</strong></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">math</span> <span class="c1"># 导入库
+</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 指数运算 e^x
+</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2.718281828459045
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># 对数运算
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.0
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># 开平方
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2.0
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="c1">#求均值
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3.0
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="c1">#求中位数
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3.0
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="c1">#求标准差
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.4142135623730951
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200226235258.png" alt="" /></p>
+
+<h1 id="第二部分-字符串类型">第二部分 字符串类型</h1>
+
+<h2 id="21-字符串的表达">2.1 字符串的表达</h2>
+
+<ul>
+  <li>用”” 或 ‘‘括起来的任意字符</li>
+  <li>若字符串中存在的单双引号</li>
+  <li>双中有单/单中有双</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"I'm uzi"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'"uzi" is good'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>I'm uzi
+"uzi" is good
+</code></pre></div></div>
+
+<ul>
+  <li>转义符——\</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"</span><span class="se">\"</span><span class="s">uzi</span><span class="se">\"</span><span class="s"> is good"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"uzi" is good
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">"u</span><span class="se">\
+</span><span class="s">zi"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uzi
+</code></pre></div></div>
+
+<h2 id="22-字符串的性质">2.2 字符串的性质</h2>
+
+<h3 id="221-字符串的索引">2.2.1 字符串的索引</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="s">"My name is uzi"</span>
+</code></pre></div></div>
+
+<p>变量名[位置编号]</p>
+
+<ul>
+  <li>正向索引——从零开始递增</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>M
+</code></pre></div></div>
+
+<ul>
+  <li>反向索引——从 -1 开始递减</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i
+</code></pre></div></div>
+
+<h3 id="222-字符串的切片">2.2.2 字符串的切片</h3>
+
+<p>变量名[开始位置：结束位置：切片间隔]</p>
+<ul>
+  <li>间隔不设置默认为1</li>
+  <li>切片范围不包含结束位置 [前闭后开)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span><span class="s">"Python"</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pyt
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pt
+</code></pre></div></div>
+
+<ul>
+  <li>起始位置是0 可以省略</li>
+  <li>结束位置省略，代表可以取到最后一个字符</li>
+  <li>可以使用反向索引</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="s">"Python"</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[:])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pyt
+Python
+n
+</code></pre></div></div>
+
+<p>反向位置切片</p>
+<ul>
+  <li>起始位置是 -1 可以省略</li>
+  <li>结束位置省略，代表可以取到第一个字符</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="s">"1234567"</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>765
+</code></pre></div></div>
+
+<h2 id="23-字符串操作符">2.3 字符串操作符</h2>
+<h3 id="231-字符串的拼接">2.3.1 字符串的拼接</h3>
+
+<ul>
+  <li>字符串1+字符串2</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="s">"My name"</span>
+<span class="n">b</span> <span class="o">=</span> <span class="s">" is uzi"</span>
+<span class="n">a</span><span class="o">+</span><span class="n">b</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'My name is uzi'
+</code></pre></div></div>
+
+<h3 id="232-字符串的成倍复制">2.3.2 字符串的成倍复制</h3>
+<ul>
+  <li>字符串<em>n n</em>字符串</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uzi is the best ADCuzi is the best ADCuzi is the best ADC
+</code></pre></div></div>
+
+<h3 id="232-成员运算">2.3.2 成员运算</h3>
+
+<ul>
+  <li>子集in全集 任何一个连续的切片都是原字符的子集</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="s">"uzi is the best ADC"</span>
+<span class="s">"uzi"</span> <span class="ow">in</span> <span class="n">a</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<ul>
+  <li>遍历字符串字符 for 字符 in 字符串</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="s">"Python"</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>P
+y
+t
+h
+o
+n
+</code></pre></div></div>
+
+<h2 id="24-字符串处理函数">2.4 字符串处理函数</h2>
+
+<h3 id="241-字符串的长度">2.4.1 字符串的长度</h3>
+<ul>
+  <li>所含字符的个数</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="s">"Python"</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>6
+</code></pre></div></div>
+
+<h3 id="242-字符编码">2.4.2 字符编码</h3>
+<p>将中文字符、英文字符、数字、特殊字符等都转化为计算机可识别的二进制数</p>
+<ul>
+  <li>每个单一字符对应一个唯一的互不重复的二进制编码</li>
+  <li>Python 使用的是 UNICODE 编码</li>
+</ul>
+
+<p>将字符转化为 Unicode码——ord(字符)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s">"1"</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>49
+</code></pre></div></div>
+
+<p>将 Unicode码转化为字符——chr(Unicode码)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="mi">49</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+</code></pre></div></div>
+
+<h2 id="25-字符串的处理方法">2.5 字符串的处理方法</h2>
+
+<h3 id="251-字符串的分割字符串split分割字符">2.5.1 字符串的分割——字符串.split(分割字符)</h3>
+<ul>
+  <li>返回一个列表</li>
+  <li>原字符串不变</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">RNG</span> <span class="o">=</span> <span class="s">"ming uzi mlxg"</span>
+<span class="n">RNG_list</span> <span class="o">=</span> <span class="n">RNG</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">" "</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">RNG_list</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">RNG</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>['ming', 'uzi', 'mlxg']
+ming uzi mlxg
+</code></pre></div></div>
+
+<h3 id="252-字符串的聚合聚和字符join可迭代数据类型">2.5.2 字符串的聚合——“聚和字符”.join(可迭代数据类型)</h3>
+
+<ul>
+  <li>可迭代数据类型：字符串、列表</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="s">"rng"</span>
+<span class="n">r_list</span> <span class="o">=</span> <span class="s">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">r_list</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r,n,g
+</code></pre></div></div>
+
+<ul>
+  <li>序列类型的元素必须是<strong>字符类型</strong></li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="s">"r"</span><span class="p">,</span><span class="s">"n"</span><span class="p">,</span><span class="s">"g"</span><span class="p">]</span>
+<span class="s">"-"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'r-n-g'
+</code></pre></div></div>
+
+<h3 id="253-删除两端特定字符字符串strip删除字符">2.5.3 删除两端特定字符——字符串.strip(删除字符)</h3>
+
+<ul>
+  <li>strip 从两侧搜索遇到指定字符删除</li>
+  <li>lstrip 左删除</li>
+  <li>rstrip 右删除</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="s">"  rng  "</span>
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">" "</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rng
+</code></pre></div></div>
+
+<h3 id="254-字符串的替换字符串replace">2.5.4 字符串的替换——字符串.replace</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="s">"rng is good"</span>
+<span class="n">r</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">"rng"</span><span class="p">,</span><span class="s">"r"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'r is good'
+</code></pre></div></div>
+
+<h3 id="255-字符串统计字符串count">2.5.5 字符串统计——字符串.count</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="s">"rng is good"</span>
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">"g"</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2
+</code></pre></div></div>
+
+<h3 id="256-字符串字母大小写">2.5.6 字符串字母大小写</h3>
+<ul>
+  <li>.upper()</li>
+  <li>.lower()</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="s">"rng"</span>
+<span class="n">r</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'RNG'
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">R</span> <span class="o">=</span> <span class="s">"RNG"</span>
+<span class="n">R</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'rng'
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200226235435.png" alt="" /></p>
+
+<h1 id="第三部分-布尔类型-true-or-false">第三部分 布尔类型 TRUE or False</h1>
+<h2 id="31-逻辑运算的结果">3.1 逻辑运算的结果</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span><span class="mi">7</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>False
+</code></pre></div></div>
+
+<ul>
+  <li>any all</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="nb">any</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">all</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+False
+</code></pre></div></div>
+
+<h2 id="32-指示条件">3.2 指示条件</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"请输入一个数： "</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"你猜对啦！"</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="k">elif</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"再小点儿？"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"再大点儿？"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>请输入一个数： 1
+再大点儿？
+请输入一个数： 101
+再小点儿？
+请输入一个数： 100
+你猜对啦！
+</code></pre></div></div>
+
+<h2 id="33-作为掩码">3.3 作为掩码</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">]])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="o">&gt;</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span><span class="p">[</span><span class="n">x</span><span class="o">&gt;</span><span class="mi">3</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[[False False False  True  True]]
+
+
+
+
+
+array([5, 7])
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200226235612.png" alt="" /></p>
+
+<h1 id="第四部分-类型判别和类型转换">第四部分 类型判别和类型转换</h1>
+
+<h2 id="41-类型判别">4.1 类型判别</h2>
+<ul>
+  <li>type(变量)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s">"uzi"</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">age</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;class 'int'&gt;
+&lt;class 'str'&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>isinstance(变量，预判类型） 承认继承</li>
+  <li>变量类型是预判类型的子类型，则为真，否则为假</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">print</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="nb">int</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">age</span><span class="p">,</span><span class="nb">object</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<ul>
+  <li>.isdigit() 是否只有数字</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span> <span class="s">"16"</span>
+<span class="n">age</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<ul>
+  <li>.isalpha() 是否只有字母组成</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">name</span> <span class="o">=</span> <span class="s">"uzi"</span>
+<span class="n">name</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<ul>
+  <li>.isalnum() 是否只有数字和字母组成</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="s">"uziis16"</span>
+<span class="n">r</span><span class="o">.</span><span class="n">isalnum</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<h2 id="42-类型转换">4.2 类型转换</h2>
+
+<ul>
+  <li>数字类型转字符串 str(数字类型)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span><span class="mi">16</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"uzi is "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">age</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uzi is 16
+</code></pre></div></div>
+
+<ul>
+  <li>仅有数字组成的字符串可以转数字 int() float() eval()</li>
+</ul>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200226235633.png" alt="" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+:ET
