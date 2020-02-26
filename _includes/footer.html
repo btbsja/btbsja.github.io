@@ -1,5 +1,8 @@
 <!-- Footer -->
 <footer>
+
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -104,6 +107,9 @@
                 </ul>
                 <p class="copyright text-muted">
                     Copyright &copy; {{ site.title }} {{ site.time | date: '%Y' }}
+                    <span id="busuanzi_container_site_uv">
+                        您是本站第<span id="busuanzi_value_site_uv"></span>位小伙伴
+                    </span>
                     <br>
                     Theme on <a href="{{ site.github_repo }}">GitHub</a> |
                     <iframe
@@ -115,6 +121,30 @@
             </div>
         </div>
     </div>
+    <center>
+        Btbsja.ml has been established <SPAN id=span_dt_dt style="color: #000000;"></SPAN>
+        <SCRIPT language=javascript>
+        function show_date_time(){
+        window.setTimeout("show_date_time()", 1000);
+        BirthDay=new Date("1/1/2020 00:00:00");
+        today=new Date();
+        timeold=(today.getTime()-BirthDay.getTime());
+        sectimeold=timeold/1000
+        secondsold=Math.floor(sectimeold);
+        msPerDay=24*60*60*1000
+        e_daysold=timeold/msPerDay
+        daysold=Math.floor(e_daysold);
+        e_hrsold=(e_daysold-daysold)*24;
+        hrsold=Math.floor(e_hrsold);
+        e_minsold=(e_hrsold-hrsold)*60;
+        minsold=Math.floor((e_hrsold-hrsold)*60);
+        seconds=Math.floor((e_minsold-minsold)*60);
+        span_dt_dt.innerHTML=""+daysold+"days "+hrsold+"hours "+minsold+"minutes "+seconds+"seconds";
+        }
+        show_date_time();
+        </SCRIPT>
+    </center>
+
 </footer>
 
 <!-- jQuery -->
