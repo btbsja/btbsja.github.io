@@ -1,0 +1,664 @@
+I"�<h1 id="python组合数据类型">Python组合数据类型</h1>
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200227115404.png" alt="" /></p>
+<h2 id="41-列表">4.1 列表</h2>
+<h3 id="411-列表的表达">4.1.1 列表的表达</h3>
+<ul>
+  <li>序列类型：内部元素有位置关系，可以通过位置序号访问元素</li>
+  <li>列表是一个可以使用多种类型的元素，支持元素的增、删、查、改操作的序列类型</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ls</span> <span class="o">=</span><span class="p">[</span><span class="s">"python"</span><span class="p">,</span> <span class="mi">2020</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="p">{</span><span class="s">"version"</span><span class="p">:</span><span class="mf">3.7</span><span class="p">}]</span>
+<span class="n">ls</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>['python', 2020, True, {'version': 3.7}]
+</code></pre></div></div>
+
+<ul>
+  <li>另一种产生方式：list(可迭代对象)</li>
+  <li>可迭代对象：字符串、元组、集合、range()等</li>
+</ul>
+
+<p><strong>字符串转列表</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">list</span><span class="p">(</span><span class="s">"大数据是未来"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>['大', '数', '据', '是', '未', '来']
+</code></pre></div></div>
+
+<p><strong>元组转列表</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">list</span><span class="p">((</span><span class="s">"大"</span><span class="p">,</span><span class="s">"数"</span><span class="p">,</span><span class="s">"据"</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>['大', '数', '据']
+</code></pre></div></div>
+
+<p><strong>集合转列表</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">list</span><span class="p">({</span><span class="s">"大"</span><span class="p">,</span><span class="s">"数"</span><span class="p">,</span><span class="s">"据"</span><span class="p">})</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>['数', '据', '大']
+</code></pre></div></div>
+
+<p><strong>特殊的range()</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0
+1
+2
+3
+4
+5
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+    <span class="k">print</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0
+1
+2
+3
+4
+5
+</code></pre></div></div>
+
+<ul>
+  <li>range(起始数字，终止数字，数字间隔)</li>
+  <li>若起始数字缺省默认为0</li>
+  <li>
+    <p>间隔缺省默认为1</p>
+  </li>
+  <li>range()转列表</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 2, 4, 6]
+</code></pre></div></div>
+
+<h3 id="412-列表的性质">4.1.2 列表的性质</h3>
+<ul>
+  <li>列表的长度——len(列表)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>5
+</code></pre></div></div>
+
+<ul>
+  <li>列表的索引</li>
+</ul>
+
+<p>变量名[位置编号]</p>
+
+<p>正向索引从0开始<br />
+反向索引从-1开始</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+5
+</code></pre></div></div>
+
+<ul>
+  <li>列表的切片</li>
+</ul>
+
+<p>变量名[开始:结束:间隔]</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 3]
+</code></pre></div></div>
+
+<h3 id="413-列表的操作符">4.1.3 列表的操作符</h3>
+
+<ul>
+  <li>用 list1 + list2 实现拼接</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">a</span><span class="o">+</span><span class="n">b</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 2, 3, 4]
+</code></pre></div></div>
+
+<ul>
+  <li>用 list * n 成倍复制</li>
+</ul>
+
+<p><strong>初始化列表</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+</code></pre></div></div>
+
+<h3 id="414-列表的操作方法">4.1.4 列表的操作方法</h3>
+
+<h4 id="1增加元素">1.增加元素</h4>
+
+<ul>
+  <li>在末尾增加元素——.append(元素)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 2, 3, 4, 5]
+</code></pre></div></div>
+
+<ul>
+  <li>在任意位置插入元素——.insert(编号，元素)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 1, 2, 3, 4, 5]
+</code></pre></div></div>
+
+<ul>
+  <li>在末尾整体并入另一列表——列表1.extend(列表2)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span><span class="n">r</span>
+<span class="n">r</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 1, 2, 3, 4, 5, 7, 8]
+</code></pre></div></div>
+
+<h4 id="2-删除元素">2. 删除元素</h4>
+
+<ul>
+  <li>删除列表某位置的元素——列表.pop(编号)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">r</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[2, 3, 4]
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>不填位置信息默认删除最后一个元素</p>
+  </li>
+  <li>
+    <p>删除第一次出现的待删元素——列表.remove(待删元素)</p>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">r</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 2, 3, 4]
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="k">while</span> <span class="mi">4</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 2, 3]
+</code></pre></div></div>
+
+<h4 id="3查找元素">3.查找元素</h4>
+
+<ul>
+  <li>列表中第一次出先得待查元素得位置——列表.index(待查元素)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">n</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>0
+</code></pre></div></div>
+
+<h4 id="4-修改元素">4. 修改元素</h4>
+
+<ul>
+  <li>先索引后修改——列表[位置]=新值</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0, 2, 3, 4]
+</code></pre></div></div>
+
+<h4 id="5-列表得复制">5. 列表得复制</h4>
+<ul>
+  <li>列表.copy()</li>
+  <li>列表[:]</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">r_2</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">r_2</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 2, 3, 4]
+</code></pre></div></div>
+
+<h4 id="6-列表的排序">6. 列表的排序</h4>
+
+<ul>
+  <li>永久排序——列表.sort()</li>
+  <li>直接对列表进行操作，无返回值</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">r</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 1, 2, 2, 3, 4]
+</code></pre></div></div>
+
+<ul>
+  <li>递减排序</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[4, 3, 2, 2, 1, 1]
+</code></pre></div></div>
+
+<ul>
+  <li>临时排序——sorted(列表)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">r_2</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">r_2</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[1, 1, 2, 2, 3, 4]
+</code></pre></div></div>
+
+<h4 id="7-列表的翻转">7. 列表的翻转</h4>
+<ul>
+  <li>使用切片临时翻转</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[4, 3, 2, 1]
+</code></pre></div></div>
+
+<ul>
+  <li>使用 .reverse() 永久翻转</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+<span class="n">r</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[4, 3, 2, 1]
+</code></pre></div></div>
+
+<h4 id="8-使用-for-循环对列表遍历">8. 使用 for 循环对列表遍历</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+2
+3
+4
+</code></pre></div></div>
+
+<h2 id="42-元组">4.2 元组</h2>
+<h3 id="421-元组的表达">4.2.1 元组的表达</h3>
+
+<ul>
+  <li>序列类型：可以使用多种类型的元素，一旦定义，不支持增删改</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="422-元组的操作">4.2.2 元组的操作</h3>
+<ul>
+  <li>不支持增删改，其他操作与列表相同</li>
+</ul>
+
+<h3 id="423-元组的常见之处">4.2.3 元组的常见之处</h3>
+<p><strong>打包与解包</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f1</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">x</span><span class="o">**</span><span class="mi">3</span>
+<span class="k">print</span><span class="p">(</span><span class="n">f1</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">f1</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(9, 27)
+&lt;class 'tuple'&gt;
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">f1</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>9
+27
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">101</span><span class="p">,</span><span class="mi">202</span><span class="p">,</span><span class="mi">303</span><span class="p">]</span>
+<span class="n">name</span> <span class="o">=</span> <span class="p">[</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">]</span>
+<span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span><span class="n">name</span><span class="p">))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[(101, 'uzi'), (202, 'ming'), (303, 'mlxg')]
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">numbers</span><span class="p">,</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">numbers</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>101 uzi
+202 ming
+303 mlxg
+</code></pre></div></div>
+
+<h2 id="43-字典">4.3 字典</h2>
+<h3 id="431-字典的表达">4.3.1 字典的表达</h3>
+
+<ul>
+  <li>映射类型：通过 键:’值’ 的映射实现数据存储和查找</li>
+  <li>字典是无序的</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="n">rng</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{101: 'uzi', 202: 'ming', 303: 'mlxg'}
+</code></pre></div></div>
+
+<p><strong>字典键的要求</strong></p>
+
+<ul>
+  <li>1、 字典的键不能重复</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">101</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="n">rng</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{101: 'ming', 303: 'mlxg'}
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <ol>
+      <li>键值是不可变类型</li>
+    </ol>
+  </li>
+  <li>不可变类型：数字、字符串、元组</li>
+  <li>可变类型：列表、字典、集合</li>
+</ul>
+
+<h3 id="432-字典的性质">4.3.2 字典的性质</h3>
+<ul>
+  <li>字典的长度——键值对的个数</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3
+</code></pre></div></div>
+
+<ul>
+  <li>字典的索引</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="n">rng</span><span class="p">[</span><span class="mi">101</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'uzi'
+</code></pre></div></div>
+
+<h3 id="433-字典的操作方法">4.3.3 字典的操作方法</h3>
+
+<h4 id="1-增加键值对">1. 增加键值对</h4>
+<ul>
+  <li>变量名[新键] = 新值</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="n">rng</span><span class="p">[</span><span class="mi">404</span><span class="p">]</span> <span class="o">=</span> <span class="s">"hu"</span>
+<span class="n">rng</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{101: 'uzi', 202: 'ming', 303: 'mlxg', 404: 'hu'}
+</code></pre></div></div>
+
+<h4 id="2-删除键值对">2. 删除键值对</h4>
+<ul>
+  <li>del 变量名[待删除键]</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="k">del</span> <span class="n">rng</span><span class="p">[</span><span class="mi">303</span><span class="p">]</span>
+<span class="n">rng</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{101: 'uzi', 202: 'ming'}
+</code></pre></div></div>
+
+<ul>
+  <li>变量名.pop(待删除键) #删除键值对的同时获得他的值</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="n">rng_2</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">303</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rng_2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mlxg
+{101: 'uzi', 202: 'ming'}
+</code></pre></div></div>
+
+<ul>
+  <li>变量名.popitem() 随机删除一个键值对，并以元组返回删除键值对</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="n">rng_2</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rng_2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(303, 'mlxg')
+{101: 'uzi', 202: 'ming'}
+</code></pre></div></div>
+
+<h4 id="3-修改值">3. 修改值</h4>
+<ul>
+  <li>先索引后赋值</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="n">rng</span><span class="p">[</span><span class="mi">303</span><span class="p">]</span> <span class="o">=</span> <span class="s">"hu"</span>
+<span class="n">rng</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{101: 'uzi', 202: 'ming', 303: 'hu'}
+</code></pre></div></div>
+
+<h4 id="4-dget方法">4. d.get()方法</h4>
+<p>d.get(key,default)<br />
+从字典 d 中获取键 key 的值，如果没有这个键，则返回 default</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">s</span> <span class="o">=</span> <span class="s">"214241242421"</span>
+<span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+    <span class="n">d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{}
+{'2': 1}
+{'2': 1, '1': 1}
+{'2': 1, '1': 1, '4': 1}
+{'2': 2, '1': 1, '4': 1}
+{'2': 2, '1': 1, '4': 2}
+{'2': 2, '1': 2, '4': 2}
+{'2': 3, '1': 2, '4': 2}
+{'2': 3, '1': 2, '4': 3}
+{'2': 4, '1': 2, '4': 3}
+{'2': 4, '1': 2, '4': 4}
+{'2': 5, '1': 2, '4': 4}
+{'2': 5, '1': 3, '4': 4}
+</code></pre></div></div>
+
+<h4 id="5-dkeys-dvalues">5. d.keys() d.values()</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[101, 202, 303]
+['uzi', 'ming', 'mlxg']
+</code></pre></div></div>
+
+<h4 id="6-ditems">6. d.items()</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">rng</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[(101, 'uzi'), (202, 'ming'), (303, 'mlxg')]
+101 uzi
+202 ming
+303 mlxg
+</code></pre></div></div>
+
+<h2 id="44-集合">4.4 集合</h2>
+<h3 id="441-集合的表达">4.4.1 集合的表达</h3>
+<ul>
+  <li>一系列互不相等的元素的无序组合</li>
+  <li>元素必须是不可变类型</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">}</span>
+<span class="n">rng</span> 
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{'ming', 'mlxg', 'uzi'}
+</code></pre></div></div>
+
+<h3 id="442-集合的运算">4.4.2 集合的运算</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">}</span>
+<span class="n">ADC</span> <span class="o">=</span> <span class="p">{</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"deft"</span><span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">&amp;</span> <span class="n">ADC</span> <span class="c1">#交集
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{'uzi'}
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">|</span> <span class="n">ADC</span> <span class="c1">#并集 
+</span></code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{'deft', 'ming', 'mlxg', 'uzi'}
+</code></pre></div></div>
+
+<h3 id="443-集合的操作方法">4.4.3 集合的操作方法</h3>
+<ul>
+  <li>增加元素——S.add(x)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">}</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">"hu"</span><span class="p">)</span>
+<span class="n">rng</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{'hu', 'ming', 'mlxg', 'uzi'}
+</code></pre></div></div>
+
+<ul>
+  <li>移除元素——S.remove(x)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">}</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">"mlxg"</span><span class="p">)</span>
+<span class="n">rng</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{'ming', 'uzi'}
+</code></pre></div></div>
+
+<ul>
+  <li>集合的长度——len(S)</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">}</span>
+<span class="nb">len</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>3
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229092707.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229092801.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229092824.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229092938.png" alt="" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+:ET

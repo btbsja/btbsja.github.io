@@ -1,0 +1,334 @@
+I"�T<h1 id="python-程序控制结构">Python 程序控制结构</h1>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229094631.png" alt="" /></p>
+
+<h1 id="第一部分-条件测试">第一部分 条件测试</h1>
+
+<h2 id="1-比较运算">1. 比较运算</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span>
+<span class="o">&lt;</span>
+<span class="o">&gt;=</span>
+<span class="o">&lt;=</span>
+<span class="o">==</span>
+<span class="o">!=</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">b</span><span class="o">=</span><span class="mi">2</span>
+<span class="n">a</span><span class="o">&gt;</span><span class="n">b</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>False
+</code></pre></div></div>
+
+<p><strong>非空</strong></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ls</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">if</span> <span class="n">ls</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"非空"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"空的"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>空的
+</code></pre></div></div>
+
+<h2 id="2-逻辑运算">2. 逻辑运算</h2>
+<ul>
+  <li>与或非</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="ow">and</span> <span class="c1">#一个假全假
+</span><span class="ow">or</span> <span class="c1">#一个真全真
+</span><span class="ow">not</span>
+</code></pre></div></div>
+
+<ul>
+  <li>优先级 非&gt;与&gt;或</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="bp">True</span> <span class="ow">or</span> <span class="bp">False</span> <span class="ow">and</span> <span class="bp">False</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<h2 id="3-存在运算">3. 存在运算</h2>
+
+<ul>
+  <li>元素 in 列表/字符串</li>
+  <li>元素 not in 列表/字符串</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">[</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"uzi"</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>True
+</code></pre></div></div>
+
+<h1 id="第二部分-分支结构if-语句">第二部分 分支结构——if 语句</h1>
+
+<h2 id="1-单分支">1. 单分支</h2>
+<ul>
+  <li>
+    <p>模板<br />
+if 条件：</p>
+
+    <p>缩进的代码块</p>
+  </li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="k">if</span> <span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"成年"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>成年
+</code></pre></div></div>
+
+<h2 id="2-二分支">2. 二分支</h2>
+<ul>
+  <li>模板<br />
+if 条件：<br />
+缩进代码块<br />
+else：<br />
+缩进代码块</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span> <span class="mi">18</span>
+<span class="k">if</span> <span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"成年"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"未成年"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>成年
+</code></pre></div></div>
+
+<h2 id="3-多分支">3. 多分支</h2>
+<ul>
+  <li>模板<br />
+if 条件：<br />
+缩进的代码块<br />
+elif 条件：<br />
+缩进的代码块<br />
+……<br />
+else 条件：<br />
+缩进的代码块</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">if</span> <span class="n">age</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"成年"</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">22</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"结婚"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"未成年"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>未成年
+</code></pre></div></div>
+
+<h2 id="4-嵌套语句">4. 嵌套语句</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">age</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"输入你的年龄： "</span><span class="p">))</span>
+<span class="k">if</span> <span class="n">age</span> <span class="o">&gt;</span> <span class="mi">22</span><span class="p">:</span>
+    <span class="n">friends</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"有对象输1，没对象输0: "</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="n">friends</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"可以结婚"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"不可以结婚"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"不可以结婚"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>输入你的年龄： 24
+有对象输1，没对象输0: 1
+可以结婚
+</code></pre></div></div>
+
+<h1 id="第三部分-遍历循环for循环">第三部分 遍历循环——for循环</h1>
+<h2 id="主要形式">主要形式</h2>
+<ul>
+  <li>for 元素 in 可迭代对象：<br />
+执行语句</li>
+</ul>
+
+<h2 id="执行过程">执行过程：</h2>
+<ul>
+  <li>从可迭代对象中，依次取出每一个元素，并进行相应操作</li>
+</ul>
+
+<h3 id="1-直接迭代列表元组集合字符串">1. 直接迭代——列表[]、元组()、集合{}、字符串””</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">(</span><span class="s">"uzi"</span><span class="p">,</span><span class="s">"ming"</span><span class="p">,</span><span class="s">"mlxg"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">LPL</span> <span class="ow">in</span> <span class="n">rng</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"LPL,"</span><span class="o">+</span><span class="n">LPL</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>LPL,uzi
+LPL,ming
+LPL,mlxg
+</code></pre></div></div>
+
+<h3 id="2-变换迭代字典">2. 变换迭代——字典</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rng</span> <span class="o">=</span> <span class="p">{</span><span class="mi">101</span><span class="p">:</span><span class="s">'uzi'</span><span class="p">,</span><span class="mi">202</span><span class="p">:</span><span class="s">'ming'</span><span class="p">,</span><span class="mi">303</span><span class="p">:</span><span class="s">'mlxg'</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">rng</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>101 uzi
+202 ming
+303 mlxg
+</code></pre></div></div>
+
+<h3 id="3-range对象">3. range()对象</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">res</span><span class="o">=</span><span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[0]
+99980001
+</code></pre></div></div>
+
+<h3 id="循环控制-break-和-continue">循环控制： break 和 continue</h3>
+<ul>
+  <li>break 结束整个循环</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">product_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">89</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="mi">87</span><span class="p">,</span><span class="mi">97</span><span class="p">,</span><span class="mi">67</span><span class="p">]</span> <span class="c1">#评分小于90的超过一个则不合格
+</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">product_scores</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">score</span><span class="o">&lt;</span><span class="mi">90</span><span class="p">:</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"不合格"</span><span class="p">)</span>
+        <span class="k">break</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>不合格
+</code></pre></div></div>
+
+<ul>
+  <li>continue 结束本次循环</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">product_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">89</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="mi">87</span><span class="p">,</span><span class="mi">97</span><span class="p">,</span><span class="mi">67</span><span class="p">]</span> <span class="c1">#评分小于90的超过一个则不合格
+</span><span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">product_scores</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">product_scores</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">product_scores</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&gt;=</span><span class="mi">90</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">"第{}个产品，分数为{}，不合格"</span><span class="o">.</span><span class="nb">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">product_scores</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>7
+第0个产品，分数为89，不合格
+第2个产品，分数为23，不合格
+第3个产品，分数为45，不合格
+第4个产品，分数为87，不合格
+第6个产品，分数为67，不合格
+</code></pre></div></div>
+
+<h1 id="第四部分-无限循环while循环">第四部分 无限循环——while循环</h1>
+<h2 id="41-while-循环">4.1 while 循环</h2>
+<h3 id="主要形式-1">主要形式</h3>
+<ul>
+  <li>while 判断条件：<br />
+执行语句<br />
+条件为真，执行语句<br />
+条件为假，循环结束</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">albert_age</span><span class="o">=</span><span class="mi">18</span>
+<span class="n">guess</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"&gt;&gt;:"</span><span class="p">))</span>
+<span class="k">while</span> <span class="n">guess</span> <span class="o">!=</span> <span class="n">albert_age</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">guess</span> <span class="o">&gt;</span> <span class="n">albert_age</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"太大啦"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">guess</span> <span class="o">&lt;</span> <span class="n">albert_age</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"太小啦"</span><span class="p">)</span>
+    <span class="n">guess</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"&gt;&gt;:"</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"猜对啦"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;:18
+猜对啦
+</code></pre></div></div>
+
+<h2 id="42-风向标">4.2 风向标</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">albert_age</span><span class="o">=</span><span class="mi">18</span>
+<span class="n">flag</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">guess</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"&gt;&gt;:"</span><span class="p">))</span>
+<span class="k">while</span> <span class="n">flag</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">guess</span> <span class="o">&gt;</span> <span class="n">albert_age</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"太大啦"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">guess</span> <span class="o">&lt;</span> <span class="n">albert_age</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"太小啦"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"猜对啦"</span><span class="p">)</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="bp">False</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;:18
+猜对啦
+</code></pre></div></div>
+
+<h2 id="43-while-循环与-break-continue">4.3 while 循环与 break Continue</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">albert_age</span><span class="o">=</span><span class="mi">18</span>
+<span class="n">guess</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">"&gt;&gt;:"</span><span class="p">))</span>
+<span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">guess</span> <span class="o">&gt;</span> <span class="n">albert_age</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"太大啦"</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">guess</span> <span class="o">&lt;</span> <span class="n">albert_age</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"太小啦"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"猜对啦"</span><span class="p">)</span>
+    <span class="k">break</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;&gt;:18
+猜对啦
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">:</span>
+    <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1
+3
+5
+7
+9
+</code></pre></div></div>
+
+<h1 id="第五部分-控制语句需要注意的问题">第五部分 控制语句需要注意的问题</h1>
+
+<h2 id="51-尽可能减少嵌套">5.1 尽可能减少嵌套</h2>
+<h2 id="52-避免死循环">5.2 避免死循环</h2>
+<h2 id="53-判断式不要过于复杂可以封装为函数">5.3 判断式不要过于复杂——可以封装为函数</h2>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229112841.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229112913.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229112934.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229113117.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200229113043.png" alt="" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+:ET
