@@ -4,7 +4,7 @@ layout:   post          # 使用的布局（不需要改）
 
 title:   Github+jsDelivr+PicGo搭建完美博客图床          # 标题 
 
-subtitle:  Blog          #副标题
+subtitle:         #副标题
 
 date:    2020-02-04       # 时间
 
