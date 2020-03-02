@@ -2,9 +2,9 @@
 layout:     post   				    # 使用的布局（不需要改）
 title:      Jekyll s 本地预览 not found		    # 标题 
 subtitle:                 #副标题
-date:       2020-02-28 	00:00			# 时间
+date:       2020-03-01			# 时间
 author:     Btbsja					# 作者
-header-img: img/bg-2020-02-281.jpg 	    #这篇文章标题背景图片
+header-img: img/bg-2020-03-01.jpg 	    #这篇文章标题背景图片
 catalog: true 						# 是否归档
 tags:								#标签
 
