@@ -1,0 +1,199 @@
+I"�6<h1 id="第一章-排序">第一章 排序</h1>
+
+<h2 id="代码资源">代码资源</h2>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12203166">下载</a></p>
+
+<h2 id="第一节-简化版桶排序">第一节 简化版桶排序</h2>
+<p>我们通过一个简单问题学习一下，一次考试班上5位同学分别考了5分、3分、7分、9分、0分（满分10分）。我们如何把分数从高到低排序呢？</p>
+
+<p>其实我们用一个简单的一维数组就可以解决这个问题。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+</span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">11</span><span class="p">],</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">t</span><span class="p">;</span>	<span class="c1">//申请一个大小为11的数组储存成绩</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>			<span class="c1">//初始化为0</span>
+        
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="mi">5</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">t</span><span class="p">);</span>	<span class="c1">//读入成绩</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>			<span class="c1">//计算每个分数的个数</span>
+    <span class="p">}</span>
+    
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>	<span class="c1">//依次判断</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+        
+    <span class="n">system</span><span class="p">(</span><span class="s">"pause"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//算法01</span>
+</code></pre></div></div>
+
+<p>运算过后我们会发现，分数从小到大依次排列。</p>
+
+<p>如果我们希望分数从大到小排列，那么在依次判断的时候改为</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">--</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>接下来我们思考一个更有挑战性的题目，如果我们输入n个0~1000之间的整数，我们如何从大到小排序呢？</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+</span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">book</span><span class="p">[</span><span class="mi">1001</span><span class="p">],</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">n</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="mi">1000</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>    <span class="c1">//初始化为0</span>
+        <span class="n">book</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+        
+    <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">n</span><span class="p">);</span>         <span class="c1">//我们输入一个数n，代表接下来我们将输入几个数</span>
+    
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>       <span class="c1">//我们循环读入这n个数</span>
+    <span class="p">{</span>
+        <span class="n">scanf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="o">&amp;</span><span class="n">t</span><span class="p">);</span>
+        <span class="n">book</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>          <span class="c1">//为每个数计数</span>
+    <span class="p">}</span>
+    
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1000</span><span class="p">;</span><span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">--</span><span class="p">)</span>    <span class="c1">//从大到小遍历依次判断</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">book</span><span class="p">[</span><span class="n">i</span><span class="p">];</span><span class="n">j</span><span class="o">++</span><span class="p">)</span><span class="c1">//出现几次打印几次</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"%d"</span><span class="p">,</span><span class="n">i</span><span class="p">);</span>
+            
+    <span class="n">system</span><span class="p">(</span><span class="s">"pause"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//算法02</span>
+</code></pre></div></div>
+
+<h3 id="时间复杂度">时间复杂度</h3>
+
+<p>设桶的个数为 m，待排序个数为 n，忽略较小的常数</p>
+
+<p>那么，桶排序的时间复杂度为 O(M+N)</p>
+
+<h3 id="附加利用桶排序去重">附加：利用桶排序去重</h3>
+
+<p>只需在计数时改为</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a[t]=1
+</code></pre></div></div>
+
+<h2 id="第二节-冒泡排序">第二节 冒泡排序</h2>
+
+<p>由于桶排序十分浪费空间，我们需要多大的范围就要申请多少个变量。</p>
+
+<p><strong>冒泡排序</strong>：每次比较两个相邻的元素，如果顺序错误就把俩交换过来。</p>
+
+<p>即，每一次只能将一个数归位。如果有 n 个数在进行排序，我们需要将 n-1 个数进行排序。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;=</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span>     <span class="c1">//n个数需要n-1趟</span>
+    <span class="p">{</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;=</span><span class="n">n</span><span class="o">-</span><span class="n">i</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="c1">//一个数需要n-1次</span>
+        <span class="p">{</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="c1">//  比较大小</span>
+            <span class="p">{</span>
+                <span class="n">t</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">];</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">t</span><span class="p">;</span><span class="c1">//交换</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+<span class="c1">//算法03</span>
+</code></pre></div></div>
+
+<p>接下来我们解决另一个问题：班上有5个人，我们如何按照分数高低输出他们的名字？</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法04
+</code></pre></div></div>
+
+<h3 id="时间复杂度-1">时间复杂度</h3>
+
+<p>冒泡排序采用双重嵌套循环，很显然它的时间复杂度为 O(N^2)</p>
+
+<h3 id="去重">去重</h3>
+
+<p>我们只需在输出数据时加一个额外的判断</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>printf("%d ",a[1]); 		//输出第1个数
+for(i=2;i&lt;=n;i++) 			//从2循环到n
+{
+	if( a[i] != a[i-1] ) 	//如果当前这个数是第一次出现则输出
+		printf("%d ",a[i]);
+}
+</code></pre></div></div>
+
+<h2 id="第三节-快速排序">第三节 快速排序</h2>
+
+<p>如前两节所示，尽管解决了占用空间的问题，但是时间复杂度高出许多。</p>
+
+<p>接下来我们学习一种快速排序的方法。首先，我们在序列中确定一个 <strong>基准数</strong> k 用来作为参照。小于 k 的放在 k 的左边，大于 k 的放在 k 的右边。当 k 到达相应的位置时，我们分别在子序列中找到其相应的 k ，直到不可拆分的子序列为止。</p>
+
+<p>如： 6 1 2 7 9 3 4 5 10 8</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200301151639.png" alt="" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+int a[101],n; //定义全局变量
+
+void quicksort(int left,int right)
+{
+    int i,j,t,temp;
+    if(left&gt;right)
+        return;
+    
+    temp=a[left];//temp中存的就是基准数
+    i=left;
+    j=right;
+    while(i!=j)
+    {
+        //顺序很重要，要从右往左找
+        while(a[j]&gt;=temp &amp;&amp; i&lt;j)
+            j--;
+        //在从左往右找
+        while(a[j]&lt;=temp &amp;&amp; i&lt;j)
+            i++;
+            
+        //交换两个数在数组中的位置
+        if(i&lt;j) //哨兵i j 没有相遇时
+        {
+            t=a[i];
+            a[i]=a[j];
+            a[j]=t;
+        }
+    }
+    //基准数归位
+    a[left]=a[i];
+    a[i]=temp;
+    
+    quicksort(left,i-1);
+    quicksort(i+1,right);
+}
+
+int main()
+{
+    int i,j,t;
+    //读入数据
+    scanf("%d",&amp;n);
+    for(i=1;i&lt;=n;i++)
+        scanf("%d",&amp;a[i]);
+        
+    quicksort(1,n); //快速排序调用
+    
+    //输出排序后的结果
+    for(i=1;i&lt;=n;i++)
+        printf("%d",a[i]);
+        
+    system("pause");
+    return 0;
+}
+//算法05
+
+</code></pre></div></div>
+
+<h3 id="时间复杂度-2">时间复杂度</h3>
+
+<p>相对于冒泡排序，快速排序每次的交换都是跳跃式的，当然，最坏的情况下也可能是相邻交换。所以它的平均时间复杂度为 O(NlogN) 。</p>
+:ET

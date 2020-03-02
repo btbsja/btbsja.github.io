@@ -1,0 +1,44 @@
+I"�<h1 id="jekyll-s-本地预览-not-found">Jekyll s 本地预览 not found</h1>
+
+<h2 id="问题阐述">问题阐述</h2>
+
+<p>执行 Jekyll 本地预览命令</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Jekyll s
+</code></pre></div></div>
+
+<p>浏览器输入</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>127.0.0.1：4000
+</code></pre></div></div>
+
+<p>首页正常，但是点击文章链接显示 404 no found</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200302101736.png" alt="" /></p>
+
+<p>此时，控制台显示文章不存在</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200302102203.png" alt="" /></p>
+
+<p>但实际上文件存在于 _site 文件夹中</p>
+
+<h2 id="解决方法">解决方法</h2>
+
+<p>打开文件</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:\Ruby26-x64\lib\ruby\2.6.0\webrick\httpservlet\filehandler.rb
+</code></pre></div></div>
+
+<p>按下图更改两处</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200302103306.png" alt="" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200302103430.png" alt="" /></p>
+
+<p>再次运行</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Jekyll s
+</code></pre></div></div>
+
+<p>文章显示正常。</p>
+:ET
