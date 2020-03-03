@@ -1,0 +1,191 @@
+I"<h1 id="第二章-栈队列链表">第二章 栈、队列、链表</h1>
+
+<h2 id="完整代码下载"><a href="https://download.csdn.net/download/Btbsja/12206633">完整代码下载</a></h2>
+
+<h2 id="第一节-队列">第一节 队列</h2>
+
+<p>首先，引入两个整形变量 head 和 tail 分别记录队列的队首和队尾的下一位（为当队列中只剩下一个元素时，队首和队尾重合会带来一些麻烦）。</p>
+
+<p>在队首加一个数： <code class="highlighter-rouge">head++</code></p>
+
+<p>在队尾增加一个数： <code class="highlighter-rouge">q[tail]=x;tail++</code></p>
+
+<p><strong>队列</strong> ： 队列是一种特殊的线性结构，它只允许在队列的首部（head）进行删除操作，这称为“出队”，而在队列的尾部（tail）进行插入操作，这称为“入队”。当队列中没有元素时（即 head==tail），称为空队列。我们称为“先进先出”（First In First Out，FIFO）原则。</p>
+
+<p>我们可以将队列的三个基本元素（一个数组，两个变量）封装为一个结构体类型</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct queue 
+{     
+	int data[100];//队列的主体，用来存储内容     
+	int head;//队首     
+	int tail;//队尾 
+}; 
+</code></pre></div></div>
+
+<p>那么我们如何定义结构体变量和访问结构体变量的内部成员呢？</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct queue q; 
+
+q.head=1; 
+q.tail=1; 
+scanf("%d",&amp;q.data[q.tail]); 
+</code></pre></div></div>
+
+<p>接下来我们去解决一个问题：一串加密过的9个数字，首先将第 1个数删除，紧接着将第 2个数放到这串数的末尾，再将第 3个数删除并将第 4个数放到这串数的末尾，再将第 5个数删除……直到剩下后一个数，将后一个数也删除。最后按照刚才删除的顺序，把这些删除的数连在一起。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法06
+    struct queue q;
+    int i;
+    q.head=1;
+    q.tail=1;
+    for(i=1;i&lt;=9;i++)
+    {
+        scanf("%d",&amp;q.data[q.tail]);
+        q.tail++;
+    }
+    
+    while(q.head&lt;q.tail)
+    {
+        printf("%d",q.data[q.head]);
+        q.head++;
+        
+        q.data[q.tail]=q.data[q.head];
+        q.tail++;
+        
+        q.head++;
+    }
+</code></pre></div></div>
+
+<h2 id="第二节-栈">第二节 栈</h2>
+
+<p>队列结构为先进先出，而栈结构为后进后出。所以栈的实现很简单，只需要一个一维数组和一个指向栈顶的变量 top就可以了。</p>
+
+<p>接下来我们用栈结构来判断一个字符串是否为回文字符串。</p>
+
+<p><strong>回文字符串：</strong> 指正读反读均相同的字符序列。</p>
+
+<p>入栈操作： <code class="highlighter-rouge">top++;s[top]=x;</code> 或者简写为 <code class="highlighter-rouge">s[++top]=x;</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法07
+    char a[101],s[101];
+    int i,len,mid,next,top;
+    
+    gets(a);//读入一行字符串
+    len=strlen(a);//求字符串长度
+    mid=len/2-1;//求字符串的中点
+    
+    top=0;//栈的初始化
+    for(i=0;i&lt;=mid;i++) //将mid前的字符依次入栈
+        s[++top]=a[i];
+        
+    //判断字符串的长度是奇数还是偶数，并找出需要进行字符匹配的起始下标
+    if(len%2==0)
+        next=mid+1;
+    else
+        next=mid+2;
+        
+    //开始匹配
+    for(i=next;i&lt;=len-1;i++)
+    {
+        if(a[i]!=s[top])
+            break;
+        top--;
+    }
+    
+    //如果top的值为0，则说明栈内所有的字符都被一一匹配了
+    if(top==0)
+        printf("YES");
+    else
+        printf("NO");
+</code></pre></div></div>
+
+<h2 id="第三节-链表">第三节 链表</h2>
+
+<p>有一串已经从小到大排好序的数 2 3 5 8 9 10 18 26 32。现需要往这串数中插入 6使其得到的新序列仍符合从小到大排列</p>
+
+<p>如果使用数组的话会耽误很多时间：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/02/225211-834522.png" alt="image-20200302220850959" /></p>
+
+<p>但是如果使用链表的话就会简单很多：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/02/230437-976005.png" alt="image-20200302230401934" /></p>
+
+<p>每一个结点都由两个部分组成。左边的部分用来存放具体的数值，那么用一个整型变量就可以；右边的部分需要存储下一个结点的地址，可以用指针来实现（也称为后继指针） 。</p>
+
+<p>我们定义一个结构体类型来存储这个结点：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct node 
+{     
+	int data;     
+	struct node *next; 
+};
+</code></pre></div></div>
+
+<p><strong>建立链表</strong></p>
+
+<p>首先我们需要一个头指针 head 指向链表的开始。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct node *head; 
+head = NULL;//头指针初始为空 
+</code></pre></div></div>
+
+<p>创建第一个结点，并用临时指针 p指向这个结点。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct node *p; 
+//动态申请一个空间，用来存放一个结点，并用临时指针p指向这个结点 
+p=(struct node *)malloc(sizeof(struct node));
+</code></pre></div></div>
+
+<p>分别设置新创建的这个结点的左半部分和右半部分。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scanf("%d",&amp;a); 
+p-&gt;data=a;//将数据存储到当前结点的data域中 
+p-&gt;next=NULL;//设置当前结点的后继指针指向空，也就是当前结点的下一个结点为空 
+</code></pre></div></div>
+
+<p><strong>-&gt;</strong> 叫做结构体指针运算符，也是用来访问结构体内部成员的。因为此处 p 是一个指针，所以不能使用.号访问内部成员。</p>
+
+<p>设置头指针并设置新创建结点的*next 指向空。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if(head==NULL)     
+	head=p;//如果这是第一个创建的结点，则将头指针指向这个结点 
+else      
+	q-&gt;next=p;//如果不是第一个创建的结点，则将上一个结点的后继指针指向当前结点 
+</code></pre></div></div>
+
+<p>后要将指针 q也指向当前结点。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>q=p;//指针q也指向当前结点 
+</code></pre></div></div>
+
+<p>接下来需要往链表中插入 6</p>
+
+<p>首先用一个临时指针 t从链表的头部开始遍历。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>t=head;//从链表头部开始遍历
+</code></pre></div></div>
+
+<p>等到指针 t的下一个结点的值比 6大的时候，将 6插入到中间。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scanf("%d",&amp;a);//读入待插入的数 
+while(t!=NULL)//当没有到达链表尾部的时候循环 
+{
+	if(t-&gt;next-&gt;data &gt; a)//如果当前结点下一个结点的值大于待插入数，将数插入到中间 
+	{
+		p=(struct node *)malloc(sizeof(struct node));//动态申请一个空间，用来 存放新增结点
+		p-&gt;data=a;         
+		p-&gt;next=t-&gt;next;//新增结点的后继指针指向当前结点的后继指针所指向的结点         
+		t-&gt;next=p;//当前结点的后继指针指向新增结点         
+		break;//插入完毕退出循环
+	}
+	t=t-&gt;next;//继续下一个结点 
+}
+</code></pre></div></div>
+
+<p>完整代码</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法08
+</code></pre></div></div>
+
+:ET

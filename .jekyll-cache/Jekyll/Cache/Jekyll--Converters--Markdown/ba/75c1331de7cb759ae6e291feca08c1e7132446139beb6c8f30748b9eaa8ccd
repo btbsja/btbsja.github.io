@@ -1,0 +1,60 @@
+I"�<h1 id="windows-typora-图床插件">windows-Typora-图床插件</h1>
+
+<p><a href="https://download.csdn.net/download/Btbsja/12206646">插件下载</a></p>
+
+<h2 id="功能">功能</h2>
+<p>用 Typora 写 md 文件时自动上传 图片至网络图床</p>
+<h2 id="安装步骤">安装步骤</h2>
+<ol>
+  <li>将下载的 plugins 文件夹粘贴至安装目录</li>
+</ol>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>例如：C:\Program Files\Typora\resources\app
+</code></pre></div></div>
+
+<ol>
+  <li>修改 app 文件夹内 window.html 文件</li>
+</ol>
+
+<p>CTRL+F 搜索</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script src="./app/window/frame.js" defer="defer"&gt;&lt;/script&gt;
+</code></pre></div></div>
+
+<p>在其后增加一行</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script src="./plugins/image/upload.js" defer="defer"&gt;&lt;/script&gt;
+</code></pre></div></div>
+
+<ol>
+  <li>
+    <p>重启Typora</p>
+  </li>
+  <li>
+    <p>上传至 Github 设置</p>
+  </li>
+</ol>
+
+<p>打开 plugins/image/upload.js 文件
+最下面将最后一行的 $.image.init()
+修改</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$.image.init({
+    target:'github',
+    github:{
+        Token : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 
+        CommitterName : 'nickname',                 // github的昵称
+        CommitterEmail : 'email@mail.com',          // github的邮箱
+        Repository : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',      // github项目名
+        Filepath : '/img',                              // 图片保存目录
+        jsDelivrCND : false,       // 是否开启GitHub图片走镜像,如要打开设置为：true
+    }
+});
+</code></pre></div></div>
+
+<p>具体关于 Token 的申请可以参考<a href="https://btbsja.ml/2020/02/04/Github+jsDelivr+PicGo%E6%90%AD%E5%BB%BA%E5%AE%8C%E7%BE%8E%E5%8D%9A%E5%AE%A2%E5%9B%BE%E5%BA%8A/">另一篇文章</a></p>
+
+<p>本教程参考于 <a href="https://github.com/Thobian/typora-plugins-win-img">Github</a></p>
+
+<p>其他图床的教程请参考作者仓库</p>
+:ET

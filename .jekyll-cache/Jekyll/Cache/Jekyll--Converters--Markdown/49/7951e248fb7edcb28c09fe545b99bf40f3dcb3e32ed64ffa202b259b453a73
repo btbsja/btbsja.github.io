@@ -1,0 +1,167 @@
+I"�<h1 id="第四章-搜索">第四章 搜索</h1>
+
+<h2 id="完整代码下载"><a href="https://download.csdn.net/download/Btbsja/12207667">完整代码下载</a></h2>
+
+<h2 id="第一节-全排列">第一节 全排列</h2>
+
+<p>123的全排列为123 132 213 231 312 321</p>
+
+<p>我们也可以用一个三重循环嵌套</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(a=1;a&lt;=3;a++)
+	for(b=1;b&lt;=3;b++)
+		for(c=1;c&lt;=3;c++)
+			if(a!=b&amp;&amp; a!=c&amp;&amp;b!=c)
+				printf("%d%d%d\n",a,b,c)
+</code></pre></div></div>
+
+<p>但是如果个数很多的话，写起来就很麻烦</p>
+
+<h2 id="第二节-深度优先搜索">第二节 深度优先搜索</h2>
+
+<p>我们可以将上一节的问题简化为三张牌放入3个盒子里</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for(i=1;i&lt;=n;i++)
+{
+	if(book[i]==0)	//book[i]==0表示第i号牌还在手上
+	{
+		a[step]=i;	//将i号牌放入第step个盒子中
+		book[i]=1;	//将book[i]设为1，表示i号牌不在手上
+	}
+}
+</code></pre></div></div>
+
+<p>我们将刚刚的代码封装为一个函数就可以去处理余下的牌了</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>viod dfs(ints step)//step表示在第几个盒子前
+{
+    for(i=1;i&lt;=n;i++)
+    {
+        if(book[i]==0)	//book[i]==0表示第i号牌还在手上
+        {
+            a[step]=i;	//将i号牌放入第step个盒子中
+            book[i]=1;	//将book[i]设为1，表示i号牌不在手上
+            dfs(step+1);//函数递归调用
+            book[i]=0;//收回刚刚的牌
+        }
+    }	
+}
+</code></pre></div></div>
+
+<p>深度优先搜索的基本模型</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>void dfs(int step)
+{
+	判断边界
+	尝试每一种可能 for(i=1;i&lt;=n;i++)
+	{
+		继续下一步	dfs(step+1);
+	}
+	返回
+}
+</code></pre></div></div>
+
+<p>那么完整的代码</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法10
+int a[10],book[10],n;
+void dfs(int step)//step表示在第几个盒子前
+{
+    int i;
+    if(step==n+1)
+    {
+        for(i=1;i&lt;=n;i++)
+            printf("%d",a[i]);
+        printf("\n");
+        
+        return;
+    }
+    
+    for(i=1;i&lt;=n;i++)
+    {
+        if(book[i]==0)
+        {
+            a[step]=i;
+            book[i]=1;
+            
+            dfs(step+1);
+            book[i]=0;
+        }
+    }
+    return;
+}
+</code></pre></div></div>
+
+<h2 id="第三节-广度优先搜索">第三节 广度优先搜索</h2>
+
+<p>广度优先搜索又称宽度优先搜索</p>
+
+<p>我用它来解决一个迷宫问题：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法11
+{
+    struct note que[2501];
+    
+    int a[51][51]={0},book[51][51]={0};
+    
+    int next[4][2]={ {0,1},{1,0},{0,-1},{-1,0} };
+    int head,tail;
+    int i,j,k,n,m,startx,starty,p,q,tx,ty,flag;
+    
+    scanf("%d %d",&amp;n,&amp;m);
+    for(i=1;i&lt;=n;i++)
+        for(j=1;j&lt;=m;j++)
+            scanf("%d",&amp;a[i][j]);
+        scanf("%d %d %d %d",&amp;startx,&amp;starty,&amp;p,&amp;q);
+    //对列初始化
+    head=1;
+    tail=1;
+    //插入迷宫入口的坐标
+    que[tail].x=startx;
+    que[tail].y=starty;
+    que[tail].f=0;
+    que[tail].s=0;
+    tail++;
+    book[startx][starty]=1;
+    
+    flag=0;//用来标记是否到达目标点
+    while(head&lt;tail)
+    {
+        for(k=0;k&lt;=3;k++)
+        {
+            tx=que[head].x+next[k][0];
+            ty=que[head].y+next[k][1];
+            //判断是否越界
+            if(tx&lt;1||tx&gt;n||ty&lt;1||ty&gt;m)
+                continue;
+            //判断是否为障碍物
+            if(a[tx][ty]==0&amp;&amp;book[tx][ty]==0)
+            {
+                book[tx][ty]=1;
+                
+                que[tail].x=tx;
+                que[tail].y=ty;
+                que[tail].f=head;
+                que[tail].s=que[head].s+1;
+                tail++;
+            }
+            if(tx==p&amp;&amp;ty==q)
+            {
+                flag=1;
+                break;
+            }
+        }
+        if(flag==1)
+            break;
+        head++;
+    }
+    
+    printf("%d",que[tail-1].s);
+    
+    system("pause");
+    return 0;
+}
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/03/115859-880374.png" alt="image-20200303115857559" /></p>
+:ET

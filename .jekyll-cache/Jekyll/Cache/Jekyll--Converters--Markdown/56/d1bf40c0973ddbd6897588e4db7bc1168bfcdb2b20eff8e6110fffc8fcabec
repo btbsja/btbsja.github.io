@@ -1,0 +1,127 @@
+I"�<h1 id="第五章-图的遍历">第五章 图的遍历</h1>
+
+<h2 id="完整代码下载"><a href="https://download.csdn.net/download/Btbsja/12208157">完整代码下载</a></h2>
+
+<h2 id="第一节-深度和广度优先">第一节 深度和广度优先</h2>
+
+<p><strong>图：</strong> 图就是由一些小圆点（顶点）和连接这些小圆点的直线（边）组成的。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/03/144510-445818.png" alt="image-20200303144508425" /></p>
+
+<p><strong>遍历：</strong> 指把图的每一个顶点都访问一次。</p>
+
+<h3 id="深度优先">深度优先</h3>
+
+<p>沿图的某一条分支遍历直到末端，然后回溯，再沿另一条进行同样额遍历，直到所有的顶点都被访问过为止。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/03/145551-217136.png" alt="image-20200303145548847" /></p>
+
+<p>我们可以用一个二维数组来存储 图 ，因为上图是无向图所以数组是沿对角线对称的。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/03/145821-886465.png" alt="image-20200303145819984" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法12
+int book[101],sum,n,e[101][101];
+void dfs(int cur)//cur是当前的顶点编号
+{
+    int i;
+    printf("%d",cur);
+    sum++;
+    //每访问一个顶点，sum就加1
+    if(sum==n)  return;//所有顶点都访问完后直接退出
+    
+    for(i=1;i&lt;=n;i++)
+    {
+        if(e[cur][i]==1 &amp;&amp; book[i]==0)
+        {
+            book[i]=1;
+            dfs(i);
+        }
+    }
+    return;
+}
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    int i,j,m,a,b;
+    scanf("%d %d",&amp;n,&amp;m);
+    //初始化
+    for(i=1;i&lt;=n;i++)
+        for(j=1;j&lt;=n;j++)
+            if(i==j) e[i][j]=0;
+                else e[i][j]=99999999;//无穷大
+    
+    //读入顶点之间的边
+    for(i=1;i&lt;=m;i++)
+    {
+        scanf("%d %d",&amp;a,&amp;b);
+        e[a][b]=1;
+        e[b][a]=a;//无向图
+    }
+    
+    book[1]=1;
+    dfs(1);
+    
+    system("pause");
+    return 0;
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/03/151649-712518.png" alt="image-20200303151647287" /></p>
+
+<h3 id="广度优先">广度优先</h3>
+
+<p>访问其所有相邻的顶点，再访问相邻顶点未被访问的顶点，直到所有的顶点都被访问过。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/03/151931-371110.png" alt="image-20200303151930191" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//算法13
+    int i,j,n,m,a,b,cur,book[101]={0},e[101][101];
+    int que[10001],head,tail;
+    scanf("%d %d",&amp;n,&amp;m);
+    //初始化二维矩阵
+    for(i=1;i&lt;=n;i++)
+        for(j=1;j&lt;=n;j++)
+            if(i==j) e[i][j]=0;
+            else e[i][j]=99999999;
+            
+    //读入顶点和边
+    for(i=1;i&lt;=m;i++)
+    {
+        scanf("%d %d",&amp;a,&amp;b);
+        e[a][b]=1;
+        e[b][a]=1;
+    }
+    
+    //队列初始化
+    head=1;
+    tail=1;
+    
+    //从1号顶点出发
+    que[tail]=1;
+    tail++;
+    book[1]=1;
+    
+    //队列不为空时循环
+    while(head&lt;tail)
+    {
+        cur=que[head];
+        for(i=1;i&lt;=n;i++)
+        {
+            if(e[cur][i]=1&amp;&amp;book[i]==0)
+            {
+                que[tail]=i;
+                tail++;
+                book[i]=1;
+            }
+            if(tail&gt;n)//说明顶点都被访问过
+            {
+                break;
+            }
+        }
+        head++;//一个顶点结束时。head++才能往下拓展
+    }
+    for(i=1;i&lt;tail;i++)
+        printf("%d",que[i]);
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img/202003/03/153124-610169.png" alt="image-20200303153122438" /></p>
+:ET
