@@ -6,7 +6,7 @@ title:   windows-Typora-图床插件          # 标题
 
 subtitle:         #副标题
 
-date:    2020-03-03       # 时间
+date:    2020-03-03-1:00    # 时间
 
 author:   Btbsja         # 作者
 
@@ -21,7 +21,7 @@ tags:                #标签
 ---
 # windows-Typora-图床插件
 
-[插件下载](https://download.csdn.net/download/Btbsja/12206646)
+## [插件下载](https://download.csdn.net/download/Btbsja/12206646)
 
 ## 功能
 用 Typora 写 md 文件时自动上传 图片至网络图床
