@@ -10,7 +10,7 @@ date:    2020-02-04       # 时间
 
 author:   Btbsja         # 作者
 
-header-img: img/bg-2020-02-04.jpg          #这篇文章标题背景图片
+header-img: img/bg-2020-02-03.jpg        #这篇文章标题背景图片
 
 catalog: true            # 是否归档
 

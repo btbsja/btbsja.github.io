@@ -1,0 +1,661 @@
+I"Z\<h1 id="第四章-介质访问控制子层">第四章 介质访问控制子层</h1>
+
+<p>网络链路分成两大类</p>
+
+<blockquote>
+  <p>点到点连接—WAN</p>
+</blockquote>
+
+<blockquote>
+  <p>广播信道---也称为多路访问信道（ multiaccesschannesl ）或者随机信道(radom access channel)</p>
+</blockquote>
+
+<blockquote>
+  <p>关键问题：<strong>如何确定谁可以使用信道。</strong></p>
+</blockquote>
+
+<blockquote>
+  <p>（一）介质访问控制子层（MAC，Medium Access Control）</p>
+
+  <p><strong>确定多路访问信道下一个使用者的协议，数据链路层的子层. 本章的主题是如何在竞争用户之间分配单个广播信道</strong></p>
+</blockquote>
+
+<blockquote>
+  <p>（二）信道分配问题</p>
+</blockquote>
+
+<p>（1）静态分配</p>
+
+<blockquote>
+  <p>只要一个用户得到了信道就不会和别的用户冲突。(用户数据流量具有突发性和间歇性)</p>
+</blockquote>
+
+<p>（2）动态分配</p>
+
+<blockquote>
+  <p>称为多路访问（Multiple Access）或多点接入，指多个用户共用一条线路，而信道并非是在用户通信时固定分配给用户，这样的系统又称为竞争系统。</p>
+</blockquote>
+
+<ol>
+  <li>动态信道的五个关键假设</li>
+</ol>
+
+<blockquote>
+  <p>①流量独立：N 个独立站，只有一个程序，以恒定速率产生帧</p>
+
+  <p>②单信道：所有通信都用这一个信道</p>
+
+  <p>③冲突可观察：所有站都能够检测到冲突事件的发生</p>
+
+  <p>④时间连续或分槽：时间可以假设是连续的或分槽</p>
+
+  <p>⑤载波侦听或不听：一个站在试图用信道之前就能知道该信道当前是否正被使用</p>
+</blockquote>
+
+<ol>
+  <li>ALOHA 协议</li>
+</ol>
+
+<blockquote>
+  <p>①纯ALOHA 协议</p>
+
+  <p>用户有数据要发送时，可以直接发至信道，若在规定时间内收到应答，表示发送成功，否则重发。重发策略：发送数据后侦听信道是否产生冲突，若产生冲突，则等待一</p>
+
+  <p>段随机的时间重发，<strong>直到发送成功为止（一直等）</strong></p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/090354-36054.png" alt="image-20200307090054789" /></p>
+</blockquote>
+
+<ul>
+  <li>
+    <h3 id="吞吐量分析">吞吐量分析</h3>
+  </li>
+</ul>
+
+<blockquote>
+  <p>帧时：传输标准固定帧所需时间</p>
+</blockquote>
+
+<blockquote>
+  <p>假设无穷多用户按照泊松分布产生新帧 N，要求 0&lt;N&lt;1</p>
+
+  <p>G 是单位帧时产生的新帧和重发帧的和，G&gt;=N, 也服从泊松分布。吞吐量 S=GP0,P0 是一帧没有遭到冲突的概率。</p>
+</blockquote>
+
+<blockquote>
+  <p>一个帧时中生成k 帧的概率</p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/090448-899629.png" alt="image-20200307090240014" /></p>
+
+  <p>在冲突窗口内不存在其他流量的概率是（由生成帧的平均数 2G 和 K=0 求得）</p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/090451-404513.png" alt="image-20200307090318812" /></p>
+
+  <p>G=0.5 时，S 达到最大，为 1/2e</p>
+</blockquote>
+
+<blockquote>
+  <p>②分槽ALOHA</p>
+
+  <p>把使用信道的时间分成离散的时间槽，槽长为一个帧所需的发送时间，每个站点只能在时间槽开始时才允许发送，其他过程与纯 ALOHA 协议相同。冲突窗口 t</p>
+</blockquote>
+
+<ol>
+  <li>载波侦听多路访问协议 CSMA</li>
+</ol>
+
+<blockquote>
+  <p>载波侦听（Carrier Sense）：站点在发送帧之前，首先侦听信道有无载波，若有载波，说明已有用户在使用信道，则不发送帧以避免冲突，以此提高信道利用率</p>
+</blockquote>
+
+<blockquote>
+  <p>①坚持型CSMA（1-persistent CSMA）</p>
+
+  <p>一直侦听直到完成发送，空闲时马上发送，冲突时等待一个随机时间</p>
+
+  <p>优点：减少信道空闲时间 缺点：广播延迟越大，发生冲突的可能性越大，协议性能越差</p>
+</blockquote>
+
+<blockquote>
+  <p>②非坚持型CSMA（nonpersistent CSMA）</p>
+
+  <p>信道忙，等待随机时间；冲突，等待随机时间</p>
+
+  <p>优点：减少了冲突的概率，信道效率比 1-坚持 CSMA 高</p>
+
+  <p>缺点：增加了信道空闲时间，数据发送延迟增大。传输延迟比 1-坚持 CSMA 大。</p>
+</blockquote>
+
+<blockquote>
+  <p>③p-坚持型CSMA（p-persistent CSMA）</p>
+</blockquote>
+
+<p>（1）若站点有数据发送，先侦听信道；</p>
+
+<p>（2）若站点发现信道空闲，<strong>则以概率p 发送数据，以概率 q =1- p 延迟至下一个时间槽发送</strong>。若下一个时间槽仍空闲，重复此过程，直至数据发出或时间槽被其他站点所占用</p>
+
+<p>（3）若信道忙，则等待下一个时间槽，重新开始发送</p>
+
+<p>（4）若产生冲突，等待一随机时间，重新开始发送</p>
+
+<blockquote>
+  <p>折中方案，既能像非坚持型 CSMA 那样减少冲突，又能像 1-坚持型 CSMA 那样减少媒体空闲时间的，适用于分槽信道。</p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/090638-7797.png" alt="image-20200307090636796" /></p>
+</blockquote>
+
+<blockquote>
+  <p>④带冲突检测的载波侦听多路访问协议 CSMA/CD</p>
+
+  <p>如果两个站侦听到信道为空，并且同时开始传输，则它们的信号仍然会产生冲突。因此 CSMA/CD 的改进：每个站快速检测到发生冲突后立即停止传输帧（而不是继续完成传输）。</p>
+</blockquote>
+
+<blockquote>
+  <p>所以要求：接收信号相对于发送信号不能太弱，必须选择能被监测到冲突的调制解调技术。</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/090711-739741.png" alt="image-20200307090703348" /></p>
+
+<blockquote>
+  <p>CSMA/CD 工作状态包括三个周期：传输周期、竞争周期和空闲周期</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/090719-195553.png" alt="image-20200307090717743" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/090731-965901.png" alt="image-20200307090729575" /></p>
+
+<blockquote>
+  <p>一个站点开始发送后，经过多长时间还未监听到冲突，就可以确定自己抓住了信道？</p>
+
+  <p>答：2τ</p>
+
+  <p>τ= 𝑙 /(2∗10^8)</p>
+
+  <p>最小帧长=v*2τ（τ保证帧发送 2τ时间）</p>
+
+</blockquote>
+
+<ol>
+  <li>无冲突的协议</li>
+</ol>
+
+<blockquote>
+  <p>在 CSMA/CD 中，一旦站已经确定无疑地抓住了信道，冲突就不会再发生，但在竞争期中冲突依然可能发生。</p>
+</blockquote>
+
+<blockquote>
+  <p>接下来便是以根本不可能产生冲突的方式解决信道竞争问题，即使在冲突期也不会发生冲突。</p>
+</blockquote>
+
+<blockquote>
+  <p>①基本的位图协议</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/091045-925602.png" alt="image-20200307090840562" /></p>
+
+<ul>
+  <li>
+    <p>预留协议，<strong>每个站的开销是一位</strong>，不可能扩展到包含上千个站的网络中。</p>
+  </li>
+  <li>
+    <p>低序号的站点平均等待 1.5N 个槽；高序号的站点平均等待 0.5N 个槽</p>
+  </li>
+  <li>
+    <p>低负荷下，每一帧的额外开销是 N 位，数据长度为 d，信道利用率 d/(d+N)</p>
+  </li>
+  <li>
+    <p>高负荷下，每一帧的额外开销只有 1 位，信道利用率 d/(d+1)</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>②二进制倒计数协议</p>
+</blockquote>
+
+<blockquote>
+  <p>高序站的优先级别比低序站的优先级别高，信道利用率为 d/(d+log2N)</p>
+</blockquote>
+
+<blockquote>
+  <p>③令牌传递（令牌---特殊的短消息）</p>
+</blockquote>
+
+<blockquote>
+  <p>以预定义的顺序从一个站传到下一个站。代表发送权限。当站点接收到令牌就可以发送帧。</p>
+</blockquote>
+
+<blockquote>
+  <p>④轮询</p>
+</blockquote>
+
+<ol>
+  <li>有限竞争协议（把竞争协议和无冲突协议的优势结合起来）</li>
+</ol>
+
+<blockquote>
+  <p>低负荷—竞争 短延迟（竞争型协议）</p>
+</blockquote>
+
+<blockquote>
+  <p>高负载—无冲突技术 信道效率高（预约型协议）</p>
+</blockquote>
+
+<ul>
+  <li>到目前为止，我们学习的协议都是对称的，即每个站企图获得信道的概率为 p， 并且所有站都使用同样的 p</li>
+  <li>对称协议的性能情况：</li>
+</ul>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/091039-863473.png" alt="image-20200307091037862" /></p>
+
+<blockquote>
+  <p>①自适应树搜索协议</p>
+
+  <p>把站看作是二叉树的叶节点。在一次成功传送之后的第一个竞争槽，即 0 号槽中， 允许所有的站尝试获取信道。如果它们之中的某一个获得了信道，则很好；如果发生了冲突，则在 1 号槽中，只有位于树中 2 号节点之下的那些站才可以参与竞争。如果其中的某个站获得了信道，则在该站发送完一帧之后的那个槽被保留给位于节点 3 下面的那些站。另一方面，如果节点 2 下面的两个或者多个站都要传输数据，则在 1 号槽中就会发生冲突，此时，下一个槽，即 2 号槽就有位于节点 4 下面的站来竞争。</p>
+
+</blockquote>
+
+<blockquote>
+  <p>改进版本：<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/091314-818498.png" alt="image-20200307091116761" /></p>
+</blockquote>
+
+<blockquote>
+  <p>考虑一种情况，只有站 G 和 H 想要发送数据。在节点 1 上，发生冲突，所以节点2 下面的站开始竞争，却发现它是空闲的；此时探测节点 3 毫无意义，因为它肯定会冲突。对节点 3 的探测可以跳过去，直接探测节点 6</p>
+
+</blockquote>
+
+<ul>
+  <li>
+    <p>当负载很低时，每个时槽有很多站点竞争</p>
+  </li>
+  <li>
+    <p>当负载重时，每个时槽只有很少的站，甚至只有一个站。</p>
+  </li>
+  <li>
+    <p>例题：</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>16 个站编号从 1-16，正在竞争一个使用了可适应树协议的共享信道，如果地址为素数的所有站点都有帧要发，需多少个时槽才能解决竞争？（11 个）</p>
+
+  <p>第 1 时槽：2,3，5,7，11,13 第 2 槽：2,3，5,7</p>
+
+  <p>第 3 时槽：2,3 第 4 时槽：2</p>
+
+  <p>第 5 时槽：3 第 6 时槽：5,7</p>
+
+  <p>第 7 时槽：5 第 8 时槽：7</p>
+
+  <p>第 9 时槽：11,13 第 10 时槽：11</p>
+
+  <p>第 11 时槽：13</p>
+</blockquote>
+
+<ol>
+  <li>无线 LAN 协议</li>
+</ol>
+
+<ul>
+  <li>
+    <p>无线 LAN 和有线 LAN 的不同属性导致了不同的 MAC 层。</p>
+  </li>
+  <li>
+    <p>无线 LAN 的常见配置，有策略的放置AP 点</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>AP 通过有线介质（铜缆或光纤）连接，提供接入服务。</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>当 AP 和笔记本电脑在数十米范围内，单个蜂窝。每个蜂窝只有一个信道，被蜂窝中所有站点共享，包括 AP，通常提供Mbps 的带宽，最大高达 600Mbps</p>
+  </li>
+  <li>
+    <p>无线 LAN 和有线 LAN 的不同属性</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>不能检测出正在发生的冲突，因为接收的信号比发送的信号弱上百万倍。确认机制可用在事后发现冲突和其他错误。</p>
+
+  <p>无线电传输范围有限</p>
+
+</blockquote>
+
+<blockquote>
+  <p>①.直接用 CSMA 存在的问题</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/091225-462946.png" alt="image-20200307091217949" /></p>
+
+<blockquote>
+  <p>②.MACA 协议</p>
+</blockquote>
+
+<blockquote>
+  <p>（三）以太网</p>
+</blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>经典以太网</th>
+      <th>1.以太网的原始形式<br />2.运行速度从 3Mbs 到 1 0Mbs 不等交</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>交换式以太网</td>
+      <td>可运行在100 、 1 000 、 1 0000Mbps 分别以快速以太网 千兆以太网 和万兆以太网</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>MAC（Medium/MediaAccess Control, 介质访问控制）MAC 地址是烧录在 NetworkInterfaceCard(网卡,NIC)里的.MAC 地址,也叫硬件地址,是由 48 比特/bit 长(6 字节/byte,1byte=8bits),16 进制的数字组成.0-23 位叫做组织</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/091739-115647.png" alt="image-20200307091455689" /></p>
+
+<blockquote>
+  <p>唯一标志符(organizationally unique，是识别 LAN（局域网）节点的标识。24-47 位是由厂家自己分配.其中第 40 位是组播地址标志位。网卡的物理地址通常是由网卡生产厂家烧入网卡的 EPROM（一种闪存芯片，通常可以通过程序擦写），它存储的是传输数据时真正赖以标识发出数据的电脑和接收数据的主机的地址。</p>
+</blockquote>
+
+<blockquote>
+  <p>MAC 地址是由 48 位的二进制数组成，即 6 个字节。</p>
+</blockquote>
+
+<blockquote>
+  <p>在通信中是用 16 进制表示的。前 24 位是由生产厂家向 IEEE 标准组织申请的厂家代码，是固定的，但是它的第八位一定是 0（48 位中的第 8 位二进制数），因为网卡的物理地址，一定是单播地址，在 IPv4 的环境中， 区分单播和组播地址就是校检第八位的二进制数字，0 代表单播地址，1 代表组播地址。那么表现在 16 进制中第一字节第二个数字一定是个偶数（十进制概念，不知道恰不恰当）。</p>
+</blockquote>
+
+<blockquote>
+  <p>也就是说第二个数字一定是 0、2、4、6、8、A、C、E 其中的一个，那么区分单播或者组播地址就简单多了。</p>
+</blockquote>
+
+<blockquote>
+  <p>例：6C-62-6D-26-1E-29 它的二进制：</p>
+
+  <p>01101100-01100010-01101101-00100110-00011110-00101001</p>
+
+  <p>单播：第八位为 0</p>
+
+  <p>如果将MAC 改为：61-62-6D-26-1E-29，这样的地址是组播地址，修改不会成功。</p>
+
+  <p>注：在写程序随机生成MAC 地址时，切记 MAC 地址 16 进制中的第一个字节第二个数一定是偶数。</p>
+</blockquote>
+
+<ol>
+  <li>经典以太网MAC 子层协议</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/091733-657694.png" alt="image-20200307091732189" /></p>
+
+<p>Frame formats. (a) Ethernet (DIX). (b) IEEE 802.3</p>
+
+<blockquote>
+  <p>①前导码 101010…最后两位是 11.</p>
+
+  <p>②地址:最高位 0--普通地址 1—组播地址</p>
+
+  <p>③地址字段的前 24 位代表组织唯一标识符，字段的值由 IEEE 分配，指明了网络设备制造商。制造商获得一块大小为 224 的地址。出厂时唯一确定，并写入网卡</p>
+
+  <p>④类型—网络层协议类型，当以太网帧到达接收方时，操作系统需要知道应该调用哪个网络层协议处理帧携带的数据包。</p>
+
+  <p>⑤长度—在 802.3 标准中，携带帧的长度。</p>
+</blockquote>
+
+<blockquote>
+  <p>802.3 中意味着接收方无法确定该如何处理入境帧，交由 LLC 协议处理。</p>
+</blockquote>
+
+<blockquote>
+  <p>现在的规则是：任意小于或等于 0X600（1536）解释为长度字段，任意大于 0X600 可解释为类型字段。</p>
+
+  <p>⑥数据域—1-1500 字节</p>
+
+  <p>⑦填充域—46 字节 最小帧长限制.要求有效帧至少是 64 字节. 2500 米,4 个中继器的 10M 以太网, 往返时间 50us.500bit.64 字节</p>
+
+  <p>⑧校验和 32 位 CRC</p>
+</blockquote>
+
+<ul>
+  <li>产生冲突</li>
+</ul>
+
+<blockquote>
+  <p>二进制指数后退算法发生</p>
+</blockquote>
+
+<blockquote>
+  <p>(1) 第一次冲突后，各个站点等待 0 或 1 个时间槽再开始重传；</p>
+
+  <p>(2) 发生第二次冲突后，各个站点随机地选择等待 0、1、2 或 3 个时间槽再开始重传；</p>
+
+  <p>(3) 第 i 次冲突后，在 0 至 2i-1 间随机地选择一个等待的时间槽数，再开始重传；</p>
+
+  <p>(4) 10 次冲突后，等待的时间槽数固定在 0 至 210-1 间；</p>
+
+  <p>(5) 16 次冲突后，发送失败，报告上层。</p>
+</blockquote>
+
+<ol>
+  <li>交换式以太网</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/092106-768380.png" alt="image-20200307092105559" /></p>
+
+<blockquote>
+  <p>（a）集线器（b）交换机</p>
+</blockquote>
+
+<ul>
+  <li>当有多个站点或端口都要传输数据时</li>
+</ul>
+
+<blockquote>
+  <p>①集线器—同一冲突域，采用 CSMA/CD</p>
+
+  <p>②交换机-若电缆是全双工的，冲突不会发生，CSMA/CD 也不再需要；若是半双工，站和端口以 CSMA/CD 方式竞争信道交换机性能优于集线器</p>
+</blockquote>
+
+<ol>
+  <li>网桥</li>
+</ol>
+
+<blockquote>
+  <p>不同部门分别拥有自己独立管理的 LAN，不同的目标可能选择了不同的 LAN。为了进行交互，需要使用桥来实现互连；</p>
+</blockquote>
+
+<blockquote>
+  <p>一个企业分布在相隔很远的不同建筑物内，在每个建筑物内组建单独的 LAN，并使用桥将这些远距离的LAN 连接起来，是比较经济的方案；</p>
+</blockquote>
+
+<blockquote>
+  <p><strong>将一个负载很重的大 LAN 分隔成使用网桥互连的几个 LAN 以减轻负担；有助于安全保密，网桥可以进行帧格式转换,互连不同类型的 LAN</strong></p>
+</blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>局域网交换机</th>
+      <th>网桥</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>交换机具有高密度的端口</td>
+      <td>网桥一般分有两个端口</td>
+    </tr>
+    <tr>
+      <td>可把网络系统划分成为更多的物理网段</td>
+      <td>网桥划分的物理网段是相当有限</td>
+    </tr>
+    <tr>
+      <td>传输速率快</td>
+      <td>传输速率慢</td>
+    </tr>
+    <tr>
+      <td>具有存储转发直接转发两种帧转发方式</td>
+      <td>要接收到完整的数据帧并执行帧检测序列FCS 后，才开始转发该数据帧</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>①透明网桥-把 LAN 线缆插入网桥，就可以工作，无需更改硬件、软件，不需要设置交换机地址、不需要下载路由表或参数。</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>不需用户干预，对用户透明，即插即用</p>
+  </li>
+  <li>
+    <p>按交换表决定是否转发，发往哪里。</p>
+  </li>
+  <li>
+    <p>有自学习功能，通过自学习生成和修改交换表</p>
+  </li>
+</ul>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/095149-391220.png" alt="image-20200307095148619" /></p>
+
+<blockquote>
+  <p>②工作规则：</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>如果源和目的地所在端口相同，则丢弃该帧；</p>
+  </li>
+  <li>
+    <p>如果源和目的地所在端口不同，则根据目的地转发该帧；</p>
+  </li>
+  <li>
+    <p>如果目的地所在端口未知，则进行扩散</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>③交换表（地址/端口对应表）的初始化：</p>
+</blockquote>
+
+<ul>
+  <li>网桥刚启动时，地址/端口对应表为空，</li>
+</ul>
+
+<blockquote>
+  <p>采用泛洪（flooding）方法转发帧：把每个到来的目的地不明的帧输出到连载此网桥的所有 LAN（除了发送该帧的 LAN）。</p>
+</blockquote>
+
+<ul>
+  <li>网桥在转发过程中采用逆向学习（backward learning）算法收集 MAC 地址。网桥通过分析帧的源 MAC地址得到 MAC 地址与端口的对应关系，并写入地址/端口对应表；</li>
+</ul>
+
+<blockquote>
+  <p>④透明网桥动态拓扑结构问题</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>当网络拓扑结构发生变化时，<strong>网桥能够自动更新交换表</strong></p>
+  </li>
+  <li>
+    <p>网桥软件对地址/端口对应表进行不断的更新，并定时检查，删除在一段时间内没有更新的地址/端口项；</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>这个算法同时也意味着如果机器停机数分钟，发给它的帧将不得不被扩散，一直到它自己发出一帧为止。</p>
+</blockquote>
+
+<blockquote>
+  <p>⑤网桥间的冗余连接带来的问题</p>
+
+  <p>当网络拓扑中 LAN 之间设置了并行的两个或多个网桥时，透明网桥会遇到的问题？-&gt;生成树网桥---解决多个网桥产生回路的问题</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/095344-187193.png" alt="image-20200307095322635" /></p>
+
+<ol>
+  <li>互联设备总结</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th>中继器</th>
+      <th>放大信号，扩展网段500m 扩展到 2500 米</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>集线器</td>
+      <td>构成一个冲突域，不会放大进来的信号</td>
+    </tr>
+    <tr>
+      <td>网桥</td>
+      <td>能提取帧的目的地址，查找并转发，每条输入线路有自己的冲突域</td>
+    </tr>
+    <tr>
+      <td>交换机</td>
+      <td>是现代网桥的另一个称呼，端口有很多个，基于帧地址进行路由，有足够的缓冲区空间。</td>
+    </tr>
+    <tr>
+      <td>传输网关</td>
+      <td>将两台使用不同传输层协议的计算机连接起来，将数据包从一个链接复制到另一个链接。</td>
+    </tr>
+    <tr>
+      <td>应用层网关</td>
+      <td>能理解数据的格式和内容，可以将信息从一种格式转换成另一种格式</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>高速以太网（百兆以太网、千兆以太网提高速度的方法）</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/100029-382576.png" alt="image-20200307100019099" /></p>
+
+<ol>
+  <li>虚拟局域网（VLAN）</li>
+</ol>
+
+<blockquote>
+  <p>VLAN 在逻辑上等价于广播域。可以将 VLAN 类比成一组最终用户的集合，这些用户可以处在不同的物理 LAN 上，但可以像在同一个 LAN 上那样自由通信而不受物理位置的限制。</p>
+
+  <p>1、性能上，减少了不必要的广播数据在网络上的传播。</p>
+
+  <p>2、不受网络物理位置的限制，可跨越多个物理网络、多台交换机。（例如两个同一部门的工作人员在不同的建筑内上班）</p>
+
+  <p>3、划分 VLAN 可有效提升带宽 。</p>
+
+  <p>4、VLAN 均由软件实现定义与划分，使得建立与重组 VLAN 十分灵活。</p>
+</blockquote>
+
+<p><img src="C:\Users\coolx\AppData\Roaming\Typora\typora-user-images\image-20200307100651007.png" alt="image-20200307100651007" /></p>
+
+<blockquote>
+  <p>①VLAN 的工作原理</p>
+</blockquote>
+
+<ul>
+  <li>
+    <p>显式标记 当一个 LAN 上的桥或交换机从工作站上接收到数据后，就用一个 VLAN 标识符表示是从该 VLAN 来的数据；</p>
+  </li>
+  <li>
+    <p>隐式标记 不对数据进行标记，而是根据其他的信息，如数据到达的端口。标记数据可以根据端口、源 MAC 地址、源网络地址、其他一些字段或字段的组合。</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>为了能够用这些方法来标记数据，在交换机上要保持一个最新的数据库，数据库中包括 VLAN 和所使用的标记字段的映射。</p>
+</blockquote>
+
+<blockquote>
+  <p>三种方法来设定 VLAN</p>
+
+  <p>按端口 按 MAC 地址 按网络层协议类型或者 IP 地址</p>
+</blockquote>
+:ET

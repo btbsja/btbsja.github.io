@@ -1,0 +1,259 @@
+I"�%<h1 id="第三章-数据链路层">第三章 数据链路层</h1>
+
+<h2 id="一基本概念">一、基本概念</h2>
+
+<blockquote>
+  <p>帧的头部结构要素：由四个字段组成：kind,seq,ack,info。前三个包含了控制信息， 最后一个包含了要被传输的实际数据。</p>
+</blockquote>
+
+<blockquote>
+  <p>Kind 字段指出了帧中是否有数据。</p>
+</blockquote>
+
+<blockquote>
+  <p>Seq 用作序号，ack 用作确认，控制帧的 info 没卵用</p>
+</blockquote>
+
+<blockquote>
+  <p>使用物理层提供的服务在通信信道上发送和接收比特。完成功能包括：<strong>差错控制， 流量控制，识别开始与结束</strong></p>
+</blockquote>
+
+<blockquote>
+  <p>提供给网络层的服务主要有三种：</p>
+</blockquote>
+
+<p>(1) <strong>无确认无连接</strong>—当<strong>错误率很低</strong>,恢复留给高层,对<strong>实时通信</strong>很适合.<strong>绝大多数局域网采用，以太网</strong></p>
+
+<p>(2) <strong>有确认无连接</strong>—每一帧都要独立确认，超时重发,使用于不可靠信道,如无线系统，WiFi</p>
+
+<p>(3) <strong>有确认有连接</strong>—建立连接（初始化变量和计数器）、传输一个或多个帧、释放连接。为网络层进程提供了可靠的位流.</p>
+
+<h2 id="二成帧方法">二、成帧方法</h2>
+
+<blockquote>
+  <p>概念（透明传输）：透明传输是指不管所传数据是什么样的比特组合，都应当能够在链路上传送。<strong>当所传数据中的比特组合恰巧与某一个控制信息完全一样时，就必须采取适当的措施，使接收方不会将这样的数据误认为是某种控制信息</strong>。这样才能保证数据链路层的传输是透明的。</p>
+</blockquote>
+
+<blockquote>
+  <p>“透传的设备是个黑箱子，进来是什么出去也是什么。”</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/083921-814848.png" alt="image-20200307083919503" /></p>
+
+<h2 id="三流量控制与差错控制">三、流量控制与差错控制</h2>
+
+<blockquote>
+  <p>流量控制：1.基于反馈 2.基于速率</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/084536-424517.png" alt="image-20200307084533687" /></p>
+
+<h2 id="四差错检测与纠正">四、差错检测与纠正</h2>
+
+<blockquote>
+  <p>对信道质量较好的有线链路一般都用检错码. 检错码经常应用于链路层、网络层和传输层</p>
+</blockquote>
+
+<blockquote>
+  <p>对信道质量较差的无线链路采用纠错码，纠错码出现在物理层、链路层和高层多个层次</p>
+</blockquote>
+
+<p>1、 原理：在被传送的信息中附加一些冗余信息，使信息传输码元和冗余传输码元两者之间建立某种校验监督关系。在接收端可利用监督关系进行检测并予以纠正。检纠错的能力是用信息量的冗余度来换取的。</p>
+
+<p>2、 基本概念</p>
+
+<blockquote>
+  <p>（n,m）码：n=m+r，n 是总长度，m 是数据位，r 是校验位</p>
+</blockquote>
+
+<blockquote>
+  <p>码元：在数字通信中常常用时间间隔相同的符号来表示一个二进制数字，这样的时间间隔内的信号称为(二进制）码元。 而这个间隔被称为码元长度。</p>
+</blockquote>
+
+<blockquote>
+  <p>码字：一个包含了数据位和校验位的n 位单元称为 n 位码字。码率：码字中不包含冗余部分的比例=m/n</p>
+</blockquote>
+
+<blockquote>
+  <p>码重：指码字中非零码元的数目，即”1”的个数。码字（C 表示）由许多码元组成，码字中码元的个数称为码长（n 表示）。</p>
+</blockquote>
+
+<blockquote>
+  <p>码距：也称<strong>海明距离（Hamming distance）</strong>，是一个码组中任意两码字之间对应位上码元取值不同的数目。（意义—任意两个码字的海明距离为 d,则需要 d 个一位错误才能将一个码字变成另一个码字。）</p>
+</blockquote>
+
+<p>1、 纠错码</p>
+
+<blockquote>
+  <p>①为了检测d 个错误，需用距离为 d+1 的编码方案</p>
+</blockquote>
+
+<blockquote>
+  <p>②为了纠正d 个错误，需要一个距离为 2d+1 的编码方案</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/084915-898274.png" alt="image-20200307084749850" /></p>
+
+<p>2、 检错码</p>
+
+<blockquote>
+  <p>纠错码广泛应用于无线链路,而有线链路 通常使用检错–线性块码</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/084910-527001.png" alt="image-20200307084857551" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/084929-223411.png" alt="image-20200307084928135" /></p>
+
+<h2 id="五基本数据链路层协议">五、基本数据链路层协议</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>无限制单工协议</th>
+      <th>发送端：无限while 循环， 快速地把数据放到线路上<br />接收端等待事件发生 接收后继续等待<br />不做流量控制和纠错工作，接近于无确认无连接服务</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>无错信道上的单工停 等式协议</td>
+      <td>发送方发送一帧，等待对方确认到达后才能继续发送<br />（假设通信信道不出错，且流量数据是单工的)</td>
+    </tr>
+    <tr>
+      <td>有错信道上的单工停 等式协议</td>
+      <td>如何区分新帧还是重传的老帧帧序号<br />以及增加了计时器(超时重发)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="六滑动窗口协议">六、滑动窗口协议</h2>
+
+<p><strong>基本概念：</strong></p>
+
+<ul>
+  <li>滑动窗口的本质</li>
+</ul>
+
+<blockquote>
+  <p>任何时候</p>
+
+  <p>发送方维持一组序号，对应于<strong>允许发送的帧</strong>或那些<strong>已经被发送还没被确认的帧</strong>。</p>
+
+  <p>接收方维持着一个接收窗口，对应于可以接收的帧。<strong>两窗口不一定一样大。</strong></p>
+</blockquote>
+
+<ul>
+  <li>发送窗</li>
+</ul>
+
+<blockquote>
+  <p>①任何时候有新的数据包从网络层来，被赋予窗口中的下一个最高序号，并且窗口的上边界前移一格；当接收到确认时，窗口的下边界也前移一格。</p>
+
+  <p>②发送方需缓存发送窗口中的帧，当达到最大窗口尺寸，强行关闭网络层。等待确认。</p>
+</blockquote>
+
+<ul>
+  <li>接收窗</li>
+</ul>
+
+<blockquote>
+  <p>任何落在接收窗口外的帧将被丢弃，当收到一个帧，其序号等于窗口下界时，整个窗口向前移动 1 个位置.</p>
+</blockquote>
+
+<ul>
+  <li>捎带确认</li>
+</ul>
+
+<blockquote>
+  <p>①确认信息被附加在往外传输的数据帧上（使用帧头的ACK）</p>
+
+  <p>②延缓确认以便搭载在下一个数据包上</p>
+</blockquote>
+
+<ul>
+  <li>罕见的情形</li>
+</ul>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/07/085400-601758.png" alt="image-20200307085358526" /></p>
+
+<blockquote>
+  <p>（a）正常（b）出问题（以下①同时发起通信②过早超时 两种情况会出现 b 问题）</p>
+
+  <p>（b）A 和B 同时发起通信，即使没有传输错误，也会有一半帧是重复的，浪费了带宽</p>
+</blockquote>
+
+<blockquote>
+
+  <p>一位滑动窗口协议的效率</p>
+</blockquote>
+
+<p><img src="C:\Users\coolx\AppData\Roaming\Typora\typora-user-images\image-20200307085649529.png" alt="image-20200307085649529" /></p>
+
+<ul>
+  <li>处理管道化传送中的错误</li>
+</ul>
+
+<blockquote>
+
+  <p>①回退N 帧</p>
+
+  <p>接收方简单丢弃所有到达的后续帧，而且对于这些帧不确认</p>
+</blockquote>
+
+<blockquote>
+  <p>②选择重传</p>
+
+  <p>接收方丢弃接收到的坏帧，但接受并缓存坏帧后面的所有好帧。这种方法对数据链路层的内存需求很大。</p>
+
+  <p>通常跟否定策略结合起来一起使用，即对于坏帧返回一个否定确认（NAK），触发该帧的重发操作</p>
+</blockquote>
+
+<ul>
+  <li>数据链路协议实例</li>
+</ul>
+
+<blockquote>
+  <p>①高级数据链路控制（HDLC）</p>
+</blockquote>
+
+<p><img src="C:\Users\coolx\AppData\Roaming\Typora\typora-user-images\image-20200307085727596.png" alt="image-20200307085727596" /></p>
+
+<blockquote>
+  <p>HDLC 的帧格式，由标志、地址、控制、信息和帧检验序列（FCS）等段构成。</p>
+
+  <p>HDLC 帧的类型 1.信息帧（I）2.监控帧（S）3.无编号帧（U）</p>
+</blockquote>
+
+<p><img src="C:\Users\coolx\AppData\Roaming\Typora\typora-user-images\image-20200307085739032.png" alt="image-20200307085739032" /></p>
+
+<blockquote>
+  <p>②Internet 两种常见情况下</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>通过广域网中的SONET 光纤链路发送数据包</p>
+  </li>
+  <li>
+    <p>Internet 边缘的电话网络本地回路上的 ADSL 链路</p>
+  </li>
+  <li>
+    <p>数据链路协议都采用点到点协议（PPP）RFC1661，1662</p>
+  </li>
+</ol>
+
+<blockquote>
+  <p>③PPP 帧格式</p>
+</blockquote>
+
+<p><img src="C:\Users\coolx\AppData\Roaming\Typora\typora-user-images\image-20200307085802133.png" alt="image-20200307085802133" /></p>
+
+<blockquote>
+  <p>标志：01111110。地址：11111111。控制段：缺省值是 00000011。</p>
+
+  <p>协议段：说明在载荷段中的分组种类（可以是 LCP,NCP,IP,IPX,AppleTalk 等）。载荷段长度是可变的,在没有经过 LCP 协商时，缺省是 1500 字节</p>
+
+  <p>校验和采用 32 位或 16 位 CRC</p>
+
+  <p>SONET 采用 32 位 CRC，同时建议不压缩 Address，control 和 protocol 字段</p>
+</blockquote>
+:ET

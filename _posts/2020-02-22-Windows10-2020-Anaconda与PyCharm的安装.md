@@ -4,7 +4,7 @@ title:      Windows10-Anaconda与PyCharm的安装			    # 标题
 subtitle:                 #副标题
 date:       2020-02-22			# 时间
 author:     Btbsja					# 作者
-header-img: img/bg-2020-02-22.jpg 	    #这篇文章标题背景图片
+header-img: img/bg-2020-02-17.jpg 	    #这篇文章标题背景图片
 catalog: true 						# 是否归档
 tags:								#标签
 
