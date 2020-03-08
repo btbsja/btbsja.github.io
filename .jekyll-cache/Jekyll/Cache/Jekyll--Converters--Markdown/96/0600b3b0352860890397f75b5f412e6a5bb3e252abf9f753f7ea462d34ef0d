@@ -1,0 +1,103 @@
+I"�!<h1 id="实验-sql注攻击">实验⼋ SQL注⼊攻击</h1>
+
+<h2 id="实验要求"><strong>实验要求</strong></h2>
+
+<p>结合课堂上学习的SQL注⼊相关内容，⾃⾏搭建环境或在虚拟实验平台对存在 SQL注⼊漏洞的靶机进⾏注⼊攻击。</p>
+
+<h2 id="实验指导">实验指导</h2>
+
+<p>搭建环境指导</p>
+
+<p>- 虚拟机环境 VirtualBox（Windows/Linux/MacOS）</p>
+
+<p>- 靶机镜像</p>
+
+<p>OWASPBWA [https://sourceforge.net/projects/owaspbwa/files/]</p>
+
+<p>DVWA [http://www.dvwa.co.uk]</p>
+
+<p>- 攻击机镜像</p>
+
+<p>Kali Linux [https://www.kali.org]</p>
+
+<p>- Sql⾃动化注⼊⼯具</p>
+
+<p>Sqlma（Windows/Linux/MacOS）</p>
+
+<p>[https://github.com/sqlmapproject/sqlmap]</p>
+
+<h2 id="实验过程">实验过程</h2>
+
+<h3 id="实验一dvwa手动sql注入">实验一：dvwa手动sql注入</h3>
+
+<p>1、 连接好虚拟机拓扑图，配置WindowsXP Client和Windows XP Server的IP使其在同一个局域网网段。</p>
+
+<p>2、 打开Server端的xampp，启动apache和mysql。打开Client的浏览器，访问Server的IP/dvwa，如”192.168.1.32/dvwa”，登陆账户为admin，密码为password。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233523.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<ol>
+  <li>选择SQLInjection，点击右下角的ViewSource，查看PHP源代码。</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233524.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<ol>
+  <li>正常测试，输入”1”，得到正常结果，如下所示。</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233525.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<ol>
+  <li>当将输入变为”'“时，页面提示错误”YouhaveanerrorinyourSQLsyntax;checkthemanualthatcorrespondstoyourMySQLserverversionfortherightsyntaxtousenear'''''atline1”，结果如图。看到这个结果，可以知道，这个表单存在着注入漏洞。</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233526.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<ol>
+  <li>尝试输入：”1’or 1=1–“注意”--“后面有空格！此时成功进行sql注入。</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233527.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<ol>
+  <li>测试查询信息列数。利用语句order by num。这里输入" 1'order by 1 --" 结果页面正常显示，注意--后面有空格。继续测试，" 1'order by 2 --"," 1'order by 3 --"，当输入3是，页面报错。页面错误信息如下，Unknown column '3' in 'order clause'，由此查询结果值为2列。</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233528.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/175008-280375.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233529.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<ol>
+  <li>尝试注入”1' and 1=2 union select 1,2 --“，从而得出First name处显示结果为查询结果第一列的值，surname处显示结果为查询结果第二列的值，利用内置函数user(),及database()，version()注入得出连接数据库用户以及数据库名称：”1' and 1=2 union select user(),database() --“。</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233530.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233531.png" alt="" />{width=”6.147222222222222in” height=”6.719444444444444in”}</p>
+
+<p>9、 选择DVWA Security，将安全级别分别设置为中、高。再运行上面的实验sql语句，结合右下角的ViewSource，分析三种等级的代码和sql注入效果有何区别。在安全级别分别设置为低时，结合PHP源代码，考虑不采用”--“的情形下，完成sql注入，写出sql注入语句。</p>
+
+<p>[]{#_Toc515513987 .anchor}<strong>实验二： sqlmap 测试 dvwa</strong><br />
+打开 Server 端的 xampp， 启动 apache 和 mysql。 打开 Client 的浏览器， 访问 Server 的IP/dvwa，如”10.0.2.9/dvwa”，登陆账户为 admin，密码为 password。 选择 DVWASecurity， 将安全级别分别设置为低。选择 XSS reflected，输入”&lt;script&gt;alert(document.cookie)&lt;/script&gt;“，获取登陆系统后的cookie 值，截图保存 cookie 值。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233532.png" alt="" />{width=”5.768055555555556in” height=”5.5055555555555555in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233533.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233534.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233535.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233536.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233537.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233538.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/173528-499154.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308233539.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/173426-815732.png" alt="" />{width=”5.768055555555556in” height=”4.624305555555556in”}</p>
+
+<h2 id="实验心得体会">实验心得体会</h2>
+
+<p>本次实验主要是结合课堂上学习的 SQL 注⼊相关内容，自行搭建环境或在虚拟实验平台对存在SQL 注⼊漏洞的靶机进⾏注⼊攻击。实验一dvwa手动sql注入直接在VM里建立OWASPBWA靶机镜像，然后用主机直接便可以对DVWA建立镜像，最后按照实验指导书的内容便可以一步步进行操作，中间还有好多的语句存在不知道的问题，也通过大家之间的交流共享，也逐渐了解了，相应的攻击语句等，也逐渐看懂了，相应语句的含义。而实验二sqlmap测试dvwa在本机上继续进行实验时，主机的谷歌浏览器对相应的不安全操作，以及网页进行了拦截，相应的只能选择在VM里的kali系统里进行操作，用火狐浏览器打开相应的DVWA网页，在kali系统中相应的命令也变得方便好多，直接打开终端便可以进行相应的操作。通过这次实验，我对网络安全有了更深刻的认识，做二十一世纪现代人不但要有过硬的理论知识，良好的心理素质，健康的体魄，还要有超强的电脑操作能力，正所谓”秀才不出门，便知天下事”为一名信息专业学生来说，对于我来说它已不陌生。首先对于课程安排，感觉很紧凑，几乎不遗漏任何的知识点。理论总在实验和机试前，这样有利于我们学生接受新知识的灌输，而且把理论运用自如。相信以后更认真，努力的学习，一定可以使自己的知识更全面。我认识到只有沉下身来，静下心来认真学习，踏实做事，多用心，多动脑，才能让学习有好的起色。在实验中，我真真体会到合作的重要性!!!!实验前做好准备，要了解实验目的的要求，要详读实验的步骤，实验过程要谨慎仔细等等。</p>
+:ET

@@ -1,0 +1,241 @@
+I"3"<h1 id="网络路由层协议模拟">网络路由层协议模拟</h1>
+
+<h2 id="一目的与要求">一.目的与要求</h2>
+
+<ol>
+  <li>
+    <p>掌握VB 、VC++、VS 或JA V A 等集成开发环境编写路由仿真程序的方法；</p>
+  </li>
+  <li>
+    <p>理解并掌握距离向量路由协议和链路状态路由协议的工作原理。</p>
+  </li>
+</ol>
+
+<h2 id="二内容">二.内容</h2>
+
+<p>实现链路状态路由算法的模拟。</p>
+
+<p>基本要求（动态生成网络拓扑图，节点间的距离随机生成。每个节点生成自己的链路状态分组，依据收到的链路状态表得到整体网络结构，在得到的整体网络结构上用最短路径算法，生成每个节点的路由表）</p>
+
+<h2 id="三-原理">三. 原理</h2>
+
+<p>距离向量路由算法(Bellman-Ford Routing Algorithm)，作为距离向量协议的一个算法，如RIP, （RIP 跳 最大跳数16）BGP 。使用这个算法的路由器必须掌握这个距离表，它告诉在网络中每个节点的最远和最近距离。在距离表中的这个信息是根据临近接点信息的改变而时时更新的。这个在算法中的度量公式是跳跃的次数，等待时间，流出数据包的数量等等。 概括地说，距离向量算法要求每一个路由器把它的整个路由表发送给与它直接连接的其它路由器。路由表中的每一条记录都包括目标逻辑地址、相应的网络接口和该条路由的向量距离。当一个路由器从它的相邻处收到更新信息时，它会将更新信息与本身的路由表相比较。如果该路由器比较出一条新路由或是找到一条比当前路由更好的路由时，它会对路由表进行更新将从该路由器到邻居之间的向量距离与更新信息中的向量距离相加作为新路由的向量距离。在距离向量路由算法中，相邻路由器之间周期性地相互交换各自的路由表备份。当网络拓扑结构发生变化时，路由器之间也将及时地相互通知有关变更信息。</p>
+
+<p>距离矢量路由算法在理论中可以工作，但在实践中有一个严重的缺陷：虽然它总是能够达到正确的答案，但是它收敛到正确答案的速度非常慢，尤其是，它对于好消息的反应非常快，但是对于坏消息的反应非常迟缓。</p>
+
+<h2 id="四具体设计含流程图及关键代码说明">四.具体设计（含流程图及关键代码说明）</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include "stdio.h"
+#include "stdlib.h"//atoi的头文件
+#include "alloc.h"
+#define ROUTNUM 7 //定义路由的个数为7个
+typedef struct
+{
+int dis; //存延迟大小
+int from; //存下一跳的路由
+}RoutNode;
+RoutNode data[ROUTNUM][ROUTNUM]; /*路由表，能存7行7列数据, 数据为权值*/
+void InitData(FILE* pfile); /*从数据文件读取数据，初始化路由表*/ 
+void OutputRoutData(); /*输出所有的路由表*/
+void Communication(int recv, int send);/*send点向recv 点发送自己的路由表*/
+void Exchange(); /*所有节点进行一次数据交换, 更新路由表*/
+void main()
+{
+int start, end, i, j;
+FILE *pfile;
+pfile = fopen("1.txt", "r");
+if (pfile == NULL)
+{
+printf("文件打开错误，按任意键退出.\n");
+getch();
+return;
+}
+else
+printf("\n路由表初始:\n");
+InitData(pfile);
+fclose(pfile);
+for (i = 0; i&lt;="" p=""&gt;
+{
+printf("%c||", i + 65);
+for (j = 0; j &lt; ROUTNUM; j++)
+if (data[i][j].dis &gt; 0)
+printf("&lt;%c %d&gt; ", j + 65, data[i][j].dis);
+printf("\n");
+} //显示各路由的路由表
+for (i = 0; i &lt; ROUTNUM; i++) //循环7次（好像多余，改成一次得到同样结果） 
+{
+Exchange();
+}
+printf("\n路由表交换:\n");
+OutputRoutData();
+printf("输入起始路由节点数字(%d-%d)[0代表A ，1代表B...] : ", 0, ROUTNUM - 1); scanf("%d", &amp;start);
+printf("输入终点路由节点数字(%d-%d)[0代表A ，1代表B...] : ", 0, ROUTNUM - 1); scanf("%d", &amp;end);
+if (start == end || start &lt; 0 || start &gt; 6 || end &lt; 0 || end &gt; 6)
+{
+printf("\n输入错误，请按任意键退出\n");
+getch();
+return;
+}
+else
+{
+int cur = start;
+int total = 0;
+if (data[start][end].dis &lt; 0)
+{
+printf("没有路由路径发现!\n");
+getch();
+return;
+}
+printf("%c-&gt;", cur + 65);
+while (data[cur][end].from &gt;= 0) //起始点与终点不相连。0是A
+{
+total += data[cur][data[cur][end].from].dis; //total变成cur 与下一跳的延迟 
+printf("%c-&gt;", data[cur][end].from + 65);
+cur = data[cur][end].from; //起始路由变成下一跳 }
+total += data[cur][end].dis;
+printf("%c\n总的路由距离 = %d", end + 65, total);
+getch();
+return;
+}
+}
+void InitData(FILE *pfile)
+{
+char num[10];
+int i = 0;
+char c;
+int m, n;
+fseek(pfile, 0, 0); //文件指针从距0位置0距离开始读取
+for (m = 0; !feof(pfile) &amp;&amp; m &lt; 7; m++) //feof(pfile),文件尾返回1，不是返回0. 即不是文件尾部且m&lt;7循环.
+{
+for (n = 0; !feof(pfile) &amp;&amp; n &lt; 7; n++)
+{
+while (!feof(pfile))
+{
+c = fgetc(pfile); //读取单个字节
+if (c == ',') /*读完一个数字*/
+{
+num[i] = '\0'; //赋值为空
+data[m][n].dis = atoi(num);//atoi将字符变成数字，将路由权值给data[][].dis
+data[m][n].from = -1; //直接相连下一跳全都赋值为-1 i = 0;
+break;
+} /*end of if*/
+else if ((c &gt;= '0' &amp;&amp; c &lt;= '9') || c == '-') /*如果读到数字或符号. 本题路由权值只能0到9*/
+{
+num[i++] = c;
+} /*end of else if*/
+} /*end of while*/
+} /*end of for (n = 0*/
+} /*end of for (m = 0*/
+}
+void OutputRoutData()
+{
+int i, j;
+printf(" ");
+for (i = 0; i &lt; ROUTNUM; i++)
+{
+printf(" %c ", i + 65);
+}
+printf("\n");
+for (i = 0; i &lt; ROUTNUM; i++)
+{
+printf("%c ", i + 65);
+for (j = 0; j &lt; ROUTNUM; j++)
+{
+if (data[i][j].dis &lt; 0) //如果无路径
+printf(" -");
+else
+if(data[i][j].dis&gt;=10)
+printf(" %d", data[i][j].dis);
+else
+printf(" %d", data[i][j].dis);
+if (data[i][j].from &lt; 0) //如果未经过其它节点 所以直接相连的路由下一跳为-1
+printf(" - ");
+else
+printf(" %c ", data[i][j].from + 65); //输出下一跳路由
+}
+printf("\n");
+}
+}
+void Communication(int recv, int send) //相连的两路由recv 和send 交换数据计算一次得到暂时最短距离
+{
+int i;
+for (i = 0; i &lt; ROUTNUM; i++)
+{
+if (data[send][i].dis &gt; 0) //如果send 节点到i 号节点有路线
+{
+if (data[recv][i].dis &lt; 0) //如果recv 到i 号节点无路径
+{
+data[recv][i].dis = data[send][i].dis + data[recv][send].dis; //第一种recv 不予i 相连，recv 到不与他相连的i 的延迟
+data[recv][i].from = send; //下一跳为send
+}
+elseif (data[recv][i].dis &gt; data[send][i].dis + data[recv][send].dis)//第二种recv 与i 相连，且直接相连值大于间接到i 的延迟
+//如果现有路径比新路径远
+{
+data[recv][i].dis = data[send][i].dis + data[recv][send].dis; //将recv 到i 的延迟改为间接延迟的值
+data[recv][i].from = send; //下一跳改为send
+}
+}
+}
+}
+void Exchange() //实现所有相连的两路由进行数据交换并计算最短数值
+{
+int i, j;
+for (i = 0; i &lt; ROUTNUM; i++)
+{
+for (j = 0; j &lt; ROUTNUM; j++)
+{
+if (data[i][j].dis &gt; 0) //如果两个节点之间有路径
+{
+Communication(j, i);
+}
+}
+}
+}
+
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\*1.text中存者路由信息
+
+0, 2,-1,-1, 8,-1, 5,
+
+2, 0,4, 5,-1,-1,-1,
+
+-1,4, 0,-1,-1, 9,-1,
+
+-1, 5,-1, 0,1,-1,-1,
+
+8,-1,-1,1, 0,-1, 7,
+
+-1,-1, 9,-1,-1, 0, 3,
+
+5,-1,-1,-1, 7, 3, 0,
+
+数值代表权值（如延迟大小）
+
+0代表目的网络到其本身
+
+-1代表无法直接相连
+
+*/
+</code></pre></div></div>
+
+<p><strong>网络拓扑结构</strong></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/113548-668358.png" alt="image-20200308113546796" /></p>
+
+<h2 id="五结果">五.结果</h2>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/113600-994840.png" alt="image-20200308113558952" /></p>
+
+<h2 id="六设备与环境">六.设备与环境</h2>
+
+<p>编程语言C语言</p>
+
+<p>编程环境Windows 10</p>
+
+<h2 id="七总结">七.总结</h2>
+
+<p>路由表初始信息从文件读取，根据距离向量路由算法系统自动完成路由表的更新操作，最后任意输入两个路由表接点，则可得出两接点之间的最短路径。</p>
+
+<p>所有距离矢量路由协议均使用Bellman-Ford(Ford-Fulkerson)算法，容易产生路由环路和计数到无穷大的问题。因此它们必须结合一些防环机制。距离矢量路由算法中每一个路由器都存放着整个网络的节点信息，但当一个节点发生变化时，路由不一定能很快的收敛。导致网络效率下降。适用于小型网络。</p>
+:ET

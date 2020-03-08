@@ -1,0 +1,95 @@
+I"�<h1 id="实验五-wi-fi钓">实验五 Wi-Fi钓⻥</h1>
+
+<h2 id="实验要求"><strong>实验要求</strong></h2>
+
+<p>结合课堂上学习的Wi-Fi钓⻥相关内容，⾃⾏搭建环境进⾏Wi-Fi钓⻥并捕获 连接到此Wi-Fi的⽤⼾流量，使⽤Wireshark观察其通信内容。</p>
+
+<h2 id="实验指导">实验指导</h2>
+
+<p>搭建环境指导</p>
+
+<p>- 虚拟Wi-Fi热点</p>
+
+<p>修改系统配置开启虚拟Wi-Fi（Windows/Linux/MacOs）</p>
+
+<p>(注意如要保证连接到该虚拟 Wi-Fi 热点的设备能正常上⽹，还需要使⽤额外 的⽹卡（有线/⽆线）连接互联⽹ 并将其共享/桥接到该虚拟 Wi-Fi 上)</p>
+
+<h2 id="实验过程">实验过程</h2>
+
+<h3 id="步骤一-共享wifi">步骤一 共享WIFI</h3>
+
+<p>工具：电脑、WIN7 系统、无线网卡</p>
+
+<p>步骤</p>
+
+<p>1.开始菜单--&gt;命令提示符(cmd)--&gt;右键，以管理员身份运行</p>
+
+<p>2.运行以下命令启用虚拟网卡</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223530.png" alt="" />{width=”6.145833333333333in” height=”0.7916666666666666in”}</p>
+
+<p>3.网络共享中心--&gt;更改高级适配器设置--&gt;右键已连接到Internet 的网络连接--&gt;属性--&gt;切换</p>
+
+<p>到”共享”选项卡，选中其中的复选框，并选择允许其共享Internet 的网络连接，这里即我</p>
+
+<p>们的虚拟WIFI 网卡</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223531.png" alt="" />{width=”5.177083333333333in” height=”5.208333333333333in”}</p>
+
+<p>4.开启无线网络，继续在命令提示符中运行以下命令:</p>
+
+<p>&gt;netsh wlan start hostednetwork</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223532.png" alt="" />{width=”6.145833333333333in” height=”0.40625in”}</p>
+
+<h3 id="步骤二-wifi-钓鱼">步骤二 WIFI 钓鱼</h3>
+
+<p>工具：其他笔记本或手机、Wireshark</p>
+
+<p>步骤</p>
+
+<ol>
+  <li>搜索到刚刚设置的WIFI，连接上</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223533.jpeg" alt="Screenshot_2014-12-13-14-57-14" />{width=”2.3020833333333335in” height=”4.104166666666667in”}</p>
+
+<ol>
+  <li>在笔记本上打开wireshark，选择capture--&gt;interfaces</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223534.png" alt="QQ截图20141213180925" />{width=”6.145833333333333in” height=”3.3125in”}</p>
+
+<ol>
+  <li>选择Packets 最多的项，点击start 按钮</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223535.png" alt="QQ截图20141213180838" />{width=”6.145833333333333in” height=”1.9791666666666667in”}</p>
+
+<p>4.打开已设置的网页，在主机上用wareshark 捕捉http 的包</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223536.png" alt="QQ截图20141213150731" />{width=”6.145833333333333in” height=”3.3125in”}</p>
+
+<ol>
+  <li>
+    <p>在手机或笔记本上输入用户名和密码，点击登录</p>
+  </li>
+  <li>
+    <p>在主机上用wareshark 捕捉到刚刚post 提交的http 包，右键选择Follow tcp stream</p>
+  </li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223537.png" alt="QQ截图20141213152544" />{width=”6.145833333333333in” height=”3.3125in”}</p>
+
+<ol>
+  <li>可以看到刚刚提交的用户名和密码，且是未经过加密的</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308223538.png" alt="QQ截图20141213152114" />{width=”6.145833333333333in” height=”4.71875in”}</p>
+
+<h2 id="实验心得体会">实验心得体会</h2>
+
+<p>这个实验的目的为现在的操作系统基本都支持在有无线网卡的情况下让本机成为一个AP(Access Point)，此时它自身在布置的Wi-Fi中充当一个网关的作用，同时用到了电脑和手机的互补操作。依据实验指导书的步骤用wareshark进行捕捉与操作。</p>
+
+<p>通过这次实验，我对网络安全有了更深刻的认识，做二十一世纪现代人不但要有过硬的理论知识，良好的心理素质，健康的体魄，还要有超强的电脑操作能力，正所谓”秀才不出门，便知天下事”为一名信息专业学生来说，对于我来说它已不陌生。首先对于课程安排，感觉很紧凑，几乎不遗漏任何的知识点。理论总在实验和机试前，这样有利于我们学生接受新知识的灌输，而且把理论运用自如。相信以后更认真，努力的学习，一定可以使自己的知识更全面。我认识到只有沉下身来，静下心来认真学习，踏实做事，多用心，多动脑，才能让学习有好的起色。在实验中，我真真体会到合作的重要性!!!!实验前做好准备，要了解实验目的的要求，要详读实验的步骤，实验过程要谨慎仔细等等。</p>
+:ET

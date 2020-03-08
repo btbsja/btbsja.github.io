@@ -1,0 +1,236 @@
+I"�4<h1 id="实验一-流量捕获实验">实验一 流量捕获实验</h1>
+
+<h2 id="实验要求">实验要求</h2>
+
+<p>阅读《Attacking Network Protocols》（电⼦版⻅ ./ 实验 1 资料 ）第1章、第2 章内容，⾃⾏设计实验情景分别使⽤被动捕获和主动捕获的⽅式完成流量捕获实验。</p>
+<ul>
+  <li>被动捕获⼯具</li>
+</ul>
+
+<p>Wireshark（Windows/Linux/MacOS）</p>
+
+<p>Strace（Linux）</p>
+
+<p>DTrace（MacOS/FreeBSD/Solaris）</p>
+
+<p>Process Monitor（Windows）</p>
+
+<ul>
+  <li>主动捕获（搭建代理）⼯具</li>
+</ul>
+
+<p>.NET Core（Windows/Linux/MacOS）</p>
+
+<p>[https://www.microsoft.com/net/core/]</p>
+
+<p>CanapeCore（Windows/Linux/MacOS）</p>
+
+<p>[https://github.com/tyranid/CANAPE.Core]</p>
+
+<h2 id="实验过程">实验过程</h2>
+
+<p>ping命令(ICMP、ARP分析)</p>
+
+<p>实验主机的IP地址为： 192.168.0.189</p>
+
+<p>实验主机的MAC地址为：9c:4e:36:cf:db:e4</p>
+
+<p>在实验主机的命令框内输入命令：ping 121.14.1.189</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/172443-586276.png" alt="" />{width=”4.676388888888889in” height=”2.1458333333333335in”}</p>
+
+<p>Wireshark抓获的数据包如下：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/172456-247238.png" alt="" />{width=”5.756944444444445in” height=”1.04375in”}</p>
+
+<p>观察可得，抓获的报文里协议类型有ICMP与ARP。</p>
+
+<h3 id="1icmp分析">（1）ICMP分析</h3>
+
+<p><strong>首先明确一下ICMP的相关知识：</strong></p>
+
+<blockquote>
+  <p>ICMP是（Internet Control Message Protocol）Internet控制报文协议。它是TCP/IP协议族的一个子协议，用于在IP主机、路由器之间传递控制消息。控制消息是指网络通不通、主机是否可达、路由是否可用等网络本身的消息。这些控制消息虽然并不传输用户数据，但是对于用户数据的传递起着重要的作用。</p>
+
+  <p>各种ICMP报文的前32bits都是三个长度固定的字段：type类型字段(8位)、code代码字段(8位)、checksum校验和字段(16位) 8bits类型和8bits代码字段：一起决定了ICMP报文的类型。</p>
+
+  <p>常见的有：</p>
+
+  <p>类型0、代码0：回应应答。</p>
+
+  <p>类型3、代码0：网络不可达</p>
+
+  <p>类型3、代码1：主机不可达</p>
+
+  <p>类型5、代码1：为主机重定向数据包</p>
+
+  <p>类型8、代码0：回应</p>
+
+  <p>类型11、代码0：传输中超出TTL（常说的超时）</p>
+
+  <p>16bits校验和字段：包括数据在内的整个ICMP数据包的校验和，其计算方法和IP头部校验和的计算方法是一样的。</p>
+
+  <p>类型代码 类型描述</p>
+
+  <p>0 响应应答（ECHO-REPLY）</p>
+
+  <p>3 不可到达</p>
+
+  <p>4 源抑制</p>
+
+  <p>5 重定向</p>
+
+  <p>8 响应请求（ECHO-REQUEST）</p>
+
+  <p>11 超时</p>
+
+  <p>12 参数失灵</p>
+
+  <p>13 时间戳请求</p>
+
+  <p>14 时间戳应答</p>
+
+  <p>17 地址掩码请求</p>
+
+  <p>18 地址掩码应答</p>
+
+  <p>30 路由跟踪</p>
+
+</blockquote>
+
+<blockquote>
+  <p>1.响应请求</p>
+
+  <p>我们日常使用最多的ping，就是响应请求（Type=8）和应答（Type=0），一台主机向一个节点发送一个Type=8的ICMP报文，如果途中没有异常（例如被路由器丢弃、目标不回应ICMP或传输失败），则目标返回Type=0的ICMP报文，说明这台主机存在，更详细的tracert通过计算ICMP报文通过的节点来确定主机与目标之间的网络距离。</p>
+
+  <p>2.目标不可到达、源抑制和超时报文</p>
+
+  <p>这三种报文的格式是一样的，目标不可到达报文（Type=3）在路由器或主机不能传递数据报时使用，例如我们要连接对方一个不存在的系统端口（端口号小于1024）时，将返回Type=3、Code=3的ICMP报文，它要告诉我们：”嘿，别连接了，我不在家的！”，常见的不可到达类型还有网络不可到达（Code=0）、主机不可到达（Code=1）、协议不可到达（Code=2）等。源抑制则充当一个控制流量的角色，它通知主机减少数据报流量，由于ICMP没有恢复传输的报文，所以只要停止该报文，主机就会逐渐恢复传输速率。最后，无连接方式网络的问题就是数据报会丢失，或者长时间在网络游荡而找不到目标，或者拥塞导致主机在规定时间内无法重组数据报分段，这时就要触发ICMP超时报文的产生。超时报文的代码域有两种取值：Code=0表示传输超时，Code=1表示重组分段超时。</p>
+</blockquote>
+
+<p><strong>报文分析：</strong></p>
+
+<ol>
+  <li>PING 响应请求报文</li>
+</ol>
+
+<p>选取第3条报文分析：</p>
+
+<blockquote>
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212057-826055.png" alt="" />{width=”5.763194444444444in” height=”0.10069444444444445in”}</p>
+
+  <p>Wireshark获取的报文：</p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/173411-325142.png" alt="" />{width=”5.763888888888889in” height=”3.1368055555555556in”}</p>
+</blockquote>
+
+<p>从报文格式中可以看出ICMP协议是TCP/IP协议族的一个子协议。</p>
+
+<p><strong>IP报文格式：</strong></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/173413-367655.jpeg" alt="" />{width=”4.822916666666667in” height=”3.9895833333333335in”}</p>
+
+<blockquote>
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212105-685787.png" alt="" />{width=”5.7652777777777775in” height=”2.071527777777778in”}</p>
+</blockquote>
+
+<p>IP报文版本号是IPV4，</p>
+
+<p>首部长度：20 bytes，</p>
+
+<p>数据包总长度：60，</p>
+
+<p>标示符：0x0db0，</p>
+
+<p>标志：0x00，比特偏移：0，</p>
+
+<p>寿命：64，上层协议：ICMP，</p>
+
+<p>首部校验和：0x30e1，并且是正确的。</p>
+
+<p>源IP地址：192.168.0.189</p>
+
+<p>目的IP地址：121.14.1.189</p>
+
+<p><strong>ICMP报文格式：</strong></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212108-87502.png" alt="" />{width=”5.59375in” height=”1.4166666666666667in”}<img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212113-235363.png" alt="" />{width=”3.7597222222222224in” height=”1.5in”}</p>
+
+<p>类型：8 （回显请求） 代码/编码：0</p>
+
+<p>校验和：0x4d3c（正确的校验和）</p>
+
+<p>标示符（大端顺序）：1（0x0100）；</p>
+
+<p>标示符（小端顺序）：256（0x0100）；</p>
+
+<p>序列号（大端顺序）：31（0x001f）</p>
+
+<p>序列号（小端顺序）：7936(0x1f00)</p>
+
+<p>报文统计和报文具体内容可以用wireshark对应。发现标示符LE与BE都指向二进制报文内容的0x0001，后来在网上搜索是大小端问题，window系统与Linux系统发出的ping报文（主要指ping应用字段而非包含IP头的ping包）的字节顺序不一样（windows为LE：little-endian byte order，Linux为BE：big-endian）。可以看出报文其实就是一些比特流，网络协议就是解释它的东西。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212117-820677.png" alt="" />{width=”3.5618055555555554in” height=”2.801388888888889in”}</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212119-935265.png" alt="" />{width=”4.270138888888889in” height=”2.5833333333333335in”}</p>
+
+<blockquote>
+  <p><img src="C:/Users/coolx/Desktop/博客/media/image12.png" alt="" />{width=”0.7395833333333334in” height=”0.22916666666666666in”}</p>
+
+  <p>其ICMP Type为8，与知识背景相符，是请求报文。</p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212138-65050.png" alt="" />{width=”3.457638888888889in” height=”0.375in”}</p>
+
+  <p>与预想的一样，packet的源地址为实验主机地址，目的地址为Ping命令中的参数地址。</p>
+</blockquote>
+
+<ol>
+  <li>PING 响应应答报文</li>
+</ol>
+
+<p>选取第4条报文分析：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212143-193431.png" alt="" />{width=”5.761805555555555in” height=”2.740972222222222in”}</p>
+
+<p>其ICMP Type为0。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212147-3348.png" alt="" />{width=”5.759027777777778in” height=”0.6972222222222222in”}</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212150-893570.png" alt="" />{width=”5.238888888888889in” height=”0.7604166666666666in”}</p>
+
+<p>由上两图可以看出分别经历了四次响应请求和响应应答，数据长度为32bytes，符合ping命令行为。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212153-182470.png" alt="" />{width=”5.207638888888889in” height=”3.6243055555555554in”}</p>
+
+<p>过滤出icmp的报文，我们取黑色底色校验错误的包，</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212157-23043.png" alt="" />{width=”4.301388888888889in” height=”0.75in”}</p>
+
+<p>Type=3、Code=3，可以看出是一个端口不可达的报文。</p>
+
+<h3 id="2arp分析">（2）ARP分析</h3>
+
+<p>取第1、第2条报文进行分析。</p>
+
+<p><strong>报文格式分析：</strong><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212202-397354.png" alt="" />{width=”5.7659722222222225in” height=”2.532638888888889in”}</p>
+
+<p><strong>1）ARP请求报文</strong></p>
+
+<blockquote>
+  <p>从截图中可以看出硬件类型（hardware type）是以太网。协议类型（protocol type）为IP(0x0800)，表示使用ARP的协议类型为IPV4。硬件地址长度（hardware size）为6。协议地址长度（protocol size）为4，操作类型（opcode）为1，表示报文类型为ARP请求。发送方硬件地址（sender MAC address）为9c:4e:36:cf:db:e4，定义了发送方的硬件地址。发送方协议地址（sender IP address）为192.168.0.189，定义发送方的协议地址。目的硬件地址（target MAC address）为00:00:00:00:00:00，表示是广播地址。目的协议地址（target IP address）为192.168.0.1，定义目的设备的协议地址。从图中还可以看出本主机在链路层发送了一个目的MAC地址为ff:ff:ff:ff:ff:ff的广播帧，这与我们所学的ARP协议的工作原理是相符的。</p>
+</blockquote>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/212316-216629.png" alt="" />{width=”5.7659722222222225in” height=”2.845833333333333in”}</p>
+
+<p><strong>2）ARP应答报文</strong></p>
+
+<p>硬件类型为以太网。协议类型为IP（0x0800）。硬件地址长度为6，协议地址长度为4，操作类型为2，表示为ARP应答报文。发送方硬件地址为74:27：ea：6d:cf：01，发送方IP地址为192.168.0.1。目的硬件地址为9c:4e:36:cf:db:e4，目的协议地址为192.168.0.189。</p>
+
+<p><strong>工作过程分析：</strong></p>
+
+<p>ARP请求报文中在发送方硬件地址字段填上本机的物理地址9c:4e:36:cf:db:e4，在发送方IP地址字段填入本机的协议地址192.168.0.189，在目的协议地址字段填入准备解析的目的主机IP地址192.168.0.1，以广播方式在以太网上发送。在ARP应答报文中，目的主机将收到的ARP请求报文中的发送方硬件地址和IP地址放入目的硬件地址和目的协议地址，在发送方硬件地址和发送方协议地址中分别填入自己的硬件地址74:27：ea：6d:cf：01和协议地址192.168.0.1，在以太网上单播发送。</p>
+
+<h2 id="实验心得和体会">实验心得和体会</h2>
+
+<p>本次抓包实验让我收获良多，尤其是让我意识到了书本上冷冰冰的网络协议和在网络上真实运行流动的各种各样的分层协作的协议是完全不一样的。通过本次实验，首先我熟悉了使用Wireshark的使用方法，学会了Wireshark软件捕获各协议报文包括协议序列和报文内容，并观察研究其工作原理，其中一些过滤统计的技巧也让实验变得更容易。然后，我透过对报文格式和各报文协同工作的分析，更加深入的ARP协议、ICMP协议、FTP协议、HTTP协议以及TCP协议工作过程。最后，更是提高了多方面查找资料，结合自身所学理论，解决实际问题的能力。通过这次实验，我对网络安全有了更深刻的认识，做二十一世纪现代人不但要有过硬的理论知识，良好的心理素质，健康的体魄，还要有超强的电脑操作能力，正所谓”秀才不出门，便知天下事”为一名信息专业学生来说，对于我来说它已不陌生。首先对于课程安排，感觉很紧凑，几乎不遗漏任何的知识点。理论总在实验和机试前，这样有利于我们学生接受新知识的灌输，而且把理论运用自如。相信以后更认真，努力的学习，一定可以使自己的知识更全面。我认识到只有沉下身来，静下心来认真学习，踏实做事，多用心，多动脑，才能让学习有好的起色。在实验中，我真真体会到合作的重要性!!!!实验前做好准备，要了解实验目的的要求，要详读实验的步骤，实验过程要谨慎仔细等等。</p>
+:ET

@@ -1,0 +1,148 @@
+I"!C<h1 id="实验三-ca证书与ssl连接">实验三 CA证书与SSL连接</h1>
+
+<h2 id="实验要求">实验要求</h2>
+
+<p>结合课堂上学习的CA证书与SSL连接相关内容，⾃⾏搭建环境或在虚拟实验 平台完成服务器上CA证书的⽣成与安装、客⼾端与服务器之间使⽤https连接 的实验。</p>
+
+<h2 id="实验指导">实验指导</h2>
+
+<p>搭建环境指导</p>
+
+<p>- 虚拟机环境</p>
+
+<p>VirtualBox（Windows/Linux/MacOS）</p>
+
+<p>- 虚拟机镜像</p>
+
+<p>服务器 windows server（IIS）、centos（Apache）等均可</p>
+
+<p>客⼾端 任意（可直接使⽤宿主机作为客⼾端）</p>
+
+<p>- CA证书⽣成</p>
+
+<p>OpenSSL（Windows /Linux）</p>
+
+<p>系统⾃带服务（Windows）</p>
+
+<h2 id="实验过程">实验过程</h2>
+
+<p><strong>实验目标</strong></p>
+
+<ul>
+  <li>
+    <p>掌握在Windows Server 2003 下独立根CA 的安装和使用。</p>
+  </li>
+  <li>
+    <p>使用WEB 方式申请证书和安装证书。</p>
+  </li>
+  <li>
+    <p>建立SSL 网站。</p>
+  </li>
+  <li>
+    <p>分析SSL 网站的数据包特点。</p>
+  </li>
+</ul>
+
+<h3 id="任务一windows-server-2003-环境下独立根ca-的安装及使用">任务一：windows server 2003 环境下独立根CA 的安装及使用</h3>
+
+<p>1、启动Windows Server 2003 和Windows XP，配置其IP，使其在同一局域网网段。</p>
+
+<p>2、在Windows Server 2003 中，选择【开始】|【控制面板】|【添加和删除程序】，在弹出窗。</p>
+
+<p>口中选择【添加和删除windows 组件】，在【组件】列表框中选择【证书服务】，再单击【下一步】按钮，如下图所示。</p>
+
+<p>3、在弹出的窗口中选择【独立根CA】单选按钮，单击【下一步】按钮，在弹出窗口中按</p>
+
+<p>要求依次填入CA 所要求的信息，单击【下一步】按钮，如下图所示。</p>
+
+<ol>
+  <li>继续选择【证书数据库】、【数据库日志】和配置信息的安装、存放路径，如下图所示。</li>
+</ol>
+
+<p>单击【下一步】按钮。安装的时候，可能会弹出如下窗口，为了实验方便，已经把I386 文件夹复制到C:\下，选择【浏览】，选择文件夹”C:\I386”，点【确定】，完成安装。</p>
+
+<p>5、选择【开始】|【程序】|【管理工具】，可以找到【证书颁发机构】，说明CA 的安装已经完成，如下图所示。</p>
+
+<p>6、从同一局域网中的另外一台XP 开启IE 浏览器，输入http://windows2003 的IP/certsrv/,选中【申请一个证书】，如下图所示，在弹出的页面中选择【web 浏览器证书】。</p>
+
+<p>7、在弹出窗口中填写用户的身份信息，完成后进行【提交】。此种情况下，IE 浏览器采用</p>
+
+<p>默认的加密算法生成公钥对，私钥保存在本地计算机中，公钥和用户身份信息按照标准的格式发给CA 服务器，如图所示,单击【是】，进入下一步。CA 服务器响应后，弹出证书申请成功页面，如下图所示。</p>
+
+<p>8、在根CA 所在的计算机上，选择【开始】|【程序】|【管理工具】|【证书颁发机构】，上面申请的证书便会出现在窗口右边，选择证书单击右键，选择【所有任务】|【颁发】，进行证书颁发，如下图所示。证书颁发后将从【挂起的申请】文件夹转入【颁发的证书】文件夹中，表示证书颁发完成。</p>
+
+<p>9、在申请证书的计算机上打开IE，输入http://windows2003 的IP/certsrv/，进入证书申请页面，选择【查看挂起的证书申请状态】，弹出的页面中选择一个已经提交的证书申请，如下图所示。选择安装此证书。</p>
+
+<p>10、现在验证此CA 系统颁发的新证书是否可信，为此需要安装CA 系统的根证书，进入证书申请主页面，选择当前的CA 证书进行下载，并保存到合适路径，如下图所示。</p>
+
+<p>11、下载完毕之后，在证书的保存目录中查看证书信息，单击【安装证书】按钮，进入证书导入向导，按照默认的配置完成证书的导入，导入成功后，单击【确定】按钮，之后完成。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308224904.png" alt="" />{width=”4.2204724409448815in” height=”4.582677165354331in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image46.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200308224921.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image43.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image47.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image49.png" alt="" />{width=”4.251968503937008in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image48.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image50.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image51.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image52.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image53.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image54.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image56.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image58.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image57.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image59.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image60.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image61.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image63.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}</p>
+
+<h3 id="任务二基于web-的ssl-连接设置">任务二：基于Web 的SSL 连接设置</h3>
+
+<ol>
+  <li>在XP 中，左下角【开始】，打开【Wireshark】，并点击开始抓包的按钮。打开IE 浏览器，输入网址http://windows2003 的IP/?id=1(比如http://192.168.1.130/?id=1)，然后保存Wireshark的抓包结果1。</li>
+</ol>
+
+<p>2、选择【开始】|【程序】|【管理工具】|【IIS（Internet 信息服务）管理器】，在弹出窗口右键单击【默认网站】，弹出的快捷菜单中选择【属性】选项，如下图所示。</p>
+
+<p>3、在弹出窗口内选择【目录安全性】标签，单击【安全通信】中的【服务器证书】按钮，如下图所示。</p>
+
+<ol>
+  <li>弹出【IIS 证书向导】窗口，选中【新建证书】复选项，一直单击【下一步】按钮，输入自定义的名称，如下图所示。填写相应的信息后，单击【下一步】按钮。</li>
+</ol>
+
+<p>5、弹出【请求文件摘要】窗口，确认后单击【下一步】按钮，接着单击【完成】按钮，完成服务器端证书配置，如下图所示。</p>
+
+<ol>
+  <li>打开IE 浏览器（windows2003 中的），进入证书申请主界面，如下图所示。</li>
+</ol>
+
+<p>7、在出现的网页中选择【高级证书申请】，如图所示，在出现的网页中单击第二个选项【base64编码】。打开刚才IIS 证书向导生成的请求文件，（默认路径C:\certreq.txt），复制并粘贴文件内容到第一个文本框，如下图所示，单击【提交】按钮，转到完成提交后的页面。</p>
+
+<p>8、回到首页，选择【查看挂起的证书申请状态】，弹出的页面中选择一个已经提交的证书申请，如下图所示。选择【Base 64 编码】，点击【下载证书】，【保存】certnew.cer 文件到桌面。</p>
+
+<p>9、选择【开始】|【程序】|【管理工具】|【IIS（Internet 信息服务）管理器】，在弹出窗口右键单击【默认网站】，弹出的快捷菜单中选择【属性】选项，在弹出窗口内选择【目录安全性】标签，选择【服务器证书】，选择【下一步】，【处理挂起的请求并安装证书】选择【下一步】，【浏览】选择刚才保存的certnew.cer 文件，如下图所示。【下一步】【下一步】【完成】。</p>
+
+<p>10、还是在【目录安全性】下，选择【安全通信】下的【编辑】，在下如图所示的弹出窗口中选中【要求安全通道（SSL）】复选项，并在【客户端证书】栏中选中【接受客户端证书】复选项，再单击【确定】按钮。返回【目录安全性】面板，单击【应用】按钮及【确定】按钮，完成配置。</p>
+
+<p>11、在XP 系统打开浏览器，输入服务器IP 地址，进入证书申请主页面，此时会显示错误信息页面，要求采用https 的方式连接服务器，如图所示。</p>
+
+<p>12、把http 改成https 继续访问，此时浏览器提示你要安装证书，安装完证书后，就可以正常使用了。</p>
+
+<p>13 、再次打开Wireshark ， 并点击开始抓包的按钮。打开IE 浏览器， 输入网址</p>
+
+<p>https://windows2003 的IP/?id=1(比如：https://192.168.1.130/?id=1)，然后保存Wireshark 的抓包结果2。</p>
+
+<p>14、分析更加抓包结果1 和抓包结果2 中，对IP/?id=1 请求处理的差异。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image64.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image66.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image65.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image67.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image68.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}
+<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image69.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image70.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image71.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image72.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image73.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}z<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image74.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image75.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image76.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image77.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image78.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image79.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image80.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image81.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image82.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image83.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image84.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image85.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image86.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image87.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image88.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image89.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image90.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image91.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image92.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image55.png" alt="" />{width=”4.248031496062992in” height=”4.6141732283464565in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image62.png" alt="" />{width=”4.208333333333333in” height=”4.569583333333333in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/img/image93.png" alt="" />{width=”4.208955599300087in” height=”4.570259186351706in”}</p>
+
+<h2 id="实验心得体会">实验心得体会</h2>
+
+<p>通过此次实验，我学会了Wireshark抓包的基本使用方法，学到了很多课本上没有的新知识，并对课本上的概念有了实际的更深的认识。通过Wireshark所抓到的未使用SSL 连接和使用SSL 连接的信息的对比，我对HTTPS有了一定的了解，对计算机网络通信中的数据传输安全有了大概的认识。HTTPS主要作用可以分为两种：一种是建立一个<a href="http://baike.baidu.com/view/17249.htm">信息安全</a>通道，来保证数据传输的安全；另一种就是确认网站的真实性，凡是使用了 https 的网站，都可以通过点击浏览器地址栏的锁头标志来查看网站认证之后的真实信息，也可以通过 CA 机构颁发的安全签章来查询。Wireshark所抓到的未使用SSL 连接的http 信息，信息是明文传输，而使用SSL连接的https 则具有<a href="http://baike.baidu.com/view/421194.htm">安全性</a>的<a href="http://baike.baidu.com/view/16147.htm">ssl</a>加密传输协议，更加安全。通过这次实验，我对网络安全有了更深刻的认识，做二十一世纪现代人不但要有过硬的理论知识，良好的心理素质，健康的体魄，还要有超强的电脑操作能力，正所谓”秀才不出门，便知天下事”为一名信息专业学生来说，对于我来说它已不陌生。首先对于课程安排，感觉很紧凑，几乎不遗漏任何的知识点。理论总在实验和机试前，这样有利于我们学生接受新知识的灌输，而且把理论运用自如。相信以后更认真，努力的学习，一定可以使自己的知识更全面。我认识到只有沉下身来，静下心来认真学习，踏实做事，多用心，多动脑，才能让学习有好的起色。在实验中，我真真体会到合作的重要性!!!!实验前做好准备，要了解实验目的的要求，要详读实验的步骤，实验过程要谨慎仔细等等。</p>
+:ET

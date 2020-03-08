@@ -1,0 +1,874 @@
+I"�b<h1 id="操作系统进程篇">操作系统进程篇</h1>
+
+<h2 id="进程概念">进程概念</h2>
+
+<p>1、进程是什么</p>
+
+<p>进程是一个具有一定独立功能的可并发执行的程序，在一个数据集合上运行的过程。</p>
+
+<p>2、进程的特征</p>
+
+<p>并发性、独立性、动态性、制约性、异步性、进程构成：程序+数据+PCB</p>
+
+<p>3、程序顺序执行特征：顺序性、封闭性、可再现性</p>
+
+<p>程序并发执行特征：间断性、失去封闭性、不可再现性</p>
+
+<p>程序并发执行的条件：</p>
+
+<p>a)  各个进程之间的读集和写集无交集</p>
+
+<p><strong>且：</strong>b) 各个进程的写集之间无交集</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115757-361097.png" alt="image-20200308115756561" /></p>
+
+<p>并行与并发的区别：</p>
+
+<p>并发时逻辑上<strong>（宏观上）</strong>的同时发生，并行时物理上<strong>（微观上）</strong>的同时发生。</p>
+
+<p>并发意味着多个执行实体需要竞争资源，会带来竞争和同步问题；并行则是不同的执行实体拥有各自的资源，相互之间互不干扰。</p>
+
+<p>4、前趋图</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115806-120080.png" alt="image-20200308115806015" /></p>
+
+<p>5、进程和程序的区别</p>
+
+<p>（可以根据进程的特征推断出它和程序的主要区别）</p>
+
+<p>a)  进程并发性=&gt;进程可并发执行；程序不可以。</p>
+
+<p>b)  进程动态性=&gt;进程是程序的执行，是动态的，有生命周期；二程序是一组指令的有序集合，是静态永久存在的。</p>
+
+<p>c)  进程独立性=&gt;进程可作为一个独立的单位运行，同时也是系统中独立获得资源和独立调度的基本单位；程序不能作为一个独立的单位运行。</p>
+
+<p>d)  进程的构成：程序+数据+PCB</p>
+
+<p>e)  一个程序可对应多个进程，一个进程可包含多个程序。</p>
+
+<p><strong>程序本身不是进程：程序只是被动实体（静态存在），而进程是活动实体。</strong></p>
+
+<p>6、进程状态</p>
+
+<p>a)  三种基本状态：运行、就绪、阻塞（等待）</p>
+
+<p>b)  有时会加上新状态和终止状态。</p>
+
+<p>c)  一般操作系统还存在挂起状态，即在等待阶段由于某些原因被换出内存，在内存空间足够时被换入。</p>
+
+<p>d)  挂起命令可以由进程自己、父进程、系统发出，但解挂命令不可以由自己发出。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115822-78332.png" alt="image-20200308115821380" /></p>
+
+<p>问题</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115829-62768.png" alt="image-20200308115828593" /></p>
+
+<p>解答：</p>
+
+<p>1)  1；1；N-1；0；N；0；</p>
+
+<p>2)  没有；等待（阻塞）状态的进程必须经过就绪队列才能进入运行状态，CPU只会在就绪队列中调度进程；没有；进程只有运行起来的时候才知道有没有I/O请求。</p>
+
+<p>3)</p>
+
+<p>4)  略</p>
+
+<p>7、进程控制块PCB</p>
+
+<p>是用以记录与进程相关信息的主存区，是进程存在的唯一标志。</p>
+
+<p>PCB的主要内容：</p>
+
+<p>a)  进程状态</p>
+
+<p>b)  进程标识信息：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>i.  进程本身：外标识（映像名称）、内部标识（PID）；
+
+ii. 家族信息：父进程（提供进程的模块）、子进程信息；
+</code></pre></div></div>
+
+<p>c)  处理机状态信息：中断现场保留区；</p>
+
+<p>d)  进程调度信息：优先级、调度队列指针、运行时间；</p>
+
+<p>e)  进程控制信息：</p>
+
+<p>i.  程序、数据的外存/内存地址；</p>
+
+<p>ii. 进程同步和通信机制：消息队列、信号量；</p>
+
+<p>iii. 资源清单（除CPU之外）；</p>
+
+<p>iv. 链接指针；</p>
+
+<p>PCB的主要作用：</p>
+
+<p>使一个在多道程序环境下不能独立运行的程序，成为一个能独立运行的基本单位，一个能和其他进程并发执行的进程。</p>
+
+<p>问题：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115854-84510.png" alt="image-20200308115853220" /></p>
+
+<p>1、申请空白PCB 为新进程分配资源 初始化PCB 将新进程插入就绪队列</p>
+
+<p>2、三种类型；</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115904-223650.png" alt="image-20200308115859362" /></p>
+
+<p>3、a）系统负荷过重；b）父进程需要；c）用户中间结果与预期不符</p>
+
+<p>4、a）系统通过PCB对进程进行控制；b）系统只根据PCB感知进程的存在</p>
+
+<p>5、不完全是，更多的是为了避免程序并发执行时出现的间断性、不可再现性，并且保留它的封闭性，避免出现因进程并行导致的运算结果不可信。</p>
+
+<h2 id="进程调度">进程调度</h2>
+
+<p>1、调度的基本概念</p>
+
+<p>最根本的目标：合理性、有效性</p>
+
+<p>调度类型：高级调度（作业调度）、中级调度（换入换出）、低级调度（进程调度）</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115915-226858.png" alt="image-20200308115914402" /></p>
+
+<p>调度队列图：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115923-567957.png" alt="image-20200308115922700" /></p>
+
+<p>增加中级调度的调度队列图</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115930-59714.png" alt="image-20200308115929519" /></p>
+
+<p>2、调度准则</p>
+
+<p><strong>CPU使用率</strong>、<strong>吞吐量</strong>、周转时间（从进程提交到进程完成）、等待时间（在就绪队列中等待所花费时间之和，<strong>=周转时间-运行时间）</strong>、响应时间（从进程提交到第一次响应的时间）、截止时间（分为开始截止和完成截止）、优先权、各类资源的平均利用。</p>
+
+<p>3、调度算法</p>
+
+<p>先来先服务FCFS、短作业优先SJF、时间片轮转RR、优先级调度、多级队列调度算法、多级反馈队列调度、高响应比优先。（各种调度算法应该十分熟练，这里不详细描述，不会的请翻书或者翻阅ppt。）</p>
+
+<p>练习：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115938-507914.png" alt="image-20200308115936873" /></p>
+
+<p>解答：</p>
+
+<p>平均周转时间 = （完成时刻 – 进入时刻）/ 作业数；</p>
+
+<p>平均等待时间 = （完成时刻 – (进入时刻 + 执行时间) / 作业数；</p>
+
+<p>先到先服务调度算法：</p>
+
+<p>0~8=&gt;P1; 8~12=&gt;P2; 12~21=&gt;P3; 21~26=&gt;P4</p>
+
+<p>平均周转时间 = ((8-0)+(12-1)+(21-2)+(26-3))/4 = 15.25ms</p>
+
+<p>平均等待时间 = ( (8-(0+8))+(12-(1+4))+(21-(2+9))+(26-(3+5)) )/4 = 8.75ms</p>
+
+<p>最短剩余时间优先调度算法（抢占式SJF）</p>
+
+<p>0~1=&gt;P1; 1~5=&gt;P2; 5~10=&gt;P4; 10~17=&gt;P1; 17~26=&gt;P3</p>
+
+<p>平均周转时间 = ((17-0)+(5-1)+(26-2)+(10-3))/4 = 13ms</p>
+
+<p>平均等待时间 = (17-(0+8))+(5-(1+4))+(26-(2+9))+(10-(3+5)) = 6.5ms</p>
+
+<p>抢占式优先级调度</p>
+
+<p>0~1=&gt;P1; 1~3=&gt;P2; 3~8=&gt;P4; 8~10=&gt;P2;10~19=&gt;P3; 19~26=&gt;P1</p>
+
+<p>平均周转时间 = ((26-0)+(10-1)+(19-2)+(8-3))/4 = 14.25ms</p>
+
+<p>平均等待时间 = ( (26-(0+8))+(10-(1+4))+(19-(2+9))+(8-(3+5)) )/4 = 7.75ms</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/115949-592221.png" alt="image-20200308115948909" /></p>
+
+<p>解答：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120001-527359.png" alt="image-20200308115958638" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120012-941808.png" alt="image-20200308120011901" /></p>
+
+<p>4、实时系统</p>
+
+<p>实时调度实例（见下图）</p>
+
+<p>A进程20ms执行一次，每次执行10ms；B进程50ms执行一次，每次执行25ms。</p>
+
+<p>一开始是A进程先执行，因为它每20ms就要执行一次比较紧急。执行了10ms之后，A暂时没有发出请求，于是给B执行，但只能执行20ms，因为20ms之后A要求执行。然后A执行10ms之后给B执行，B还有5ms未执行完，所以B执行5ms之后给A执行。A执行10ms后又给B以此类推。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120021-196852.png" alt="image-20200308120020776" /></p>
+
+<p>5、多核系统调度（扩展内容，最好看一下，现在大部分电脑是多处理器的，很实用）</p>
+
+<p>多处理器调度方法：对称多处理器、非对称多处理器。</p>
+
+<p>处理器亲和性：指努力使一个进程在同一个处理器上运行。</p>
+
+<p>负载平衡：设法蒋工作负载平均地分配到SMP系统中的所有处理器上。</p>
+
+<p>负载平衡通常指对那些拥有自己私有的可执行进程的处理器而言是必要的。</p>
+
+<p>负载平衡通常有两种方法，push migration和pull migration。对于push migration。一个特定的任务周期性地检查每个处理器上的负载，如果发现不平衡，即通过将进程从超载处理器移到空闲或不太忙的处理器，从而平均地分配负载。当空闲处理器从一个忙的处理器上推送（pull）一个等待任务时，发生pull migration。</p>
+
+<p>6、死锁</p>
+
+<p>死锁是指多个进程因竞争资源而造成的一种僵局，若五外力作用，这些进程将永远无法推进。</p>
+
+<p>产生原因：资源竞争、进程推进顺序不合理。</p>
+
+<p>产生的必要条件：互斥条件、请求和保持条件、不可剥夺条件、环路等待条件。</p>
+
+<p>处理办法：预防、避免、<strong>检测、解除</strong></p>
+
+<p>死锁的避免：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120035-609864.png" alt="image-20200308120034497" /></p>
+
+<p>例子：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Allocation</th>
+      <th>Max</th>
+      <th>Available</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>A    B  C</td>
+      <td>A    B  C</td>
+      <td>A    B  C</td>
+    </tr>
+    <tr>
+      <td>P0</td>
+      <td>0    1  0</td>
+      <td>7    5  3</td>
+      <td>3    3  2</td>
+    </tr>
+    <tr>
+      <td>P1</td>
+      <td>2    0  0</td>
+      <td>3    2  2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td>3    0  2</td>
+      <td>9    0  2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>2    1  1</td>
+      <td>2    2  2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>0    0  2</td>
+      <td>4    3  3</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>找到顺序&lt;P1,P3,P4,P2,P0&gt;满足安全条件，执行银行家算法</p>
+
+<p>先定义他们的Need矩阵</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Need</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>A    B  C</td>
+    </tr>
+    <tr>
+      <td>P0</td>
+      <td>7    4  3</td>
+    </tr>
+    <tr>
+      <td>P1</td>
+      <td>1    2  2</td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td>6    0  0</td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>0    1  1</td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>4    3  1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>分配（1，2，2）给P1，执行P1</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Need</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>A    B  C</td>
+    </tr>
+    <tr>
+      <td>P0</td>
+      <td>7    4  3</td>
+    </tr>
+    <tr>
+      <td>P1</td>
+      <td>1    2  2</td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td>6    0  0</td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>0    1  1</td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>4    3  1</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Allocation</th>
+      <th>Available</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>A    B  C</td>
+      <td>A    B  C</td>
+    </tr>
+    <tr>
+      <td>P0</td>
+      <td>0    1  0</td>
+      <td>5    3  2</td>
+    </tr>
+    <tr>
+      <td>P1</td>
+      <td>0    0  0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td>3    0  2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>2    1  1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>0    0  2</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>分配（0，1，1）给P3，执行P3</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Allocation</th>
+      <th>Available</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>A    B  C</td>
+      <td>A    B  C</td>
+    </tr>
+    <tr>
+      <td>P0</td>
+      <td>0    1  0</td>
+      <td>5    2  1</td>
+    </tr>
+    <tr>
+      <td>P1</td>
+      <td>0    0  0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td>3    0  2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>2    2  2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>0    0  2</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Allocation</th>
+      <th>Available</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>A    B  C</td>
+      <td>A    B  C</td>
+    </tr>
+    <tr>
+      <td>P0</td>
+      <td>0    1  0</td>
+      <td>7    3  2</td>
+    </tr>
+    <tr>
+      <td>P1</td>
+      <td>0    0  0</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P2</td>
+      <td>3    0  2</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P3</td>
+      <td>2    1  1</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P4</td>
+      <td>0    0  2</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>其他进程以此类推</p>
+
+<p>问题：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120221-883076.png" alt="image-20200308120221002" /></p>
+
+<p>解答：</p>
+
+<p>1）、</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120310-605716.png" alt="image-20200308120307640" /></p>
+
+<p>2）系统现在不处于安全状态，找不到执行顺序满足安全需求。</p>
+
+<p>3）不分配，没有这么多可用资源。</p>
+
+<p>资源分配图的简化:</p>
+
+<p>圆形是进程、方形是资源，方形指向圆形表示资源已经分配，圆形指向方形表示进程调用的，方形里面的圆点表示资源数量。</p>
+
+<p>化简方式：如果进程没有调用的资源，就将分配给该进程的资源收回，比如指向r1P2和r2P5的箭头被去掉。然后对资源再进行分配，r1的资源分配给P2，P1请求资源时，r1还有一个资源可以分配给P1，所以P1r1和r1P3的箭头可以去掉，以此类推。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120321-610986.png" alt="image-20200308120320921" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120328-940185.png" alt="image-20200308120328047" /></p>
+
+<h2 id="进程的操作">进程的操作</h2>
+
+<p>1、内核</p>
+
+<p>一些与硬件紧密相关的模块或运行频率较高的模块被称为内核。</p>
+
+<p>内核基本功能：</p>
+
+<p>支持功能：中断处理、时钟管理、原语操作。</p>
+
+<p>管理功能：进程管理（调度、创建、同步）、存储器管理、设备管理。</p>
+
+<p>2、进程创建</p>
+
+<p>进程图：用于描述进程家族关系的有向树。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120336-432636.png" alt="image-20200308120335355" /></p>
+
+<p>3、进程终止</p>
+
+<p>（这一节内容很简单，不清楚的请自己去看ppt）</p>
+
+<p>4、进程的阻塞与唤醒</p>
+
+<h2 id="进程通信">进程通信</h2>
+
+<p>1、进程通信</p>
+
+<p>如果系统中进程能影响其他进程或被其他进程所影响，那么该进程是协作的。显然，与其他进程共享数据的进程为协作进程。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120345-573952.png" alt="image-20200308120344807" /></p>
+
+<p>2、消息传递：提供一种机制以允许进程不必通过共享地址空间来实现通信和同步，这在分布式环境中特别有用。（直接通信方式：一个进程直接把消息发送给目标进程；简介通信方式：进程之间通过某种共享的数据结构进行通信。</p>
+
+<p>3、共享内存：进程通过共享一个内存区域，并且需要应用程序员自己明确编写访问和操作共享内存的代码。（共享数据结构：信息交换的格式、类型一定，进程通信由程序员完成，效率低；共享存储区：进程可随时向系统申请一块存储区，并指定该分区的关键字，用于进程通信。</p>
+
+<p>4、管道通信：用于连接一个读进程和写进程，以实现它们之间通信的共享文件。</p>
+
+<h2 id="进程同步">进程同步</h2>
+
+<p>1、同步相关概念</p>
+
+<p>进程同步的目的：确保共享同一逻辑地址空间的协作进程可有序地执行，从而能维护数据的一致性。</p>
+
+<p>多道系统中，由于进程间的相互联系及资源共享，使进程间可能存在两种形式的制约关系：</p>
+
+<p>a)  间接制约/互斥关系；</p>
+
+<p>b)  直接制约/同步关系；</p>
+
+<p>进程同步：两个进程所表示事件的发生有着某种时序上的关系。</p>
+
+<p>临界资源：一次仅允许一个进程使用的资源称为临界资源。包括：慢速设备，共享的变量、数据结构、缓冲区等。</p>
+
+<p>假设某个系统有n个进程{P0、P1、P2……}，每个进程有一个代码段称为临界区，在该区中进程可能改变共同变量、更新一个表、写一个文件等。这种系统的重要特征是当一个进程进入临界区，没有其他进程可被允许在临界区内执行。典型进程Pi的通用结构</p>
+
+<p>do{</p>
+
+<p>进入区</p>
+
+<p>临界区</p>
+
+<p>退出区</p>
+
+<p>剩余区</p>
+
+<p>}while(true);</p>
+
+<p>2、同步机制遵守的准则</p>
+
+<p>空闲让进、忙则等待、有限等待、让权等待</p>
+
+<p>3、同步机制实现方法</p>
+
+<p>a、Peterson算法（纯软件机制的代表）</p>
+
+<p>Peterson算法适合用于两个进程在临界区与剩余区交替执行。</p>
+
+<p>do{</p>
+
+<p>flag[i] = TRUE;</p>
+
+<p>turn = j;</p>
+
+<p>while(flag[j] &amp;&amp; turn == j);</p>
+
+<p>临界区</p>
+
+<p>flag[i] = FLASE;</p>
+
+<p>剩余区</p>
+
+<p>}while(TRUE);</p>
+
+<p>b、硬件指令（TestAndSetLock、Swap）</p>
+
+<p>c、中断</p>
+
+<p>d、原语</p>
+
+<p>4、硬件同步</p>
+
+<p>TestAndSetLock()的主要特点是该指令<del>能原子地执行。</del>能在一个指令周期内执行。</p>
+
+<p>使用TestAndSetLock的互斥实现</p>
+
+<p>do{</p>
+
+<p>while(TestAndSetLock(&amp;lock));</p>
+
+<p>临界区</p>
+
+<p>lock = FALSE;</p>
+
+<p>剩余区</p>
+
+<p>}while(TRUE);</p>
+
+<p>TestAndSetLock指令的定义：</p>
+
+<p>Boolean TestAndSet(Boolean *target){</p>
+
+<p>boolean rv = *target;</p>
+
+<p>*target = TRUE;</p>
+
+<p>return rv;</p>
+
+<p>}</p>
+
+<p>5、信号量</p>
+
+<p>wait()的定义可表示为：</p>
+
+<p>wait(S){</p>
+
+<p>while(S&lt;=0);</p>
+
+<p>S--;</p>
+
+<p>}</p>
+
+<p>signal()的定义可表示为：</p>
+
+<p>signal(S){</p>
+
+<p>S++;</p>
+
+<p>}</p>
+
+<p>6、经典同步问题</p>
+
+<p>生产者-消费者问题</p>
+
+<p>生产者为消费者生产满缓冲项，而消费者为生成者生成空缓冲项。</p>
+
+<p>信号量mutex提供了对缓冲池访问的互斥要求，并初始化为1。信号量empty初始化为n；而信号量full初始化为0。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120426-568029.png" alt="image-20200308120425673" /></p>
+
+<p>读者-写者问题</p>
+
+<p>只需要读数据库的进程为读者，既要读也要写的数据库为写者。允许两个读者同时访问共享对象，但不允许一个写者和其他线程同时访问共享对象。</p>
+
+<p>readcount表示缓冲区中有数据的数据块，rmutex表示读的信号量，wmutex表示写的信号量。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120433-29119.png" alt="image-20200308120432611" /></p>
+
+<p>哲学家进餐问题</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120439-403067.png" alt="image-20200308120438127" /></p>
+
+<p>练习</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120445-762669.png" alt="image-20200308120445042" /></p>
+
+<p>解答：</p>
+
+<p>1）、设置信号量empty1 = empty2 = 1；full1 = full2 = 0；empty1和full1是第一块缓冲区的信号量，empty2和full2是第二块缓冲区的信号量。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ProcessP()
+
+        while(true):
+
+        读取信息;
+
+        wait(empty1);
+
+        写入缓冲区;
+
+        signal(full1);
+
+ProcessQ()
+
+        while(true):
+
+        wait(full1);
+
+        读取并加工信息;
+
+        signal(empty1);
+
+        wait(empty2);
+
+        写入缓冲区;
+
+        signal(full2);
+
+ProcessR()
+
+        while(true):
+
+        wait(full2);
+
+        读取信息;
+
+        signal(empty2);
+
+        传送到打印机打印;
+</code></pre></div></div>
+
+<p>2)、设置信号量empty1 = m；empty2 = n；full1 = full2 = 0；mutex1 = mutex2 = 1；empty1、full1和mutex1是第一块缓冲区的信号量，empty2、full2和mutex2是第二块缓冲区的信号量。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ProcessP()
+
+        while(true):
+
+        读取信息;
+
+        wait(empty1);
+
+        wait(mutex1);
+
+        写入缓冲区;
+
+        signal(mutex1);
+
+        signal(full1);
+
+ProcessQ()
+
+        while(true):
+
+        wait(full1);
+
+        wait(mutex1);
+
+        读取信息;
+
+        signal(mutex1);
+
+        signal(empty1);
+
+        wait(empty2);
+
+        wait(mutex2);
+
+        写入缓冲区;
+
+        signal(mutex2);
+
+        signal(full2);
+
+ProcessR()
+
+        while(true):
+
+        wait(full2);
+
+        wait(mutex2);
+
+        读取信息;
+
+        signal(mutex2);
+
+        signal(empty2);
+
+        传送到打印机打印;
+</code></pre></div></div>
+
+<p>7、管程问题</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120556-711089.png" alt="image-20200308120555804" /></p>
+
+<p>管程与进程的异同：</p>
+
+<p>a)  目的不同</p>
+
+<p>b)  系统管理的数据结构不同，进程是PCB，管程是队列</p>
+
+<p>c)  管程被进程调用</p>
+
+<p>d)  管程没有生命周期</p>
+
+<p>问题：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120604-392613.png" alt="image-20200308120603902" /></p>
+
+<p>解答：</p>
+
+<p>1、临界资源：一次仅允许一个进程使用的资源；临界区：会改变共享资源的代码段；空闲让进、忙则等待、有限等待，让权等待。</p>
+
+<p>2、是</p>
+
+<p>3、私用信箱、共用信箱、共享信箱。</p>
+
+<p>大量信息的通信部分没有？——共享存储区、消息传递系统、管道</p>
+
+<h2 id="线程">线程</h2>
+
+<p>1、概念</p>
+
+<p>线程是进程的一个实体，是能被系统独立调度和分配的基本单元。</p>
+
+<p>2、优点</p>
+
+<p>响应度高、资源共享、经济、多处理器体系结构的利用。</p>
+
+<p>3、线程和进程的比较</p>
+
+<ul>
+  <li>轻量进程——线程；重型进程——进程</li>
+</ul>
+
+<p>调度=&gt;同一进程中线程的切换不会引起进程切换</p>
+
+<p>并发性=&gt;都可以并发执行</p>
+
+<p>拥有资源=&gt;线程共享进程资源，自己不拥有</p>
+
+<p>系统开销=&gt;线程开销远小于进程，且容易实现通信和同步</p>
+
+<p><strong>线程是调度的基本单元，进程是资源分配的基本单元。</strong></p>
+
+<p>4、用户级线程和内核支持线程</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120641-515479.png" alt="image-20200308120640087" /></p>
+
+<p>5、多线程模型</p>
+
+<p>多对一模型</p>
+
+<p>一对一模型</p>
+
+<p>多对多模型</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/120648-412057.png" alt="image-20200308120647415" /></p>
+
+<p>6、线程库</p>
+
+<p>为程序员提供和管理的线程API。</p>
+
+<p>目前使用的三种主要线程库是：POSIX Pthread、Win32、Java</p>
+
+<p>7、线程池(常用技术，了解一下)</p>
+
+<p>在进程开始时创建一定数量的线程，并放入到池中以等待工作。当服务器收到请求时，它会唤醒池中的一个线程。</p>
+
+<p>线程池 具有以下优点：</p>
+
+<p>a)  通常用现有线程处理请求要比等待创建新的线程要快。</p>
+
+<p>b)  线程池 限制了在任何时候可用线程的数量。这对那些不能支持大量并发线程的系统非常重要。</p>
+:ET

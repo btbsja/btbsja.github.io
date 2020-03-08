@@ -1,0 +1,221 @@
+I"*_<h1 id="分槽aloha协议仿真">分槽ALOHA协议仿真</h1>
+
+<h2 id="一实验目的与要求">一.实验目的与要求</h2>
+
+<p>1. 掌握VB 、VC++、VS 或JA V A 等集成开发环境编写路由仿真程序的方法；</p>
+
+<p>2. 理解并掌握分槽ALOHA协议原理。</p>
+
+<h2 id="二内容">二.内容</h2>
+
+<p>编写仿真程序，对一定网络环境下MAC层的多路访问协议的分槽ALOHA协议进行实现。通过仿真，学习协议采取的介质访问管理，包括介质分配和冲突解决机制，并对协议的性能与理论结果进行比较分析。</p>
+
+<h2 id="三-原理">三. 原理</h2>
+
+<p>分槽Aloha的基本思想是把信道时间分成离散的时间槽，槽长为一个帧所需的发送时间。每个站点只能在时槽开始时才允许发送。其他过程与纯ALOHA协议相同。分槽Aloha的信道效率比纯Aloha要高。分槽Aloha的易受冲突区比纯Aloha小了一半。它的重发策略是等待一段随机的时间，然后重发；如再次冲突，则再等待一段随机的时间，直到重发成功为止，但是发送的时间也是在每个时间槽的开始。</p>
+
+<h2 id="四具体设计含流程图及关键代码说明">四.具体设计（含流程图及关键代码说明）</h2>
+
+<p><strong>代码包括六个类：</strong></p>
+
+<p>AlohaThread.java,jsp_1.java,jsq.java,SendPot.java,time.java,Main.java。</p>
+
+<p>Main.java是主类。主要是负责时间槽的初始化，以及多个线程的启动。</p>
+
+<p>SendPot.java是发送站类。里面包含了开始发送数据的时间，时间的间隔，以及成功发送完所有数据包的发送次数。</p>
+
+<p>AlohaThread.java是实现了Thread接口的类。他是Aloha的线程，run方法里面写了判断冲突的方法和数据包发送的计数方法。每一个线程都是一个SendPot的发送过程。</p>
+
+<p>sq.java也是实现了Thread接口的类。他是一个计数器，每隔20秒加一，是用来计算现在已经到了第几个时间槽的。</p>
+
+<p>关键代码说明</p>
+
+<p>a、时间槽的计数，每隔20ms加一</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while(true){
+
+try {
+
+N = N+1;
+
+Thread.sleep(20);
+
+} catch (InterruptedException e) {
+
+e.printStackTrace(); } }
+</code></pre></div></div>
+
+<p>b、发送时间以及间隔时间归并到时间槽的开始</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>public long getStartT() {
+
+return start/20+1;
+
+}
+
+public long getDt() {
+
+return d/20+1;
+
+}
+</code></pre></div></div>
+
+<p>源代码</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">Aloha</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">ArrayList</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">class</span> <span class="n">Main</span> <span class="p">{</span>
+
+<span class="k">public</span> <span class="n">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="k">String</span><span class="p">\[\]</span> <span class="n">args</span><span class="p">){</span>
+
+<span class="n">int</span><span class="p">\[\]</span> <span class="n">a</span> <span class="p">=</span> <span class="n">new</span> <span class="n">int</span><span class="p">\[</span><span class="m">10000</span><span class="p">\];</span>
+
+<span class="n">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">\&lt;</span> <span class="m">100000</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span> <span class="n">time</span> <span class="n">t</span> <span class="p">=</span> <span class="n">new</span> <span class="n">time</span><span class="p">();</span> <span class="n">t</span><span class="p">.</span><span class="n">setN</span><span class="p">(</span><span class="n">i</span><span class="p">);</span> <span class="n">t</span><span class="p">.</span><span class="n">setCount</span><span class="p">(</span><span class="m">0</span><span class="p">);</span> <span class="p">}</span>
+
+<span class="n">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">\&lt;</span> <span class="n">a</span><span class="p">.</span><span class="n">length</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span> <span class="n">a</span><span class="p">\[</span><span class="n">i</span><span class="p">\]</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="n">SendPot</span> <span class="n">sp1</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SendPot</span><span class="p">(</span><span class="m">1</span><span class="p">);</span> <span class="n">SendPot</span> <span class="n">sp2</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SendPot</span><span class="p">(</span><span class="m">2</span><span class="p">);</span> <span class="n">SendPot</span> <span class="n">sp3</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SendPot</span><span class="p">(</span><span class="m">3</span><span class="p">);</span> <span class="n">SendPot</span> <span class="n">sp4</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SendPot</span><span class="p">(</span><span class="m">4</span><span class="p">);</span> <span class="n">SendPot</span> <span class="n">sp5</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SendPot</span><span class="p">(</span><span class="m">5</span><span class="p">);</span> <span class="n">SendPot</span> <span class="n">sp6</span> <span class="p">=</span> <span class="n">new</span> <span class="n">SendPot</span><span class="p">(</span><span class="m">6</span><span class="p">);</span>
+
+<span class="n">jsp</span><span class="p">\</span><span class="n">_1</span> <span class="n">j</span> <span class="p">=</span> <span class="n">new</span> <span class="n">jsp</span><span class="p">\</span><span class="n">_1</span><span class="p">();</span> <span class="n">j</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
+
+<span class="n">AlohaThread</span> <span class="n">at1</span> <span class="p">=</span> <span class="n">new</span> <span class="n">AlohaThread</span><span class="p">(</span><span class="n">sp1</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">);</span> <span class="n">AlohaThread</span> <span class="n">at2</span> <span class="p">=</span> <span class="n">new</span> <span class="n">AlohaThread</span><span class="p">(</span><span class="n">sp2</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">);</span> <span class="n">AlohaThread</span> <span class="n">at3</span> <span class="p">=</span> <span class="n">new</span> <span class="n">AlohaThread</span><span class="p">(</span><span class="n">sp3</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">);</span> <span class="n">AlohaThread</span> <span class="n">at4</span> <span class="p">=</span> <span class="n">new</span> <span class="n">AlohaThread</span><span class="p">(</span><span class="n">sp4</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">);</span> <span class="n">AlohaThread</span> <span class="n">at5</span> <span class="p">=</span> <span class="n">new</span> <span class="n">AlohaThread</span><span class="p">(</span><span class="n">sp5</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">);</span> <span class="n">AlohaThread</span> <span class="n">at6</span> <span class="p">=</span> <span class="n">new</span> <span class="n">AlohaThread</span><span class="p">(</span><span class="n">sp6</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">a</span><span class="p">);</span>
+
+<span class="n">at1</span><span class="p">.</span><span class="n">start</span><span class="p">();</span> <span class="n">at2</span><span class="p">.</span><span class="n">start</span><span class="p">();</span> <span class="n">at3</span><span class="p">.</span><span class="n">start</span><span class="p">();</span> <span class="n">at4</span><span class="p">.</span><span class="n">start</span><span class="p">();</span> <span class="n">at5</span><span class="p">.</span><span class="n">start</span><span class="p">();</span> <span class="n">at6</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
+
+<span class="p">}</span> <span class="p">}</span>
+
+<span class="k">package</span> <span class="n">Aloha</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Random</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">class</span> <span class="n">AlohaThread</span> <span class="n">extends</span> <span class="n">Thread</span><span class="p">{</span>
+
+<span class="n">private</span> <span class="n">SendPot</span> <span class="n">sp</span><span class="p">;</span>
+
+<span class="n">private</span> <span class="n">Random</span> <span class="n">r</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Random</span><span class="p">();</span> <span class="n">private</span> <span class="n">long</span> <span class="n">temp</span><span class="p">;</span> <span class="n">private</span> <span class="n">jsp</span><span class="p">\</span><span class="n">_1</span> <span class="n">j</span><span class="p">;</span> <span class="n">private</span> <span class="n">int</span><span class="p">\[\]</span> <span class="n">a</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">AlohaThread</span><span class="p">(</span><span class="n">SendPot</span> <span class="n">sp</span><span class="p">,</span><span class="n">jsp</span><span class="p">\</span><span class="n">_1</span> <span class="n">j</span><span class="p">,</span><span class="n">int</span><span class="p">\[\]</span> <span class="n">a</span><span class="p">){</span> <span class="n">this</span><span class="p">.</span><span class="n">sp</span> <span class="p">=</span> <span class="n">sp</span><span class="p">;</span> <span class="n">this</span><span class="p">.</span><span class="n">j</span> <span class="p">=</span> <span class="n">j</span><span class="p">;</span> <span class="n">this</span><span class="p">.</span><span class="n">a</span> <span class="p">=</span> <span class="n">a</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">void</span> <span class="nf">run</span><span class="p">(){</span>
+
+<span class="n">try</span> <span class="p">{</span>
+
+<span class="n">Thread</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="n">sp</span><span class="p">.</span><span class="nf">getStart</span><span class="p">());</span> <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">InterruptedException</span> <span class="n">e1</span><span class="p">)</span> <span class="p">{</span> <span class="n">e1</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span> <span class="p">}</span>
+
+<span class="n">for</span> <span class="p">(</span><span class="n">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">\&lt;</span> <span class="m">100</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span> <span class="p">{</span>
+
+<span class="n">a</span><span class="p">\[</span><span class="n">j</span><span class="p">.</span><span class="n">getN</span><span class="p">()\]</span> <span class="p">=</span> <span class="n">a</span><span class="p">\[</span><span class="n">j</span><span class="p">.</span><span class="n">getN</span><span class="p">()\]+</span><span class="m">1</span><span class="p">;</span>
+
+<span class="n">try</span> <span class="p">{</span>
+
+<span class="n">Thread</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="m">1</span><span class="p">);</span> <span class="p">//</span><span class="err">冲突</span>
+
+<span class="k">while</span><span class="p">(</span><span class="n">a</span><span class="p">\[</span><span class="n">j</span><span class="p">.</span><span class="n">getN</span><span class="p">()\]\&gt;</span><span class="m">1</span><span class="p">)</span> <span class="p">{</span> <span class="n">temp</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">nextInt</span><span class="p">(</span><span class="m">5</span><span class="p">)+</span><span class="m">1</span><span class="p">;</span> <span class="n">Thread</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="n">temp</span><span class="p">\*</span><span class="m">20</span><span class="p">);</span>
+
+<span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">sp</span><span class="p">.</span><span class="n">getNum</span><span class="p">()+\\</span><span class="err">冲突</span><span class="p">\\</span> <span class="p">}</span>
+
+<span class="nf">System</span><span class="p">.</span><span class="n">out</span><span class="p">.</span><span class="n">println</span><span class="p">(\\</span><span class="err">发送成功</span><span class="p">:</span><span class="err">第</span><span class="p">\\</span><span class="err">号第</span><span class="p">\\</span><span class="err">个数据包</span><span class="p">\~\\</span>
+
+<span class="n">Thread</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="n">sp</span><span class="p">.</span><span class="n">getD</span><span class="p">());</span> <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+
+<span class="p">}</span> <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="k">package</span> <span class="n">Aloha</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">class</span> <span class="n">jsp</span><span class="p">\</span><span class="n">_1</span> <span class="n">extends</span> <span class="n">Thread</span><span class="p">{</span> <span class="n">private</span> <span class="n">int</span> <span class="n">N</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">void</span> <span class="nf">run</span><span class="p">(){</span>
+
+<span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">){</span> <span class="n">try</span> <span class="p">{</span>
+
+<span class="n">N</span> <span class="p">=</span> <span class="n">N</span><span class="p">+</span><span class="m">1</span><span class="p">;</span>
+
+<span class="n">Thread</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="m">20</span><span class="p">);</span>
+
+<span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span> <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span> <span class="p">}</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">int</span> <span class="n">getN</span><span class="p">(){</span>
+
+<span class="n">return</span> <span class="n">N</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="k">package</span> <span class="n">Aloha</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">class</span> <span class="n">jsq</span> <span class="n">extends</span> <span class="n">Thread</span><span class="p">{</span>
+
+<span class="n">private</span> <span class="n">long</span> <span class="n">t</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">void</span> <span class="nf">run</span><span class="p">(){</span>
+
+<span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">){</span> <span class="n">try</span> <span class="p">{</span>
+
+<span class="n">t</span> <span class="p">=</span> <span class="n">t</span><span class="p">+</span><span class="m">1</span><span class="p">;</span>
+
+<span class="n">Thread</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="m">1</span><span class="p">);</span>
+
+<span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span> <span class="n">e</span><span class="p">.</span><span class="n">printStackTrace</span><span class="p">();</span> <span class="p">}</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">long</span> <span class="n">getT</span><span class="p">(){</span>
+
+<span class="n">return</span> <span class="n">t</span><span class="p">;</span> <span class="p">}</span> <span class="p">}</span>
+
+<span class="k">package</span> <span class="n">Aloha</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">Random</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">class</span> <span class="n">SendPot</span> <span class="p">{</span>
+
+<span class="n">private</span> <span class="n">Random</span> <span class="n">r</span> <span class="p">=</span> <span class="n">new</span> <span class="n">Random</span><span class="p">();</span> <span class="n">private</span> <span class="n">int</span> <span class="n">Num</span><span class="p">;</span> <span class="p">//</span><span class="err">开始发送时间</span>
+
+<span class="n">private</span> <span class="n">long</span> <span class="n">start</span><span class="p">;</span> <span class="p">//</span><span class="err">时间间隔</span>
+
+<span class="n">private</span> <span class="n">long</span> <span class="n">d</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">SendPot</span><span class="p">(</span><span class="n">int</span> <span class="n">Num</span><span class="p">){</span> <span class="n">this</span><span class="p">.</span><span class="n">Num</span> <span class="p">=</span> <span class="n">Num</span><span class="p">;</span>
+
+<span class="n">start</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">nextInt</span><span class="p">(</span><span class="m">1000</span><span class="p">);</span> <span class="n">d</span> <span class="p">=</span> <span class="n">r</span><span class="p">.</span><span class="n">nextInt</span><span class="p">(</span><span class="m">30</span><span class="p">)+</span><span class="m">20</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">int</span> <span class="n">getNum</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="n">Num</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">long</span> <span class="nf">getStart</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="p">(</span><span class="n">start</span><span class="p">/</span><span class="m">20</span><span class="p">+</span><span class="m">1</span><span class="p">)\*</span><span class="m">20</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">long</span> <span class="n">getD</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="p">(</span><span class="n">d</span><span class="p">/</span><span class="m">20</span><span class="p">+</span><span class="m">1</span><span class="p">)\*</span><span class="m">20</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">long</span> <span class="n">getStartT</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="n">start</span><span class="p">/</span><span class="m">20</span><span class="p">+</span><span class="m">1</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">long</span> <span class="n">getDt</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="n">d</span><span class="p">/</span><span class="m">20</span><span class="p">+</span><span class="m">1</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="p">}</span>
+
+<span class="k">package</span> <span class="n">Aloha</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="n">class</span> <span class="n">time</span> <span class="p">{</span>
+
+<span class="p">//</span><span class="err">第</span><span class="n">N</span><span class="err">个时槽</span> <span class="n">private</span> <span class="n">int</span> <span class="n">N</span><span class="p">;</span> <span class="p">//</span><span class="err">需要发送的数目</span> <span class="n">private</span> <span class="n">int</span> <span class="k">count</span><span class="p">;</span> <span class="k">public</span> <span class="n">int</span> <span class="n">getN</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="n">N</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">void</span> <span class="n">setN</span><span class="p">(</span><span class="n">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span> <span class="n">N</span> <span class="p">=</span> <span class="n">n</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">int</span> <span class="n">getCount</span><span class="p">()</span> <span class="p">{</span> <span class="n">return</span> <span class="k">count</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">public</span> <span class="n">void</span> <span class="n">setCount</span><span class="p">(</span><span class="n">int</span> <span class="k">count</span><span class="p">)</span> <span class="p">{</span> <span class="n">this</span><span class="p">.</span><span class="k">count</span> <span class="p">=</span> <span class="k">count</span><span class="p">;</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="五结果">五.结果</h2>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/113817-984213.png" alt="image-20200308113815895" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/113824-217773.png" alt="image-20200308113823360" /></p>
+
+<h2 id="六设备与环境">六.设备与环境</h2>
+
+<p>编程语言Java</p>
+
+<p>编程环境Windows 10</p>
+
+<h2 id="七总结">七.总结</h2>
+
+<p>学到了关于Aloha的知识以及对数据的处理以及测试程序的知识。并且这次实验让我对分槽Aloha有了更加深刻的了解，也更加熟练掌握了JAVA程序设计语言的运用。</p>
+:ET

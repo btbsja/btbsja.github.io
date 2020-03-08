@@ -1,0 +1,237 @@
+I"�:<h1 id="实验四-配置主机防墙防dos攻击">实验四 配置主机防⽕墙防⽌DoS攻击</h1>
+
+<h2 id="实验要求">实验要求</h2>
+
+<p>结合课堂上学习的iptables以及DoS攻击相关内容，⾃⾏搭建环境或在虚拟实 验平台完成配置iptables防⽌DoS攻击实验。</p>
+
+<h2 id="实验指导">实验指导</h2>
+
+<p>搭建环境指导</p>
+
+<ul>
+  <li>虚拟机环境</li>
+</ul>
+
+<p>VirtualBox（Windows/Linux/MacOS）</p>
+
+<ul>
+  <li>虚拟机镜像</li>
+</ul>
+
+<p>靶 机 任意linux系统</p>
+
+<p>攻击机 任意包含了SYN Flood 攻击程序的系统/宿主机 （SEEDUbuntu12.04）</p>
+
+<h2 id="实验过程">实验过程</h2>
+
+<p><strong>应用场景</strong></p>
+
+<p>对于Internet 上的系统，不管是什么情况，首先我们要明确一点：网络是不安全的。因此，虽然创建一个防火墙并不能保证系统100%安全，但却是绝对必要的。和社会上其它任何事物一样，Internet 经常会受到一些无聊的或者别有用心的人的干扰，防火墙的目的就是将这类人挡在你的网络之外，同时使你仍然可以完成自己的工作。</p>
+
+<p>那么构筑怎样的Linux 防火墙系统才算是足够安全呢？这是一个很难回答的问题，因为不同的应用环境对安全的要求不一样。用一句更加恰当而且简单的话来回答这个问题：用户了解自己的Linux 系统和设置，并且可以很好地保护好自己的数据和机密文件的安全，这对于该计算机用户来说就可以称之为他的计算机有足够的安全性。</p>
+
+<p>那么到底什么是防火墙呢？防火墙是一个或一组系统，它在网络之间执行访问控制策略。实现防火墙的实际方式各不相同，但是在原则上，防火墙可以被认为是这样一对机制：一种机制是拦阻传输流通行，另一种机制是允许传输流通过。一些防火墙偏重拦阻传输流的通行，而另一些防火墙则偏重允许传输流通过。了解有关防火墙的最重要的概念可能就是它实现了一种访问控制策略。</p>
+
+<p>一般来说，防火墙在配置上是防止来自”外部”世界未经授权的交互式登录的。这大大有助于防止破坏者登录到你网络中的计算机上。一些设计更为精巧的防火墙可以防止来自外部的传输流进入内部，但又允许内部的用户可以自由地与外部通信。如果你切断防火墙的话，它可以保护你免受网络上任何类型的攻击。防火墙的另一个非常重要的特性是可以提供一个单独的”拦阻点”，在”拦阻点”上设置安全和审计检查。与计算机系统正受到某些人利用调制解调器拨入攻击的情况不同，防火墙可以发挥一种有效的”电话监听”和跟踪工具的作用。防火墙提供了一种重要的记录和审计功能；它们经常可以向管理员提供一些情况概要，提供有关通过防火墙的传输流的类型和数量，以及有多少次试图闯入防火墙的企图等信息。</p>
+
+<p>因此本实验将介绍如何配置linux 防火墙。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223112.jpeg" alt="图片3" />{width=”3.4166666666666665in” height=”0.84375in”}</p>
+
+<p>VM Client VM Server</p>
+
+<p><strong>实验目标</strong></p>
+
+<p>1. 掌握linux 下基本的iptables 知识</p>
+
+<p>2. 学会配置iptables</p>
+
+<p>VM Windows VM Linux</p>
+
+<p><strong>实验环境</strong></p>
+
+<p>虚拟机：linux,windowsXP；linux 主机用户名：root；密码：root</p>
+
+<p><strong>实验过程指导</strong></p>
+
+<h3 id="一-iptables-的规则表链结构">一. Iptables 的规则表、链结构</h3>
+
+<p>1.规则表（iptables管理4个不同的规则表，其功能由独立的内核模块实现）</p>
+
+<p>filter 表：包含三个链INPUT OUTPUT FORWARD</p>
+
+<p>nat表：PREROUTING POSTROTING OUTPUT</p>
+
+<p>mangle 表：PREROUTING POSTROUTING INPUT OUTPUT FORWARD</p>
+
+<p>raw 表：OUTPUT PREROUTING</p>
+
+<p>2.规则链</p>
+
+<p>INPUT 链当收到访问防火墙本机的数据包（入站）时，应用此链中的规则</p>
+
+<p>OUTPUT链当防火墙本机向外发送数据包（出站）时，应用此链中的规则</p>
+
+<p>FORWARD链收到需要通过防火墙发送给其他地址的数据包，应用此链</p>
+
+<p>PREROUTING链做路由选择之前，应用此链</p>
+
+<p>POSTROUTING链对数据包做路由选择之后，应用此链中的规则</p>
+
+<h3 id="二-数据包的匹配流程">二. 数据包的匹配流程</h3>
+
+<p>1.规则表之间的优先级</p>
+
+<p>raw mangle nat filter</p>
+
+<p>2.规则链之间的优先级</p>
+
+<p>入站数据流向：来自外界的数据包到达防火墙，首先PREROUTING规则链处理（是否被修改地址），之后会进行路由选择（判断该数据包应该发往何处），如果数据包的目标地址是防火墙本机，那么内核将其传递给INPUT 链进行处理，通过以后再交给上次的应用程序进行响应。</p>
+
+<p>转发数据流向：来自外界的数据包到达防火墙后，首先被PREROUTING 规则链处理，之后进行路由选择，如果数据包的目标地址是其他外部地址，则内核将其传递给FPRWARD 链进行处理，然后再交给POSTROUTIING 规则链（是否修改数据包的地址等）进行处理。</p>
+
+<p>出站数据流向：防火墙本身向外部地址发送数据包，首先被OUTPUT 规则链处理，之后进行路由选择，然后交给POSTROUTING 规则链（是否修改数据包的地址等）进行处理。</p>
+
+<p>3.规则链内部各防火墙规则之间的优先顺序</p>
+
+<p>依次按第1条规则、第2条规则、第3条规则……的顺序进行处理，找到一条能够匹配的数据包规则，则不再继续检查后面的规则（使用LOG记录日志的规则例外）。如果找不到匹配规则，就按照规则链的默认策略进行处理。</p>
+
+<h3 id="三-管理和设置iptables规则">三. 管理和设置iptables规则</h3>
+
+<hr />
+
+<p>Iptables 的基本语法格式选项名   功能及特点
+  -A                              在指定链的末尾添加（--append）一条新规则
+  -D                              删除（--delete）指定链中的某一条规则，按规则序号或内容确定要删除的规则
+  -I                              在指定链中插入一条新规则，若未指定插入位置，则默认在链的开头插入
+  -R                              修改、替换指定链中的一条规则，按按规则序号或内容确定要替换的规则
+  -L                              列出指定链中所有的规则进行查看，若未指定链名，则列出表中所有链的内容
+  -F                              清空指定链中的所有规则，若未指定链名，则清空表中所有链的内容
+  -X                              删除表中用户自定义的规则链
+  -P                              设置指定链的默认策略（大p）
+  -n                              使用数字形式显示输出结果，如显示主机的IP地址而不是主机名
+  -v                              查看规则列表时显示详细的信息
+  -V                              查看iptables命令工具的版本信息
+  -h                              查看命令帮助信息
+  --line-numbers                 查看规则列表时，同时显示规则在链中的顺序号
+  -N                              新建一条用户自定义的规则链</p>
+
+<hr />
+
+<p>1. 查看规则表</p>
+
+<p># iptables -L INPUT --line-numbers //查看filter表中INPUT链中的所有规则，同时显示各条规则的顺序号</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223113.jpeg" alt="20101" />{width=”5.84375in” height=”1.0625in”}</p>
+
+<p>2. 删除、清空规则</p>
+
+<p># iptables -F //不指定表名时，默认情况filter表</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223113.jpeg" alt="20101" />{width=”5.875in” height=”1.7291666666666667in”}</p>
+
+<ol>
+  <li>设置规则链的默认策略</li>
+</ol>
+
+<p># iptables -t filter -P FORWARD DROP //将filter表中FORWARD规则的默认策略设为DROP</p>
+
+<p># iptables -P OUTPUT ACCEPT //将filter表中OUTPUT规则的默认策略设为ACCEPT</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223114.png" alt="" />{width=”6.145833333333333in” height=”1.9791666666666667in”}</p>
+
+<h3 id="四-条件匹配">四. 条件匹配</h3>
+
+<p>1.通用（general）条件匹配（直接使用，而不依赖于其他的条件匹配及其扩展）</p>
+
+<p>协议匹配（允许使用的协议名包含在/etc/protocols文件中）</p>
+
+<p># iptables -AINPUT -p icmp–j REJECT //拒绝进入防火墙的所有icmp数据包</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223115.jpeg" alt="QQ图片20141213194202" />{width=”5.760416666666667in” height=”2.0729166666666665in”}</p>
+
+<p>地址匹配</p>
+
+<p>拒绝转发来自192.168.1.11主机的数据，允许转发来自192.168.0./24网段的数据</p>
+
+<p># iptables -A FORWARD -s 192.168.1.11 -j REJECT</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223116.jpeg" alt="QQ图片20141213194207" />{width=”5.770833333333333in” height=”2.28125in”}</p>
+
+<p>2. 隐含（implicit）条件匹配（需要指定的协议匹配为前提，其对应的功能由iptables自动（隐含）的装载入内核），如果无匹配条件，默认为REJECT。</p>
+
+<p>端口匹配</p>
+
+<p>仅允许系统管理员从202.13.0.0/16网段使用SSH方式远程登录防火墙主机</p>
+
+<p># iptables -A INPUT -p tcp --dport 22 -s 202.13.0.0/16 -j ACCEPT</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223117.jpeg" alt="QQ图片20141213194211" />{width=”5.770833333333333in” height=”2.8125in”}</p>
+
+<h3 id="五进行防火墙规则配置与测试">五.进行防火墙规则配置与测试</h3>
+
+<p>禁止Windows主机ping防火墙linux主机，但是允许从防火墙上ping其他主机（允许接受ICMP回应数据）</p>
+
+<p>1. 配置linux防火墙主机ip地址，如下图所示：</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223118.jpeg" alt="QQ图片20141213190045" />{width=”6.052083333333333in” height=”1.2708333333333333in”}</p>
+
+<ol>
+  <li>配置windows 主机ip地址，如下图所示:</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223119.jpeg" alt="QQ图片20141213190036" />{width=”5.96875in” height=”5.979166666666667in”}</p>
+
+<p>3. 配置linux 主机防火墙规则，如下图所示：</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223120.jpeg" alt="QQ图片20141213190326" />{width=”6.052083333333333in” height=”2.1979166666666665in”}</p>
+
+<p>4. 在此在windows 主机和linux 主机上进行相互ping 测试，测试结果如下图所示：</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223121.jpeg" alt="QQ图片20141213190041" />{width=”4.947916666666667in” height=”1.5833333333333333in”}</p>
+
+<p>windows主机无法ping通linux防火墙主机，但是linux主机可以ping通windows主机。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223122.png" alt="QQ图片20141213190031" />{width=”5.447916666666667in” height=”1.9583333333333333in”}</p>
+
+<p>再次进行攻击</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223123.png" alt="" />{width=”5.768055555555556in” height=”2.8243055555555556in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223124.png" alt="" />{width=”5.768055555555556in” height=”4.235416666666667in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/img/20200308223125.jpeg" alt="" />{width=”5.768055555555556in” height=”1.8340277777777778in”}</p>
+
+<h2 id="实验心得体会">实验心得体会</h2>
+
+<p>通过本次实验我学到了如何在linux 主机上配置防火墙规则以防止DDOS 高级，默认的iptables规则是无法过滤DDOS攻击数据的,我们需要添加过滤规则实现iptables拥有抗DDOS的能力：</p>
+
+<p>屏蔽 SYN_RECV 的连接<br />
+-A FORWARD -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -m limit --limit 1/sec -j ACCEPT<br />
+限制IP碎片，每秒钟只允许100个碎片，用来防止DoS攻击<br />
+-A FORWARD -f -m limit --limit 100/sec --limit-burst 100 -j ACCEPT<br />
+限制ping包每秒一个，10个后重新开始<br />
+-A FORWARD -p icmp -m limit --limit 1/sec --limit-burst 10 -j ACCEPT<br />
+限制ICMP包回应请求每秒一个<br />
+-A FORWARD -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec -j ACCEPT<br />
+此处自定义一个表<br />
+-A FORWARD -j RH-Firewall-1-INPUT<br />
+完全接受 loopback interface 的封包<br />
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT<br />
+允许主机接受 ping<br />
+-A RH-Firewall-1-INPUT -p icmp -m icmp --icmp-type any -j ACCEPT</p>
+
+<p>允许连线出去后对方主机回应进来的封包<br />
+-A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT<br />
+允许防火墙开启指定端口<br />
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport port -j ACCEPT<br />
+限制SSH登陆<br />
+只允许在***.***.***.***上使用ssh远程登录，从其它计算机上禁止使用ssh<br />
+iptables -A INPUT -s ***.***.***.*** -p tcp --dport 22 -j ACCEPT</p>
+
+<p>iptables -A INPUT -p tcp --dport 22 -j DROP</p>
+
+<p>也相应了解到了linux 主机防火墙处理数据包的顺序是什么，具体呢分为四步（1）当包到达端口时，对包报头进行<a href="http://baike.baidu.com/view/487037.htm">语法分析</a>。大多数包过滤设备只检查IP、TCP、或UDP报头中的字段。（2）若一条规则阻止包传输或接收，则此包便不被允许。（3）若一条规则允许包传输或接收，则此包便可以被继续处理。（4）若包不满足任何一条规则，则此包便被阻塞。</p>
+
+<p>通过这次实验，我对网络安全有了更深刻的认识，做二十一世纪现代人不但要有过硬的理论知识，良好的心理素质，健康的体魄，还要有超强的电脑操作能力，正所谓”秀才不出门，便知天下事”为一名信息专业学生来说，对于我来说它已不陌生。首先对于课程安排，感觉很紧凑，几乎不遗漏任何的知识点。理论总在实验和机试前，这样有利于我们学生接受新知识的灌输，而且把理论运用自如。相信以后更认真，努力的学习，一定可以使自己的知识更全面。我认识到只有沉下身来，静下心来认真学习，踏实做事，多用心，多动脑，才能让学习有好的起色。在实验中，我真真体会到合作的重要性!!!!实验前做好准备，要了解实验目的的要求，要详读实验的步骤，实验过程要谨慎仔细等等。</p>
+:ET
