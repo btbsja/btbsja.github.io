@@ -1,0 +1,62 @@
+I"!<h1 id="注册表有关操作">注册表有关操作</h1>
+
+<h2 id="一实验要求">一、实验要求</h2>
+
+<p>完成计算机注册表的有关修改完成一系列功能</p>
+
+<h2 id="二实验步骤">二、实验步骤</h2>
+
+<p>个性化时间：打开HKEY_CURRENT_USER\ControlPanel\International并设置字符串</p>
+
+<p>通过修改s1159，s2359修改上下午显示</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095414.jpeg" alt="" />{width=”4.729166666666667in” height=”2.03125in”}</p>
+
+<p>通过修改sTimeFormat改变现在的时间</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095415.png" alt="" />{width=”4.708333333333333in” height=”1.9583333333333333in”}</p>
+
+<p>删除网上邻居</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095416.png" alt="" />{width=”5.708333333333333in” height=”2.09375in”}</p>
+
+<p>禁止桌面显示图标</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095417.png" alt="" />{width=”4.135416666666667in” height=”2.6875in”}</p>
+
+<p>禁止使用任务栏</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095418.png" alt="" />{width=”4.0625in” height=”2.4375in”}</p>
+
+<p>隐藏第三个驱动器</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095419.png" alt="" />{width=”5.768055555555556in” height=”1.9680555555555554in”}</p>
+
+<p>禁止对显示属性修改</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095420.png" alt="" />{width=”4.895833333333333in” height=”4.979166666666667in”}</p>
+
+<p>IE首页修改</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095421.png" alt="" />{width=”4.6875in” height=”2.03125in”}</p>
+
+<p>修改默认页地址</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095422.png" alt="" />{width=”4.729166666666667in” height=”2.0625in”}</p>
+
+<p>删除快捷方式小箭头</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095423.png" alt="" />{width=”5.322916666666667in” height=”1.7291666666666667in”}</p>
+
+<p>删除IsShortcut图标</p>
+
+<p>启动时自动加载的运行程序</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095424.png" alt="" />{width=”5.208333333333333in” height=”2.1041666666666665in”}</p>
+
+<p>可以通过开机时自动加载的程序信息判断是否存在木马</p>
+
+<p>将值设置为4禁止使用U盘</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095425.png" alt="" />{width=”4.104166666666667in” height=”2.3541666666666665in”}</p>
+:ET

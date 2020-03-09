@@ -1,0 +1,546 @@
+I"��<h1 id="软件的静态分析与动态分析">软件的静态分析与动态分析</h1>
+
+<h2 id="一实验要求">一、实验要求</h2>
+
+<p>1、 选择合适的PE文件浏览、分析工具，静态分析工具，动态分析工具（可以参照课内教学常见的工具），常见分析工具集，学习工具的使用；</p>
+
+<p>2、 针对附件中Lab1、3、5、7、9内的可执行文件（EXE和DLL），给出恶意代码分析，分析其恶意特性、恶意功能以及恶意行为。</p>
+
+<p>1、 熟练掌握分析工具集的功能和方法；</p>
+
+<p>2、 针对恶意代码给出静态分析和动态分析，最好能使用反汇编工具针对程序做程序分片和污点传播分析；</p>
+
+<p>3、 完成实验报告，详尽描述分析过程、方法、工具，给出恶意代码的行为特征。</p>
+
+<h2 id="二实验步骤">二、实验步骤</h2>
+
+<p><strong>Lab01</strong></p>
+
+<p>1将Lab01-01.exe文件传上www.virustotal.com可以看到文件匹配到已有的反病毒软件特征,部分截图如下:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095433.png" alt="" />{width=”4.885416666666667in” height=”2.6770833333333335in”}</p>
+
+<p>可以看到,大部分匹配到了w32/Ramnit系列病毒特征</p>
+
+<p>2使用petool分别查看lab01-01.dll和lab01-01.exe的编译时间,截图如下:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095434.png" alt="" />{width=”5.768055555555556in” height=”4.3625in”}</p>
+
+<p>第一个是.exe第二个是.dll,可以看到两个文件的编译时间仅仅相差19秒.</p>
+
+<p>3看是否加壳最快的当然是用PEID看一下就好,不存在加密混淆.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095435.png" alt="" />{width=”5.768055555555556in” height=”2.0409722222222224in”}</p>
+
+<p>4从上面的截图可以看出,恶意程序执行一些文件操作的行为,查找文件(FindFirstFileA,FindNextFilesA),创建文件(CreateFileA),读写文件(CopyFileA),创建内存映射对象(CreateFileMappingA),.dll文件创建进程执行程序(CreateProcess),创建互斥量(OpenMutexA) 联网(WS2_32.dll)等行为</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095436.png" alt="" />{width=”4.520833333333333in” height=”1.1458333333333333in”}</p>
+
+<p>5用IDApro查看.exe文件字符串截图如下:</p>
+
+<p>可以看到两个kernel32.dll的细微差别,一个是kernel32.dll,一个是kerne132.dll,可以推测恶意程序劫持了kernel32.dll,还有.exe结合第四点推测他可能查找一个可执行文件</p>
+
+<p>6用IDApro查看.dll文件的字符串:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095437.png" alt="https://img-blog.csdn.net/20180513153127466" />{width=”3.5208333333333335in” height=”0.7291666666666666in”}</p>
+
+<p>结合WS2_32.dll推测他可能链接这个IP地址,获取exec命令来运行一个程序,一个sleep来是后门程序休眠</p>
+
+<p>7由经验:后门程序常用GetProcess和sleep,得到总结.dll是个后门程序,而.exe加载运行.dll</p>
+
+<p><strong>Lab1-2</strong></p>
+
+<p>1匹配到已有反病毒软件特征,结果和上一题类似就不贴图了,感兴趣可以自己上传查看.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095438.png" alt="https://img-blog.csdn.net/2018051315525830" />{width=”4.416666666666667in” height=”2.25in”}</p>
+
+<p><strong>2</strong>在option里面选中核心扫描,普通扫描测不出来</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095439.png" alt="https://img-blog.csdn.net/2018051316494364" />{width=”5.768055555555556in” height=”1.488888888888889in”}</p>
+
+<p>脱壳成功截图:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095440.png" alt="https://img-blog.csdn.net/20180513165022885" />{width=”5.768055555555556in” height=”2.686111111111111in”}</p>
+
+<p>也可以手动脱壳,用ollydbg打开找到OEP</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095441.png" alt="https://img-blog.csdn.net/20180513165010429" />{width=”5.768055555555556in” height=”2.936111111111111in”}</p>
+
+<p>PETooldump内存,接着用ImportREC修复输入表</p>
+
+<p>脱壳后用PEID查看:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095442.png" alt="https://img-blog.csdn.net/20180513165141666" />{width=”5.552083333333333in” height=”3.15625in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095443.png" alt="https://img-blog.csdn.net/20180513165226738" />{width=”5.072916666666667in” height=”2.4583333333333335in”}</p>
+
+<p>4用IDApro查看字符串</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095444.png" alt="https://img-blog.csdn.net/20180513171409754" />{width=”5.768055555555556in” height=”1.895138888888889in”}</p>
+
+<p>一个Malservice服务名称,一个链接,可以通过监视网络流量检查被恶意代码感染的主机</p>
+
+<p><strong>Lab1-3</strong></p>
+
+<p>2PEID查看 FSG加壳</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095445.png" alt="https://img-blog.csdn.net/20180513172228600" />{width=”5.46875in” height=”2.8854166666666665in”}</p>
+
+<p><strong> </strong>ollydbg手动脱壳查找oep选择第三个就可直接到达OEP处,然后选择分析代码,接着选择下图第一个选项dump出来即可.</p>
+
+<p>3组件对象模型com的相关操作</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095446.png" alt="https://img-blog.csdn.net/20180513173729963?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.1666666666666665in” height=”1.0520833333333333in”}</p>
+
+<p>4得到一个链接,可以作为网络迹象说明主机是否被感染</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095447.png" alt="" />{width=”2.8541666666666665in” height=”0.9791666666666666in”}</p>
+
+<p><strong>Lab1-4</strong></p>
+
+<p>2没有加壳</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095448.png" alt="" />{width=”5.0in” height=”3.03125in”}</p>
+
+<p>3 PETool查看时间,可以看出是个不可信的时间</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095449.png" alt="https://img-blog.csdn.net/20180513174838896?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.4270833333333335in” height=”1.5520833333333333in”}</p>
+
+<p>4权限操作相关函数</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095450.png" alt="https://img-blog.csdn.net/20180513175049537?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.8125in” height=”1.15625in”}</p>
+
+<p>注意最后两个函数告诉我们,程序将会创建一个可执行文件并且运行他</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095451.png" alt="https://img-blog.csdn.net/20180513175144127?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.5520833333333335in” height=”4.104166666666667in”}</p>
+
+<p>5第一行说明恶意代码创建的程序</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095452.png" alt="" />{width=”5.052083333333333in” height=”1.8958333333333333in”}</p>
+
+<p>6将资源文件用resource hacker打开,可以轻易判断出这是一个.exe文件</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095453.png" alt="" />{width=”5.768055555555556in” height=”2.602777777777778in”}</p>
+
+<p>提出来保存成.exe文件再用IDApro打开</p>
+
+<p><strong>Lab 03</strong></p>
+
+<p>1静态分析查看是否加密然后看输入表和字符串</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095454.png" alt="" />{width=”3.875in” height=”2.59375in”}</p>
+
+<p>可以看出文件被PEncrypt加密dependency查看输入表可以看到很少的函数,kernel只有一个ExitProcess</p>
+
+<p>strings查看字符串</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095455.png" alt="" />{width=”5.010416666666667in” height=”1.6979166666666667in”}</p>
+
+<p>2动态分析:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095456.png" alt="https://img-blog.csdn.net/20180514190041298?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.6041666666666665in” height=”0.9375in”}</p>
+
+<p>processexp查看handles和dll</p>
+
+<p>了解到关键信息,互斥量WinVMX32,和网络相关的dll联系上面字符串可以知道程序访问了www.practicalmalwareanalysis.com</p>
+
+<p>字符串中有注册表相关字符,可以推测又和注册表相关操作,还有vmx32to64.exez字符可以推测有文件操作,查看Regsetvalue和writefile两个函数,在procmon中查看结果:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095457.png" alt="" />{width=”5.768055555555556in” height=”2.5819444444444444in”}</p>
+
+<p>看前三条信息足以,第一个是写一个随机数发生种子,第二个是创建了一个.exe文件,正是前面看到的vmx32to64.exe,第三个是将这个程序写到注册表自启动项.</p>
+
+<p>d537acb8f56a1ce206bc35cf8ff959c0   vmx32to64.exe</p>
+
+<p>d537acb8f56a1ce206bc35cf8ff959c0   Lab03-01.exe</p>
+
+<p>可以看到两个文件md5一样,可以知道,vmx32to64就是Lab03-01复制过去的</p>
+
+<p>3使用apateDNS 和nc</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095458.png" alt="" />{width=”5.768055555555556in” height=”3.061111111111111in”}</p>
+
+<p>wireshark抓包结果</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095459.png" alt="https://img-blog.csdn.net/20180514213234781?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”5.768055555555556in” height=”0.7388888888888889in”}</p>
+
+<p><strong>lab03-02</strong></p>
+
+<p>1这里我想用PEtool查看输出函数,可以推测可能需要rundll32.exe工具将该dll安装成一个服务,使用命令:rundll32.exe Lab03-02.dll,installA</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095500.png" alt="" />{width=”4.59375in” height=”2.0625in”}</p>
+
+<p>2然后可以用IDApro查看字符串(我习惯先用IDA,不行再用string看看),可以看到很多字符串就不一一列出,有几个比较重要</p>
+
+<p>还有一些提示信息就不一一列出,至少可以明确执行了和注册表相关操作,那么我们用regshot查看一下安装Lab03-02.dll前后注册表信息变化可以了解到什么</p>
+
+<p>对比报告我们可以得到几条重要信息</p>
+
+<p>增加了HKLM\SYSTEM\ControlSet001\Services\IPRIP,HKLM\SYSTEM\CurrentControlSet\Services\IPRIP,可以知道.dll创建一个名为IPRIP的服务可以了解到服务IPRIP的servicedll就是Lab03-02.dll,那么我们就可以用net start IPRIP来打开这个服务</p>
+
+<p>3processexp搜索Lab03-02.dll即可</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095501.png" alt="" />{width=”3.8958333333333335in” height=”2.0104166666666665in”}</p>
+
+<p>4可由上图知道,IPRIP服务运行在PID 1096来进行过滤</p>
+
+<p>5恶意代码特征上面分析了很多,服务IPRIP,Lab03-02.dll,服务名称 Intranet Network Awareness (INA+),还有上面的多项注册表信息等</p>
+
+<p>6查看nc和ApateDNS可以了解到网络特征</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095502.png" alt="" />{width=”5.020833333333333in” height=”0.7604166666666666in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095503.png" alt="https://img-blog.csdn.net/2018051514192576?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”5.768055555555556in” height=”0.15625in”}</p>
+
+<p><strong>lab3-3</strong></p>
+
+<p>1运行Lab03-03后,注意到explore下面多了一个不成寻常进程svchost.exe,我们有理由相信这是Lab03-03.exe动的手脚,还可以双击这个进程查看他的内存字符串,和正常svchost的磁盘字符串区别,可以知道他绝对是个恶意代码,并且有这几个字符串推测是击键记录器</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095504.png" alt="https://img-blog.csdn.net/20180515144116767?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.7708333333333335in” height=”1.4166666666666667in”}</p>
+
+<p>3查看promon,如何设置过滤,从上题知道他创建一个svchost,所以先过滤PID为svchost的ID,因为是击键记录器,为了验证是否推测成立,然后通过打开一个.txt写一个test,然后过滤creatfile 和writefile两个函数看看文件操作</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095505.png" alt="https://img-blog.csdn.net/20180515144609113?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”5.760416666666667in” height=”0.7916666666666666in”}</p>
+
+<p>可以明显看到他的文件操作,在打开文件看看很明显我们的推测成立,这是一个击键记录器,使用svchost替换技术</p>
+
+<p><strong>lab3-4</strong></p>
+
+<p>1,双击运行结果程序删除自身,那我们希望先静态分析看看有什么有用信息</p>
+
+<p>程序没有加密,加载dll,可能有网络行为</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095506.png" alt="https://img-blog.csdn.net/20180515145316655?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.25in” height=”1.0in”}</p>
+
+<p>再看字符串,可以看到不少有用信息,域名,注册表,HTTP/1.0 DOWLOAD UPLOAD等字符串可以推测是http后门程序</p>
+
+<p>还有-cc -in -re这种很像参数的字符,但是即使用上这些字符程序还是会删除自身,我们只能用Promon来看一下程序都干了什么</p>
+
+<p>程序做了不少注册表相关操作,但是最重要的要知道程序为什么删除自身,原因如图:</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095507.png" alt="https://img-blog.csdn.net/20180515150727632?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”5.768055555555556in” height=”0.7083333333333334in”}</p>
+
+<p><strong>Lab07</strong></p>
+
+<p>1输入表两个关键dll,显示程序会有网络和注册表相关操作,kernel.dll导入了互斥量和线程相关操作,认识的dll和函数也就这些了</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095508.png" alt="https://img-blog.csdn.net/20180517161535565?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.4583333333333335in” height=”1.1770833333333333in”}</p>
+
+<p>再看看字符串</p>
+
+<p>分析主函数:看两个关键参数(lpservicename和lpserviceproc)和两个关键函数(startservicectrldispatcher和sub_401040),startservocectrldispacher函数将主线程链接到服务控制管理器,说明lab07-01要作为服务程序运行,服务名字是MalService,开始运行地址是sub_401040,所以分析一下sub_401040就可以知道他在干嘛.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095509.png" alt="" />{width=”5.768055555555556in” height=”1.2180555555555554in”}</p>
+
+<p>双击跳转到401040处</p>
+
+<p>首先是openmutex检查互斥量HGL345是否存在,存在这说明已经有一个恶意程序在运行了,所以就直接就结束程序,如果不存在则createmutex创建这个互斥量</p>
+
+<p>然后是打开openscmanager得到服务控制管理器句柄备用</p>
+
+<p>然后getcurrentprocess得到进程句柄备用</p>
+
+<p>然后getmodulefilename得到当前进程路径名备用</p>
+
+<p>然后createservice把前面备用的都当参数传进去了创建了个malservice'服务,注意参数0x02(dwstarttype)是自启动</p>
+
+<p>然后systemtimetofiletime将系统时间转换为文件格式备用,其中年设置为2100其他都是0(2010年1月1日00:00)然后他把这个时间传给了setwaitabletimer</p>
+
+<p>然后createwaitabletimer创建同步定时器对象,对象句柄备用</p>
+
+<p>然后setwaitabletimer激活(使用前两个备用作为关键参数)</p>
+
+<p>最后waitforsingleobject等待定时器对象处于信号状态或超时间间隔结束只有等待成功返回0那么程序就接着做,否则跳转去sleep了</p>
+
+<p>链接加载这个网址http://www.malwareanalysisbook.com</p>
+
+<p><strong>lab07-02</strong></p>
+
+<p>无加密,输入表:com相关库的导入,字符串也就一个网址有用信息</p>
+
+<p>分析mian函数</p>
+
+<p>首先oleinitialize初始化com(都是套路别问为啥),调用失败就没得玩了成功才有然后</p>
+
+<p>然后coinitialize获得com的对象,有了对象才能访问com嘛,对象被放在变量ppv了备用,同样要调用成功才能接着玩,要不就结束</p>
+
+<p>然后variantinit初始化一个变体pvag</p>
+
+<p>然后SysAllocString,生成新字符串然后把那个网址拷贝进去</p>
+
+<p>然后后面就一个call [edx+2ch],然后就是sysfreestring和oleuninitialize了这两个函数用脚趾头想都知道对应上面的sysallocstring和oleinitilize,所以分析了这些没发</p>
+
+<p>可以知道这个[edx+2ch]跟之前的ppv相关,就是ppv取值在加偏移2ch处的值,所以关键要知道ppv到底是什么那就要回到coinitialize的的调用看他的参数riid和rclsid,认真看书的同学会发现这两个数字串在书上出现过,iid就是IwebBrowser2,clsid就是internet explorer,偏移2ch处是navigate函数,在分析一下这个函数调用就结束啦</p>
+
+<p>navigate作用是通过http post传输打开网址,可以看到好几个参数都是pvag之前初始化的,主要看flag和url和this lab07-03</p>
+
+<p>1看看函数lab07-03.exe导入的都是一些文件操作函数,看不出啥,再看看字符串,明显是要替换kernel32.dll为kerne132.dll l变为1了看清楚,再进一步假设,这个新的kerne132.dll就是lab07-03.dll有不有,那么lab07-03.exe的作用很可能就是将lab07-03.dll复制成kerne132.dll来替换系统原来的kernel32.dll了(大胆假设很重要,有一个想法是比较好的,之后我们就只是需要验证我们想法即可,而不是毫无头绪的就进去分析代码) 还有.exe和C:\\需要注意,他可能还做了其他的事,暂时的推测就这样了</p>
+
+<p>IDApro打开看一下流程图发现比我们之前接触的要庞大许多,之前几次的代码分析都尽量讲到很细节,但是当代码量增加的时候我们就不能着眼于细节,而是整体上把握程序的结构</p>
+
+<p>si</p>
+
+<p>然后下面是个循环结构看源码,可以知道他在不断的比较eax和esi的每个字节是否相等,只有全等程序才能继续运行,否则结束,这里我们可以知道程序要运行需要一个参数WARNING_THIS_WILL_DESTROY_YOUR_MACHINE</p>
+
+<p>看一下findfirstfile的第一个参数确定他要找什么文件,ebp参数也就是函数4011E0的第一个参数,回去看看对4011E0的调用,找的是c盘下所以的文件啊</p>
+
+<p>继续分析关键地方来验证我们的猜想我们看到一个字符串比较函数,相等才调用sub_4010A0</p>
+
+<p>stricmp的两个参数藏的比较上面往上面翻翻就能找到两个push,一个是.exe一个是str1我们推测这应该是看找到的文件是不是.exe文件是才调用sub_4010A0继续操作</p>
+
+<p>注意看ebp,第一次是esi+3ch地方的值付给他,这是个得到PE头偏移值,后面加上esi基地址后ebp就是指向PE头(也就是文件里面5045"PE"这个地方)然后再加上D0h这就到了Bound import table处然后下面都把他的偏移和大小设为0了,这是为了让程序不会再次导入kernel32.dll而做的操作.</p>
+
+<p>现在我们再来看看lab07-03.dll在干</p>
+
+<p>导入了WS2_32.dll显然有网络相关操作,再看看字符串,ip很重要,</p>
+
+<p>第一个函数被标识为_alloca_probe,分配栈</p>
+
+<p>后面是几个互斥量操作也很熟悉了互斥量"SADFHUHF"可以作为主机特征</p>
+
+<p>这几个是在连接ip地址为127.26.152.13的主机</p>
+
+<p>然后程序发送了hello,接着等待接受对面的信息,判断接收到的信息是不是sleep命令,是就睡觉不是就看看发过来的信息是不是exec命令,是就执行创建进程操作,然后再发送hello,等待不断执行这个操作,知道收到q才结束程序</p>
+
+<p>因为第一个参数为0,所以commandline是要打开程序绝对路径,他由远端谁exec命令一起发送过来</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095510.png" alt="" />{width=”3.3958333333333335in” height=”1.7083333333333333in”}</p>
+
+<p><strong>Lab09</strong></p>
+
+<p><strong>lab09-01</strong></p>
+
+<p>1 IDApro打开程序,程序要求参数要大于1,这就说明我们需要输入lab09-01.exe "一些参数"这样的方式才能启动程序,为什么呢,因为如果不跳转,那么下面不管是在jz处是否跳转结果都会跳转到下面这个地方直接结束程序. <img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095511.png" alt="https://img-blog.csdn.net/20180519142742826?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.3958333333333335in” height=”2.0104166666666665in”}</p>
+
+<p>区别就是sub401000在找一个注册表项(实际上我在xp和win7下跟踪发现他永远都是找不到的,也就是返回值永远是0,那么他就会跳转到402B13,再执行402410删除自身)</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095512.png" alt="" />{width=”4.1875in” height=”1.1875in”}</p>
+
+<p>402410将会删除程序自身.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095513.png" alt="" />{width=”4.895833333333333in” height=”1.0729166666666667in”}</p>
+
+<p>最后一个参数(我们的目标就是知道这个参数是啥)被传给sub_402510函数作为参数,看来需要跟踪进这个函数才能解开秘密</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095514.png" alt="https://img-blog.csdn.net/20180519145859340?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.6041666666666665in” height=”1.3541666666666667in”}</p>
+
+<p>开头这一段是在看参数的字节数是不是4,这个自己体会一下,或者再ollydbg里面跟踪运行一下就知道他在干嘛，知道参数是四个字符</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095515.png" alt="https://img-blog.csdn.net/20180519150131454?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.7291666666666665in” height=”2.125in”}</p>
+
+<p>接着往下走,看关键cmp再联系上下文知道比较的双方是什么,你就会很快明白在做什么,很明显edx是参数的第一个字节,他在和a比较,那就是说第一个字符是a</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095516.png" alt="" />{width=”3.6354166666666665in” height=”2.1875in”}</p>
+
+<p>接着cmp是eax和1比较,那么eax是啥?联系上文你会发现,eax是参数的第二个字符减去参数的第一个字符的值,也就是说第二个字符是b继续看这段代码,做了一系列事还有乘法,其实你会发现她其实就是再看第三个字符是不是c,并不复杂</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095517.png" alt="" />{width=”3.6875in” height=”1.65625in”}</p>
+
+<p>最后一个字符,很可能就是d了,实际上你仔细分析会发现确实如此</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095518.png" alt="" />{width=”3.40625in” height=”1.7395833333333333in”}</p>
+
+<p>我们发现程序要启动需要命令 Lab09-01.exe abcd,我们用ollydbg验证一下,可以看到402510函数正确返回1,这里我们可以回答一下第三问,把jnz改成jmp即可不需要特定密码都能通过.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095519.png" alt="" />{width=”5.447916666666667in” height=”2.0208333333333335in”}</p>
+
+<p>接下来下面代码是一样的不过一个是再ollydbg一个是IDApro打开的,你会发现他需要第三个参数-in(安装可能推测),那么没有呢他会怎么办?一路跟踪发现他会考虑是否有参数-in -re -c -cc这是个参数,如果都没有还是会删除自</p>
+
+<p>那么有参数-in他会做什么?(很可能安装程序猜测)关键函数他的参数被标记为一个服务名,看看这个函数做什么,他实际上就调用两个函数,再结合实际代码会知道,他是要得到完整路径,然后得到文件名Lab09-01.exe作为服务名返回.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095520.png" alt="" />{width=”2.5833333333333335in” height=”0.6458333333333334in”}</p>
+
+<p>键代码再函数402600了</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095521.png" alt="" />{width=”5.03125in” height=”0.7291666666666666in”}</p>
+
+<p>前面一串先不管,没必要陷入细节,我们看到他打开服务控制管理器,然后打开一个服务,成功也就是服务存在那就把他设置成自启动,否则就创建这个服务,并设置为自启动,然后结束,这一波结论的得出其实不难几个关键的函数已经说明问题</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095522.png" alt="https://img-blog.csdn.net/20180519154418730?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.5104166666666665in” height=”0.6875in”}</p>
+
+<p>从创建服务的参数我们可以知道,恶意程序被复制到system32目录下了.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095523.png" alt="" />{width=”5.489583333333333in” height=”2.2395833333333335in”}</p>
+
+<p>还没完,在服务成功注册或者被设置为自启动后,他还会创建一个注册表项函数sub_401070里面</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095524.png" alt="" />{width=”5.768055555555556in” height=”1.770138888888889in”}</p>
+
+<p>并且设置Configuration键值为图中数据区字符串.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095525.png" alt="" />{width=”5.768055555555556in” height=”2.020138888888889in”}</p>
+
+<p>2我们可以看到程序的结构和-in很像,他也可以指定第四个参数作为要删除的服务名称,代码的关键函数调用deleteservice告诉我们他是删除程序自身.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095526.png" alt="" />{width=”5.768055555555556in” height=”0.3020833333333333in”}</p>
+
+<p>3看-c命令,发现他一共需要七个参数,然后调用401070这个函数,这个函数我们之前分析过看看之前对这个函数的调用,我们不难知道-c是对键值configuration的修改操作.</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095527.png" alt="" />{width=”4.645833333333333in” height=”1.0104166666666667in”}</p>
+
+<p>4再看看最后的-cc命令,看到这种格式我们很容易联想到输出,实际操作也证明这一点,-cc就是打印configuration这个键值</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095528.png" alt="" />{width=”4.635416666666667in” height=”3.7083333333333335in”}</p>
+
+<p>,如果程序已经安装以服务方式运行,没有那些参数,那么他会运行sub_402360函数,然后依据函数sub_401E60返回的值做相应的操作:SLEEP UPLOAD DOWNLOAD CMD NOTHING这五种操作,所以先看看401E60函数,我们猜测这可能是接受远端发来命令的函数,那么一定有网络相关操作,在函数sub_401AF0里面有一系列网络函数操作,其中调用401640是一系列网络初始操作,再往下会发现send和recv操作,至于上面五种操作具体做什么就不一一具体分析,因为从名字上就可以知道分别是,睡眠,下载文件到本地,读取文件到远端主机,</p>
+
+<p>分析一下各个命令参数形式sleep的参数得自strtok第二次分割得到的值也就是说格式为SLEEP time</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095529.png" alt="https://img-blog.csdn.net/20180519175625580?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.5833333333333335in” height=”2.0416666666666665in”}</p>
+
+<p>看UPLOAD的关键函数调用有三个参数,name是主机名,文件名和端口是命令指定,格式UPLOAD port filename</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095530.png" alt="" />{width=”2.8020833333333335in” height=”1.5208333333333333in”}</p>
+
+<p>DOWNLOAD和UPLOAD很类似就不说了看看CMD,下图是在创建并运行子进程 等同于cmd.exe /c command形式运行cmd,其中arg_0是_popen的参数,所以</p>
+
+<p>CMD还需要在函数401790里面读取标准输出内容然后从指定端口发送给远端主机</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095531.png" alt="" />{width=”3.1666666666666665in” height=”2.90625in”}</p>
+
+<p>在loc_401B35显示恶意程序最初是构造HTTP/1.0 GET请求,则可以作为网络特征</p>
+
+<p>然后就是ollydbg和IDApro的使用,实际上在分析上述代码的时候我少使用ollydbg,基本使用IDApro来完成分析,但是我发现ollydbg必不可少。</p>
+
+<p>lab09-02</p>
+
+<p>1除了函数名有意思的字符串都在这里</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095532.png" alt="" />{width=”5.604166666666667in” height=”1.4791666666666667in”}</p>
+
+<p>3首先得到程序完整路径名,然后用strrchr函数得到最后一个'\'后面的字符也就是函数名Lab09-02.exe,然后和var_1A0做比较,相等程序才继续运行,否则跳转到4013D6就结束程序了,现在看看var_1A0是啥ocl.exe,所以程序要改名为ocl.exe程序才能正确运行</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095533.png" alt="https://img-blog.csdn.net/2018052013235022?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.0104166666666665in” height=”3.3958333333333335in”}</p>
+
+<p>4对比发现,local.124的值被赋值为"F\x06\x16TB\x05\x12\x1BG\f\a\x02]\x1C",而他又被作为参数传给401089</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095534.png" alt="" />{width=”5.71875in” height=”2.4791666666666665in”}</p>
+
+<p>5一个是字符串1qaz2wsx3edc,另一个就是上面提到的</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095535.png" alt="https://img-blog.csdn.net/20180520133019993?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.8333333333333335in” height=”0.8541666666666666in”}</p>
+
+<p>6域名是上面sub_401089的返回值,用ollydbg跟踪发现是用上面的第一个参数和第二个参数异或</p>
+
+<p>7这是运行了cmd子进程.然后他的输入输出错误都被赋予了套接字s,则构成了一个反向shell</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095536.png" alt="" />{width=”3.5416666666666665in” height=”1.71875in”}</p>
+
+<p>注意到程序运行后并没有cmd窗口猜测被隐藏了看下运行结果apatedns被我设为本地,很明显反向shell成功</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095537.png" alt="" />{width=”5.768055555555556in” height=”3.477777777777778in”}</p>
+
+<p><strong>lab09-03</strong></p>
+
+<p>1对比idapro的字符串和ollydbg的查看可执行模块,可以推测,程序导入了DLL1,DLL2,kernel32.dll和netapi32.dll动态user32.dll和dll3</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095538.png" alt="" />{width=”3.8958333333333335in” height=”2.5in”}</p>
+
+<p>2全部都是10000000</p>
+
+<p>3dll1是10000000而dll2是390000,dll3是3f0000</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095539.png" alt="https://img-blog.csdn.net/20180520144542672?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.8229166666666665in” height=”0.3020833333333333in”}</p>
+
+<p>4dll1就一个导出函数dllprint,打印如下信息,其中400每次都会变化,因为他是lab09-03的ID</p>
+
+<p>因为在dll1main里面调用getcurrentprocessid得到程序id然后给了10008030,后面又被作为参数传给10001038打印出来</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095540.png" alt="https://img-blog.csdn.net/20180520144652366?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.8125in” height=”0.4791666666666667in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095541.png" alt="https://img-blog.csdn.net/20180520150158655?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.3125in” height=”0.3958333333333333in”}</p>
+
+<p>5dll2的主函数创建temp.txt文件然后将句柄给了1000B078,然后函数dllreturn将这个句柄返回作为参数给了我writefile</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095542.png" alt="" />{width=”3.7708333333333335in” height=”1.4479166666666667in”}</p>
+
+<p>60llydbg查看知道第二个参数是local.7那么在上一个call local.4处被作为参数传递,那么很有可能这个参数的值来自这个函数的操作<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095543.png" alt="" />{width=”5.768055555555556in” height=”2.342361111111111in”}</p>
+
+<p>dll3的神秘数据是ping www.malwareanalysisbook.com的宽字节在内存中的位置</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095544.png" alt="" />{width=”5.768055555555556in” height=”1.113888888888889in”}</p>
+
+<p>8如图,选中manual load然后再ollydbg中查看dll2的加载基地址我这边是390000</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095545.png" alt="" />{width=”5.270833333333333in” height=”2.3854166666666665in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095546.png" alt="" />{width=”5.760416666666667in” height=”1.9895833333333333in”}</p>
+
+<p><strong>Lab05</strong></p>
+
+<p>直接用IDAPro打开.dll文件,就直接来到Dllmain处,可以知道地址为0x1000D02E</p>
+
+<p>要知道gethostbyname在WS2_32.dll就比较容易找到,而且注意是区分大小写的.这是小写,找到后双击到达输出表处,然后右键gethostbyname函数名选择Xrefs graph to查看有多少函数调用它结果如图:五条线说明有五个函数调用他</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095547.png" alt="https://img-blog.csdn.net/20180515152901980?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.3125in” height=”1.6354166666666667in”}</p>
+
+<p>选择函数名gethostbyname并且按X,显示所有对hethostbyname的调用,找到,0x10001757(sub_10001656+101)双击到达代码处,分析如下,0x100019040处的全局变量地址赋值给eax,eax+0dh得到要请求的DNS名字,再压入栈作为gethostbyname的参数,所以双击查看10019040处代码,再双击跳转到1001994处看到字符串,[This is RDO]pics.praticalmalwareanalysis.com,去掉前头0dh个字符得到pics.praticalmalwareanalysis.com</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095548.png" alt="https://img-blog.csdn.net/20180515153701696?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.6979166666666665in” height=”0.75in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095549.png" alt="https://img-blog.csdn.net/2018051515441185?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”5.768055555555556in” height=”0.2604166666666667in”}</p>
+
+<p>按G跳转到0x10001656往上翻看,得到下图,分析可得,有23个局部变量一个(最后一个)参数,大于ebp的是参数,小于的是局部变量</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095550.png" alt="" />{width=”4.1875in” height=”3.3958333333333335in”}</p>
+
+<p>\cmd.exe /c加一个转移字符,再加一个结束符一共13个字符,在setup里面设置一下最小长度为13,再按length低到高排列可以快速找到,双击到达位置.10095B34处</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095551.png" alt="https://img-blog.csdn.net/2018051515580965?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.1979166666666665in” height=”3.7708333333333335in”}</p>
+
+<p>按x查看那个地方调用这个局部变量,可以发现只有 一个地方,双击跳转到该处</p>
+
+<p>可以看到下面有个recv应该是接受远端发来的命令,然后下面一串的命令比较看运行哪一个命令,可以推测这是一个远程shell会话</p>
+
+<p>在0x100101c处选中该局部变量按x可以看到就三个地方调用它,其中只有一个是mov指令其他都是比较,所以双击查看该mov指令,可以看到局部变量给赋予从函数10003695返回的值.再双击查看sub_10003695处的代码,可以看到如果得到的ID==2则al设为1否则为0,为2说明VER_PLATFORM_WIN32_NT win32nt平台</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095552.png" alt="" />{width=”4.28125in” height=”1.7083333333333333in”}</p>
+
+<p>在10010444处,成功则执行sub_100052A2函数双击跳转到该函数位置查看代码,看到两个关键的函数调用,打开一个注册表项成功跳转到10005309处,失败则关闭返回的注册表句柄,再看10005309处代码,还是几个关键函数调用,regwueryvalue和sprintf和100038EE,双击查看100038EE可以知道这是一个send函数,</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095553.png" alt="" />{width=”5.768055555555556in” height=”2.946527777777778in”}</p>
+
+<p>看导出表,找到PSLIST,双击查看几个关键call调用,一个个分析,第一个sub_100036c3,双击查看可以知道同样是一个判断操作系统是否是win2000以上的函数dwpaltformid==2,且dwMajorVersion&gt;5</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095554.png" alt="https://img-blog.csdn.net/20180515164243926?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”2.59375in” height=”2.125in”}</p>
+
+<p>strlen函数看str参数是否为空,如果为空调用sub_10006518函数,否则跳转1000704E处调用sub_1000664c函数</p>
+
+<p>现在看sub_1000664c函数查看函数的调用右键选择xrefs from可以看到几个关键函数Getmodulfilename,strcmp,process32next process32first</p>
+
+<p>再看函数流程图具体分析可以知道,函数列出并发送所以str指定的模块名字的进程 流程图分析关键点截图</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095555.png" alt="" />{width=”5.768055555555556in” height=”3.925in”}</p>
+
+<p>再看10006518同样的方法发现他们很相似,用到的函数基本相同,但是你会发现10006518少了strcmp函数相对于1000664c,可以知道因为没有指定str,所以程序列出所以进程信息,并发送.这就是PSLIST函数作用.正如他的函数名所暗示的一样</p>
+
+<p>xrefs from截图如下:可以看到关键函数send,看getsystemdefaultlangid和sprintf可以知道send的是和系统缺省语言ID,故命名为send_langID</p>
+
+<p>查看关键代码知道参数eax决定睡眠多长,可以看到一系列对eax的操作查看初始10019020处的数据得到30,30乘以3e8h(1000)得到30000毫秒</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095556.png" alt="https://img-blog.csdn.net/20180515172804714?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.5in” height=”1.375in”}</p>
+
+<p> #define AF_INET 2协议域</p>
+
+<p>#define SOCK_STREAM 2 socket类型tcp</p>
+
+<p>#define IPPROTO_TCP 6tcp协议</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095557.png" alt="https://img-blog.csdn.net/20180515174201233?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2JhaWR1XzQxMTA4NDkw/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" />{width=”3.09375in” height=”0.7083333333333334in”}</p>
+
+<p>选择searsh text 选择find all,需要一点时间,双击到达100061DB处查看代码,存在VMXh,再看交叉引用选择一个双击查看代码,可以看到关键字符串输出</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095558.png" alt="" />{width=”5.768055555555556in” height=”1.7597222222222222in”}</p>
+
+<p>未识别16进制数</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095559.png" alt="" />{width=”4.229166666666667in” height=”2.65625in”}</p>
+
+<p>数值改变</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095600.png" alt="" />{width=”4.854166666666667in” height=”4.260416666666667in”}</p>
+
+<p>按A，notepad++打开查看,获得光标位置将0-0x50个字节和0x55异或再重新写回去</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095601.png" alt="" />{width=”4.5625in” height=”1.3854166666666667in”}</p>
+
+<p>通过这次实验，我更加了解了代码的静态分析和动态分析技术，了解了它们的定义、执行方式、采用技术等内容。</p>
+:ET

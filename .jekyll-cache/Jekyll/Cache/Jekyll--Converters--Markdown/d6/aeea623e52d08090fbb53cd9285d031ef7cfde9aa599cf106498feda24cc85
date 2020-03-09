@@ -1,0 +1,271 @@
+I"U!<h1 id="lr0分析法">LR（0）分析法</h1>
+
+<h2 id="1实验目的">1.实验目的</h2>
+
+<p>了解LR(0)语法分析算法的基本思想，掌握LR(0)语法分析程序的构造方法。</p>
+
+<h2 id="2设计方法">2.设计方法</h2>
+
+<h3 id="21实验原理">2.1实验原理</h3>
+
+<p>1.LR(0) 文法定义</p>
+
+<p>文法 G 是 LR(0) 文法，当且仅当它的LR(0)FSM中的每个状态都满足：<br />
+①不同时含有移进项目和归约项目，即不存在移进-归约冲突。<br />
+②不含有两个以上归约项目，即不存在归约-归约冲突。</p>
+
+<p>2.LR(0)分析表的构造</p>
+
+<p>ACTION 表项和 GOTO表项可按如下方法构造：</p>
+
+<p>若项目A -&gt;α • aβ属于 Ik 且 GO (Ik, a)= Ij, 期望字符a 为终结符，则置ACTION[k, a] =sj (j表示新状态Ij);</p>
+
+<p>若项目A -&gt;α • Aβ属于 Ik，且GO (Ik, A)= Ij,期望字符 A为非终结符，则置GOTO(k, A)=j (j表示文法中第j个产生式);</p>
+
+<p>若项目A -&gt;α •属于Ik, 那么对任何终结符a, 置ACTION[k, a]=rj；其中，假定A-&gt;α为文法G 的第j个产生式；</p>
+
+<p>若项目S’ -&gt;S • 属于Ik, 则置ACTION[k, #]为”acc”;</p>
+
+<p>分析表中凡不能用上述规则填入信息的空白格均置上”出错标志”</p>
+
+<h3 id="22程序流程图">2.2程序流程图</h3>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093332.png" alt="" />{width=”5.3625in” height=”3.1770833333333335in”}</p>
+
+<h2 id="3实验结果">3.实验结果</h2>
+
+<p>1：构造LL(0)分析表</p>
+
+<p>文法G[S']为:</p>
+
+<p>S'→E        [0]   </p>
+
+<p>E→aA       [1]    </p>
+
+<p>E→bB       [2]   </p>
+
+<p>A→cA        [3]   </p>
+
+<p>A→d          [4]    </p>
+
+<p>B→cB        [5]    </p>
+
+<p>B→d          [6]</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093333.png" alt="" />{width=”5.768055555555556in” height=”2.1944444444444446in”}</p>
+
+<p>2：分析输入符号串</p>
+
+<p>成功符号串</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093334.png" alt="" />{width=”4.866666666666666in” height=”2.066666666666667in”}</p>
+
+<p>失败符号串</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093335.png" alt="" />{width=”4.908333333333333in” height=”2.058333333333333in”}</p>
+
+<h2 id="4实验总结">4.实验总结</h2>
+
+<p>本实验程序较好地完成了LR(0)分析法分析程序的设计与实现，能够对所给字符串进行识别，判断是否是给定文法的句子。通过这次的实验，我了解了LR(0)文法预测分析法设计和实现，加深了对LR（0）文法的理解和认识，使我的编译原理的知识更加巩固，而且可以使理论与实践相结合，更好的掌握所学知识。</p>
+
+<h2 id="5源代码清单">5.源代码清单</h2>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309111015.png" alt="image-20200309111012700" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+#include&lt;cstdio&gt;
+#include&lt;algorithm&gt;
+#include&lt;stack&gt;
+using namespace std;
+ 
+///表格数组     a  b  c  d  #  E  A   B
+char LR0[50][50][100] = {上图}；
+char L[200]="abcd#EAB";    ///列判断依据
+int  del[10]={0,2,2,2,1,2,1};
+char head[20]={'S','E','E','A','A','B','B'};
+stack&lt;int&gt;con;    ///状态栈
+stack&lt;char&gt;cmp;   ///符号栈
+char cod[300]="0";///初始状态栈对应输出数组
+int cindex = 0;
+char sti[300]="#";///初始符号栈对应输出数组
+int sindex = 0;
+int findL(char b)///对应列寻找
+{
+    for(int i = 0; i &lt;= 7; i++)
+    {
+        if(b==L[i])
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+void error(int x, int y)       ///报错输出
+{
+    printf("第%d行%c列为空!",x,L[y]);
+}
+ 
+int calculate(int l, char s[])
+{
+    int num = 0;
+    for(int i = 1; i &lt; l; i ++)
+    {
+        num =  num*10+(s[i]-'0');
+    }
+    return num;
+}
+void analyze(char str[],int len)///分析主体过程
+{
+    int cnt = 1;
+    printf("步骤      状态栈    符号栈    输入串    ACTION    GOTO\n");
+    int LR = 0;
+    while(LR&lt;=len)
+    {
+        printf("(%d)       %-10s%-10s",cnt,cod,sti);///步骤，状态栈，符号栈输出
+        cnt++;
+        for(int i = LR; i &lt; len; i++)///输入串输出
+        {
+            printf("%c",str[i]);
+        }
+        for(int i = len-LR; i&lt;10;i++)printf(" ");
+ 
+        int x = con.top();///状态栈栈顶
+        int y = findL(str[LR]);///待判断串串首
+ 
+        if(strcmp(LR0[x][y],"null")!=0)
+        {
+            int l = strlen(LR0[x][y]);///当前Ri或Si的长度
+ 
+            if(LR0[x][y][0]=='a')///acc
+            {
+                printf("acc        \n");///ACTION与GOTO
+                return ;
+            }
+            else if(LR0[x][y][0]=='S')///Si
+            {
+                printf("%-10s \n",LR0[x][y]);///ACTION与GOTO
+                int t = calculate(l,LR0[x][y]);///整数
+                con.push(t);
+                sindex++;
+                sti[sindex] = str[LR];
+                cmp.push(str[LR]);
+                if(t&lt;10)
+                {
+                    cindex++;
+                    cod[cindex] = LR0[x][y][1];
+                }
+                else
+                {
+                    int k = 1;
+                    cindex++;
+                    cod[cindex] = '(';
+                    while(k&lt;l)
+                    {
+                        cindex++;
+                        cod[cindex] = LR0[x][y][k];
+                        k++;
+                    }
+                    cindex++;
+                    cod[cindex] = ')';
+                }
+                LR++;
+            }
+            else if(LR0[x][y][0]=='r')///ri,退栈，ACTION和GOTO
+            {
+                printf("%-10s",LR0[x][y]);
+                int t = calculate(l,LR0[x][y]);
+                int g = del[t];
+                while(g--)
+                {
+                    con.pop();
+                    cmp.pop();
+                    sti[sindex] = '\0';
+                    sindex--;
+                }
+                g = del[t];
+                while(g&gt;0)
+                {
+                    if(cod[cindex]==')')
+                    {
+                        cod[cindex]='\0';
+                        cindex--;
+                        for(;;)
+                        {
+                            if(cod[cindex]=='(')
+                            {
+                                cod[cindex]='\0';
+                                cindex--;
+                                break;
+                            }else
+                            {
+                                cod[cindex]='\0';
+                                cindex--;
+                            }
+                        }
+                        g--;
+                    }else
+                    {
+                        cod[cindex] = '\0';
+                        cindex--;
+                        g--;
+                    }
+                }///
+                cmp.push(head[t]);
+                sindex++;
+                sti[sindex] = head[t];
+                x = con.top();
+                y = findL(cmp.top());
+                t = LR0[x][y][0]-'0';
+                con.push(t);
+                cindex++;
+                cod[cindex] = LR0[x][y][0];
+                printf("%-10d\n",t);
+            }else
+            {
+                int t = LR0[x][y][0]-'0';
+                char ch = ' ';
+                printf("%-10c%-10d\n",ch,t);
+                con.push(t);
+                cindex++;
+                cod[cindex] = LR0[x][y][0];
+                sindex++;
+                sti[sindex] = 'E';
+                LR++;
+            }
+        }else
+        {
+            error(x,y);
+            return ;
+            ///报错
+        }
+    }
+ 
+}
+void chart()///测试表函数
+{
+    printf("-\ta\tb\tc\td\t#\tE\tA\tB\n");
+    for(int i = 0; i &lt;= 11; i++)
+    {
+        printf("%d",i);
+        for(int j = 0 ; j &lt;= 8; j++)
+            printf("\t%s",LR0[i][j]);
+            cout&lt;&lt;endl;
+    }
+    cout&lt;&lt;endl;
+}
+int main()
+{
+    chart();
+    con.push(0);
+    cmp.push('#');
+    char str[200];///输入串
+    cout&lt;&lt;"请输入字符串（带#）："&lt;&lt;endl;
+    cin&gt;&gt;str;
+    int len = strlen(str);
+    analyze(str,len);
+    return 0;}
+
+</code></pre></div></div>
+
+:ET

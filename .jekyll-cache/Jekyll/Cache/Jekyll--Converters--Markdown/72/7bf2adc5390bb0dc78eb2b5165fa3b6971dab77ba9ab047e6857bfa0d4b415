@@ -1,0 +1,882 @@
+I"�w<h1 id="slr分析法">SLR分析法</h1>
+
+<h2 id="1实验目的">1.实验目的</h2>
+
+<p>了解SLR语法分析算法的基本思想，掌握SLR语法分析程序的构造方法。</p>
+
+<h2 id="2设计方法">2.设计方法</h2>
+
+<h3 id="21实验原理">2.1实验原理</h3>
+
+<p>SLR文法分析法就是对LR(0)的一种优化</p>
+
+<p>SLR文法构造分析表的主要思想是：许多冲突性的动作都可能通过考察有关非终结符的FOLLOW集而获解决。</p>
+
+<p>解决冲突的方法：解决冲突的方法是分析所有含A和B的句型，考察集合FOLLOW(A)和FOLLOW(B)，如果这两个集合不相交，而且也不包含b，那么当状态I面临输入符号a时，我们可以使用如下策略：</p>
+
+<p>若a=b，则移进。</p>
+
+<p>若a∈FOLLOW(A)，则用产生式A→α进行归约；</p>
+
+<p>若a∈FOLLOW(B)，则用产生式B→α进行归约；</p>
+
+<p>此外，报错*</p>
+
+<p>SLR的基本算法：</p>
+
+<p>假定LR(0)规范族的一个项目集I中含有m个移进项目</p>
+
+<p>A1→α•a1β1，A2→α•a2β2，…，Am→α•amβm；</p>
+
+<p>同时含有n个归约项目</p>
+
+<p>B1→α•，B2→α•，…，B3→α•，</p>
+
+<p>如果集合{ a1,…, am}，FOLLOW(B1)，…，FOLLOW(Bn)两两不相交（包括不得有两个FOLLOW集合有#），则隐含在I中的动作冲突可以通过检查现行输入符号a属于上述n+1个集合中的哪个集合而活的解决：</p>
+
+<p>若a是某个ai，i=1,2,…,m，则移进。</p>
+
+<p>若a∈FOLLOW(Bi)，i=1,2,…,m，则用产生式Bi→α进行归约；</p>
+
+<p>此外，报错</p>
+
+<p>这种冲突的解决方法叫做SLR(1)解决办法。</p>
+
+<p>SLR语法分析表的构造方法：</p>
+
+<p>首先把G拓广为G’，对G’构造LR(0)项目集规范族C和活前缀识别自动机的状态转换函数GO。函数ACTION和GOTO可按如下方法构造：</p>
+
+<p>若项目A→α•bβ属于Ik，GO(Ik,a)= Ij,a为终结符，置ACTION[k,a]为”把状态j和符号a移进栈”，简记为”sj”；</p>
+
+<p>若项目A→α•属于Ik，那么，对任何非终结符a，a∈FOLLOW(A)，置ACTION[k,a]为”用产生式A→α进行归约”，简记为”rj”；其中，假定A→α为文法G’的第j个产生式</p>
+
+<p>若项目S’→S•属于Ik，则置ACTION[k,#]为可”接受”，简记为”acc”；</p>
+
+<p>若GO(Ik, A)= Ij，A为非终结符，则置GOTO[k, A]=j；</p>
+
+<p>分析表中凡不能用规则1至4填入信息的空白格均填上”出错标志”。</p>
+
+<p>语法分析器的初始状态是包含S’ →•S的项目集合的状态</p>
+
+<p>SLR解决的冲突只是移进-规约冲突和规约-规约冲突</p>
+
+<h3 id="22程序流程图">2.2程序流程图</h3>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093336.png" alt="" />{width=”4.983333333333333in” height=”4.125in”}</p>
+
+<h2 id="3实验内容">3.实验内容</h2>
+
+<p>输入文法：</p>
+
+<p>S.  &gt;E <br />
+    E-&gt;E+T <br />
+    E-&gt;T <br />
+    T-&gt;T*F <br />
+    T-&gt;F <br />
+    F-&gt;(E) <br />
+    F-&gt;i</p>
+
+<p>生成的项目表</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093337.png" alt="" />{width=”4.5375in” height=”2.9784722222222224in”}</p>
+
+<p>非终结符的First follow集合</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093338.png" alt="" />{width=”5.233333333333333in” height=”1.7416666666666667in”}</p>
+
+<p>项目规范族</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093339.png" alt="" />{width=”4.883333333333334in” height=”7.991666666666666in”}</p>
+
+<p>构造出的DFA</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093340.png" alt="" />{width=”4.4in” height=”3.8in”}</p>
+
+<p>SLR文法表和一个例子的文法分析过程</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093341.png" alt="" />{width=”5.767361111111111in” height=”3.576388888888889in”}</p>
+
+<h2 id="4实验总结">4.实验总结</h2>
+
+<p>本实验程序较好地完成了SLR(1)分析法分析程序的设计与实现，能够对所给字符串进行识别，判断是否是给定文法的句子,但是SLR解决的冲突只是移进-规约冲突和规约-规约冲突，仍需后续改进。通过这次的实验，我了解了LR(0)文法预测分析法设计和实现，加深了对LR（0）文法的理解和认识，使我的编译原理的知识更加巩固，而且可以使理论与实践相结合，更好的掌握所学知识。</p>
+
+<h2 id="5源代码清单">5.源代码清单</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+#include &lt;cstdio&gt;
+#include &lt;algorithm&gt;
+#include &lt;cstring&gt;
+#include &lt;cctype&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;queue&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;sstream&gt;
+#define MAX 507
+#define DEBUG
+using namespace std;
+
+class WF
+{
+    public:
+    string left,right;
+    int back;
+    int id;
+    WF ( char s1[] , char s2[] , int x , int y )
+    {
+        left = s1;
+        right = s2;
+        back = x;
+        id = y;
+    }
+    WF ( const string&amp; s1 , const string&amp; s2 , int x , int y )
+    {
+        left = s1;
+        right = s2;
+        back = x;
+        id = y;
+    }
+    bool operator &lt; ( const WF&amp; a ) const 
+    {
+        if ( left == a.left ) 
+            return right &lt; a.right;
+        return left &lt; a.left;
+    }
+    bool operator == ( const WF&amp; a ) const 
+    {
+        return ( left == a.left )&amp;&amp; ( right == a.right );
+    }
+    void print ( )
+    {
+        printf ( "%s-&gt;%s\n" , left.c_str() , right.c_str() );
+    }
+};
+
+class Closure
+{
+    public:
+    vector&lt;WF&gt; element; 
+    void print ( string str )
+    {
+        printf ( "%-15s%-15s\n" , "" , str.c_str());
+        for ( int i = 0 ; i &lt; element.size() ; i++ )
+            element[i].print();
+    }
+    bool operator == ( const Closure&amp; a ) const 
+    {
+        if ( a.element.size() != element.size() ) return false;
+        for ( int i = 0 ; i &lt; a.element.size() ; i++ )
+            if ( element[i] == a.element[i] ) continue;
+            else return false;
+        return true;
+    }
+};
+
+struct Content
+{
+    int type;
+    int num;
+    string out;
+    Content(){ type = -1; }
+    Content ( int a , int b )
+        :type(a),num(b){}
+};
+
+vector&lt;WF&gt; wf;
+map&lt;string,vector&lt;int&gt; &gt; dic;
+map&lt;string,vector&lt;int&gt; &gt; VN_set;
+map&lt;string,bool&gt;  vis;
+string start = "S";
+vector&lt;Closure&gt; collection;
+vector&lt;WF&gt; items;
+char CH = '$';
+int go[MAX][MAX];
+int to[MAX];
+vector&lt;char&gt; V;
+bool used[MAX];
+Content action[MAX][MAX];
+int Goto[MAX][MAX];
+map&lt;string,set&lt;char&gt; &gt; first;
+map&lt;string,set&lt;char&gt; &gt; follow;
+
+void make_item ( )
+{
+    memset ( to , -1 , sizeof ( -1 ) );
+    for ( int i = 0 ; i &lt; wf.size() ; i++ )
+        VN_set[wf[i].left].push_back ( i );
+    for ( int i = 0 ; i &lt; wf.size() ; i++ )
+        for ( int j = 0 ; j &lt;= wf[i].right.length() ; j++ )
+        {
+            string temp = wf[i].right;
+            temp.insert ( temp.begin()+j , CH );
+            dic[wf[i].left].push_back ( items.size() );
+            if ( j )
+                to[items.size()-1] = items.size();
+            items.push_back ( WF ( wf[i].left , temp , i , items.size()) );
+        }
+#ifdef DEBUG
+    puts("-------------------------项目表-------------------------");
+    for ( int i = 0 ; i &lt; items.size() ; i++ )
+        printf ( "%s-&gt;%s back:%d id:%d\n" , items[i].left.c_str() , items[i].right.c_str() , items[i].back , items[i].id );
+    puts("--------------------------------------------------------");
+#endif
+}
+
+void dfs ( const string&amp; x )
+{
+    if ( vis[x] ) return;
+    vis[x] = 1;
+    vector&lt;int&gt;&amp; id = VN_set[x];
+    for ( int i = 0 ; i &lt; id.size() ; i++ )
+    {
+        string&amp; left = wf[id[i]].left;
+        string&amp; right = wf[id[i]].right;
+        for ( int j = 0 ; j &lt; right.length() ; j++ )
+            if ( isupper(right[j] ) )
+            {
+                dfs ( right.substr(j,1) );
+                set&lt;char&gt;&amp; temp = first[right.substr(j,1)];
+                set&lt;char&gt;::iterator it = temp.begin();
+                bool flag = true;
+                for ( ; it != temp.end() ; it++ )
+                {
+                    if ( *it == '~' ) flag = false;
+                    first[left].insert (*it );
+                }
+                if ( flag ) break;
+            }
+            else
+            {
+                first[left].insert ( right[j] );
+                break;
+            }
+    } 
+}
+
+void make_first ( )
+{
+    vis.clear();
+    map&lt;string,vector&lt;int&gt; &gt;::iterator it2 = dic.begin();
+    for ( ; it2 != dic.end() ; it2++ )
+        if ( vis[it2-&gt;first] ) continue;
+        else dfs ( it2-&gt;first );
+#ifdef DEBUG
+    puts ("****************FIRST集***************************");
+    map&lt;string,set&lt;char&gt; &gt;::iterator it = first.begin();
+    for ( ; it != first.end() ; it++ )
+    {
+        printf ( "FIRST(%s)={" , it-&gt;first.c_str() );
+        set&lt;char&gt; &amp; temp = it-&gt;second;
+        set&lt;char&gt;::iterator it1 = temp.begin();
+        bool flag = false;
+        for ( ; it1 != temp.end() ; it1++ )
+        {
+            if ( flag ) printf ( "," );
+            printf ( "%c" , *it1 );
+            flag = true;
+        }
+        puts ("}" );
+    }
+#endif 
+}
+
+void append ( const string&amp; str1 , const string&amp; str2 )
+{
+    set&lt;char&gt;&amp; from = follow[str1];
+    set&lt;char&gt;&amp; to = follow[str2];
+    set&lt;char&gt;::iterator it = from.begin();
+    for ( ; it != from.end() ; it++ )
+        to.insert ( *it );
+}
+
+bool _check ( const vector&lt;int&gt;&amp; id, const string str )
+{
+    for ( int i = 0 ; i &lt; id.size() ; i++ )
+    {
+        int x = id[i];
+        if ( wf[x].right == str ) return true;
+    }
+    return false;
+}
+
+void make_follow ( )
+{
+    while ( true )
+    {
+        bool goon = false;
+        map&lt;string,vector&lt;int&gt; &gt;::iterator it2 = VN_set.begin();
+        for ( ; it2 != VN_set.end() ; it2++ )
+        {
+            vector&lt;int&gt;&amp; id = it2-&gt;second;
+            for ( int i = 0 ; i &lt; id.size() ; i++ )
+            {
+                bool flag = true;
+                WF&amp; tt = wf[id[i]];
+                string&amp; left = tt.left;
+                const string&amp; right = tt.right;
+                for ( int j = right.length()-1 ; j &gt;= 0 ; j-- )
+                    if ( isupper( right[j] ) )
+                    {
+                        if ( flag )
+                        {
+                            int tx = follow[right.substr(j,1)].size();
+                            append( left , right.substr(j,1) );
+                            int tx1 = follow[right.substr(j,1)].size();
+                            if ( tx1 &gt; tx ) goon = true;
+                            if ( _check ( id , "~" ) )
+                                flag = false;           
+                        }
+                        for ( int k = j+1 ; k &lt; right.length() ; k++ )
+                            if ( isupper(right[k] ) )
+                            {
+                                string idd = right.substr(k,1);
+                                set&lt;char&gt;&amp; from = first[idd];
+                                set&lt;char&gt;&amp; to = follow[right.substr(j,1)];
+                                set&lt;char&gt;::iterator it1 = from.begin();
+                                int tx = follow[right.substr(j,1)].size();
+                                for ( ; it1 != from.end() ; it1++ )
+                                    if ( *it1 != '~' )
+                                        to.insert ( *it1 );
+                                int tx1 = follow[right.substr(j,1)].size();
+                                if ( tx1 &gt; tx ) goon = true;
+                                if ( _check ( id , "~" ) )
+                                    break;
+                            }
+                            else
+                            {
+                                int tx = follow[right.substr(j,1)].size();
+                                follow[right.substr(j,1)].insert ( right[k] );
+                                int tx1 = follow[right.substr(j,1)].size();
+                                if ( tx1 &gt; tx ) goon = true;
+                                break;        
+                            }
+                    }
+                    else flag = false;
+            }
+        }
+        if ( !goon ) break;
+    }
+#ifdef DEBUG
+    puts ("***************FOLLOW集*******************");
+    map&lt;string,set&lt;char&gt; &gt;::iterator it = follow.begin();
+    for ( ; it != follow.end() ; it++ )
+    {
+        printf ( "FOLLOW(%s)={" , it-&gt;first.c_str() );
+        set&lt;char&gt; &amp; temp = it-&gt;second;
+        //if ( it-&gt;first[0] == 'S' )
+            temp.insert ( '#' );
+        set&lt;char&gt;::iterator it1 = temp.begin();
+        bool flag = false;
+        for ( ; it1 != temp.end() ; it1++ )
+        {
+            if ( flag ) printf ( "," );
+            printf ( "%c" , *it1 );
+            flag = true;
+        }
+        puts ("}");
+    }
+#endif
+}
+
+
+void make_set ( )
+{
+    bool has[MAX];
+    for ( int i = 0 ; i &lt; items.size() ; i++ )
+        if ( items[i].left[0] == 'S' &amp;&amp; items[i].right[0] == CH )
+        {
+            Closure temp;
+            string&amp; str = items[i].right;
+            vector&lt;WF&gt;&amp; element = temp.element;
+            element.push_back ( items[i] );
+            int x = 0;
+            for ( x = 0 ; x &lt; str.length() ; x++ )
+                if ( str[x] == CH )
+                    break;
+            /*if ( x != str.length()-1 )
+            {
+                string tt = str.substr(x+1,1);
+                vector&lt;int&gt;&amp; id = dic[tt];
+                for ( int j = 0 ; j &lt; id.size() ; j++ )
+                {
+                    int tx = id[j];
+                    //items[tx].print();
+                    if ( items[tx].right[0] == CH )
+                        element.push_back ( items[tx] );
+                }
+            }*/
+            memset ( has , 0 , sizeof ( has ) );
+            has[i] = 1;
+            if ( x != str.length()-1 )
+            {
+                queue&lt;string&gt; q;
+                q.push( str.substr(x+1,1) );
+                while ( !q.empty() )
+                {
+                    string u = q.front();
+                    q.pop();
+                    vector&lt;int&gt;&amp; id = dic[u];
+                    for( int j = 0 ; j &lt; id.size() ; j++ )
+                    {
+                        int tx = id[j];
+                        if ( items[tx].right[0] == CH )
+                        {   
+                            if ( has[tx] ) continue;
+                            has[tx] = 1;
+                            if ( isupper(items[tx].right[1] ) )
+                                q.push ( items[tx].right.substr(1,1));
+                            element.push_back ( items[tx] );
+                        }    
+                    }
+                }
+            }
+            collection.push_back ( temp );
+        }
+    for ( int i = 0 ; i &lt; collection.size() ; i++ )
+    {
+        map&lt;int,Closure&gt; temp;
+        for ( int j = 0 ; j &lt; collection[i].element.size() ; j++ )
+        {
+            string str = collection[i].element[j].right;
+            int x = 0;
+            for ( ; x &lt; str.length() ; x++ )
+               if ( str[x] == CH ) break;
+            if ( x == str.length()-1 ) 
+                continue;
+            int y = str[x+1];
+            int ii;
+            //cout &lt;&lt; i &lt;&lt; "previous: " &lt;&lt; str &lt;&lt; endl;
+            str.erase ( str.begin()+x);
+            str.insert ( str.begin()+x+1 , CH );
+            //cout &lt;&lt; i &lt;&lt;"after: " &lt;&lt; str &lt;&lt; endl;
+            WF cmp = WF ( collection[i].element[j].left , str , -1 , -1 );
+            for ( int k = 0 ; k&lt; items.size() ; k++ )
+                if ( items[k] == cmp )
+                {
+                    ii = k;
+                    break;
+                }
+             //string&amp; str1 = items[ii].right;
+             memset ( has , 0 , sizeof ( has ) );
+             vector&lt;WF&gt;&amp; element = temp[y].element;
+             element.push_back ( items[ii] );
+             has[ii] = 1;
+             x++;
+             /*if ( x != str.length()-1 )
+             {
+                 string tt = str.substr(x+1,1);
+                 vector&lt;int&gt;&amp; id = dic[tt];
+                 for ( int j = 0 ; j &lt; id.size() ; j++ )
+                 {
+                    int tx = id[j];
+                    //items[tx].print();
+                    if ( items[tx].right[0] == CH )
+                        element.push_back ( items[tx] );
+                 } 
+             }*/
+            if ( x != str.length()-1 )
+            {
+                queue&lt;string&gt; q;
+                q.push( str.substr(x+1,1) );
+                while ( !q.empty() )
+                {
+                    string u = q.front();
+                    q.pop();
+                    vector&lt;int&gt;&amp; id = dic[u];
+                    for( int j = 0 ; j &lt; id.size() ; j++ )
+                    {
+                        int tx = id[j];
+                        if ( items[tx].right[0] == CH )
+                        {   
+                            if ( has[tx] ) continue;
+                            has[tx] = 1;
+                            if ( isupper(items[tx].right[1] ) )
+                                q.push ( items[tx].right.substr(1,1));
+                            element.push_back ( items[tx] );
+                        }    
+                    }
+                }
+            }
+        }
+        map&lt;int,Closure&gt;::iterator it = temp.begin();
+        for ( ; it != temp.end() ; it++ )
+                collection.push_back ( it-&gt;second );
+        for ( int i = 0 ; i &lt; collection.size() ; i++ )
+            sort ( collection[i].element.begin() , collection[i].element.end() );
+        for ( int i = 0 ; i &lt; collection.size() ; i++ )
+            for ( int j = i+1 ; j &lt; collection.size() ; j++ )
+                if ( collection[i] == collection[j] )
+                    collection.erase ( collection.begin()+j );
+    }
+#ifdef DEBUG
+    puts ("-------------CLOSURE---------------------");
+    stringstream sin;
+    for ( int i = 0 ; i &lt; collection.size() ; i++ )
+    {
+        sin.clear();
+        string out;
+        sin &lt;&lt;"closure-I" &lt;&lt; i;
+        sin &gt;&gt; out;
+        collection[i].print ( out );
+    }
+    puts("");
+#endif  
+}
+
+void make_V ( )
+{
+    memset ( used , 0 , sizeof ( used ) );
+    for ( int i = 0 ; i &lt; wf.size() ; i++ )
+    {
+        string&amp; str = wf[i].left;
+        for ( int j = 0 ; j &lt; str.length() ; j++ )
+        {
+            if ( used[str[j]] ) continue;
+            used[str[j]] = 1;
+            V.push_back ( str[j] );
+        }
+        string&amp; str1 = wf[i].right;
+        for ( int j = 0 ; j &lt; str1.length() ; j++ )
+        {
+            if ( used[str1[j]] ) continue;
+            used[str1[j]] = 1;
+            V.push_back ( str1[j] );
+        }
+    }
+    sort ( V.begin() , V.end() );
+    V.push_back ( '#' );
+}
+
+void make_cmp ( vector&lt;WF&gt;&amp; cmp1 , int i  , char ch )
+{
+    for ( int j = 0 ; j &lt; collection[i].element.size() ; j++ )
+    {
+        string str = collection[i].element[j].right;
+        int k;
+        for ( k = 0 ; k &lt; str.length() ; k++ )
+            if ( str[k] == CH ) 
+                break;
+        if ( k != str.length() - 1 &amp;&amp; str[k+1] == ch  )
+        {
+            str.erase ( str.begin()+k);
+            str.insert ( str.begin()+k+1 , CH );
+            cmp1.push_back ( WF ( collection[i].element[j].left , str , -1 , -1 ) );
+        }
+    }
+    sort ( cmp1.begin() , cmp1.end() );
+}
+
+void make_go ( )
+{
+    memset ( go , -1 , sizeof ( go ) );
+    int m = collection.size();
+    /*for ( int i = 0 ; i &lt; m ; i++ )
+        for ( int j = 0 ; j &lt; collection[i].element.size() ; j++ )
+        {
+            string left = collection[i].element[j].left;
+            string str = collection[i].element[j].right;
+            int x = 0;
+            for ( ; x &lt; str.length() ; x++ )
+               if ( str[x] == CH ) break;
+            if ( x == str.length()-1 ) 
+                continue;
+            int y = str[x+1];
+           //cout &lt;&lt; "before : " &lt;&lt; str &lt;&lt; endl;
+            str.erase ( str.begin()+x);
+            str.insert ( str.begin()+x+1 , CH );
+           //cout &lt;&lt; "after : " &lt;&lt; str &lt;&lt; endl;
+            WF cmp = WF ( collection[i].element[j].left , str , -1 , -1 );
+            for ( int k = 0 ; k &lt; m ; k++ )
+            {
+                bool flag = false;
+                for ( int t = 0 ; t &lt; collection[k].element.size() ; t++ )
+                {
+                    if ( cmp == collection[k].element[t] )
+                    {                        
+                        flag = true;
+                        break;
+                    }
+                }
+                if ( flag )
+                {
+                    go[i][y] = k;
+                }
+            }
+        }*/
+    for ( int t = 0 ; t &lt; V.size() ; t++ )
+    {
+        char ch = V[t];
+        for ( int i = 0 ; i &lt; m ; i++ )
+        {
+            vector&lt;WF&gt; cmp1;
+            make_cmp ( cmp1 , i , ch );
+            cout &lt;&lt; cmp1.size() &lt;&lt; endl;
+            if ( cmp1.size() == 0 ) continue;
+            for ( int j = 0 ; j &lt; m ; j++ )
+            {
+                vector&lt;WF&gt; cmp2;
+                for ( int k = 0 ; k &lt; collection[j].element.size() ; k++ )
+                {
+                    string&amp; str = collection[j].element[k].right;
+                    int x;
+                    for ( x = 0 ; x &lt; str.length() ; x++ )
+                        if ( str[x] == CH )
+                            break;
+                    if ( x &amp;&amp; str[x-1] == ch )
+                       cmp2.push_back ( WF( collection[j].element[k].left , str , -1 , -1 ) ); 
+                }
+                sort ( cmp2.begin() , cmp2.end() );
+                cout &lt;&lt; cmp2.size() &lt;&lt; endl;
+                bool flag = true;
+                if ( cmp2.size() != cmp1.size() ) continue;
+                cout &lt;&lt; cmp1.size() &lt;&lt; endl;
+                for ( int k = 0 ; k &lt; cmp1.size() ; k++ )
+                    if ( cmp1[k] == cmp2[k] ) continue; 
+                    else flag = false;
+                cout &lt;&lt; "out " &lt;&lt; endl;
+                if ( flag ) 
+                    go[i][ch] = j;
+            }
+            //cout &lt;&lt; "YES" &lt;&lt; endl;
+        }
+
+    }
+#ifdef DEBUG
+    puts ("---------------EDGE----------------------");
+    stringstream sin;
+    string out;
+    for ( int i = 0 ; i &lt; m ; i++ )
+        for ( int j = 0 ; j &lt; m ; j++ )
+            for ( int k = 0 ; k &lt; MAX ; k++ )
+                if ( go[i][k] == j )
+                {
+                    sin.clear();
+                    sin &lt;&lt; "I" &lt;&lt; i &lt;&lt; "--" &lt;&lt;(char)(k)&lt;&lt;"--I"&lt;&lt;j;
+                    sin &gt;&gt; out;
+                    printf ( "%s\n" , out.c_str() );     
+                }   
+#endif
+}
+
+void make_table ( )
+{
+    memset ( Goto , -1 , sizeof ( Goto ) );
+    /*memset ( used , 0 , sizeof ( used ) );
+    for ( int i = 0 ; i &lt; wf.size() ; i++ )
+    {
+        string&amp; str = wf[i].left;
+        for ( int j = 0 ; j &lt; str.length() ; j++ )
+        {
+            if ( used[str[j]] ) continue;
+            used[str[j]] = 1;
+            V.push_back ( str[j] );
+        }
+        string&amp; str1 = wf[i].right;
+        for ( int j = 0 ; j &lt; str1.length() ; j++ )
+        {
+            if ( used[str1[j]] ) continue;
+            used[str1[j]] = 1;
+            V.push_back ( str1[j] );
+        }
+    }
+    sort ( V.begin() , V.end() );
+    V.push_back ( '#' );*/
+    //write s to the table 
+    for( int i = 0 ; i &lt; collection.size() ; i++ )
+        for ( int j = 0 ; j &lt; V.size() ; j++ )
+        {
+            char ch = V[j];
+            int x = go[i][ch];
+            if ( x == -1 ) continue;
+            if ( !isupper(ch) )
+                action[i][ch] = Content ( 0 , x );
+            else 
+                Goto[i][ch] = x;
+        }
+    //write r and acc to the table 
+    for ( int i = 0 ; i &lt; collection.size() ; i++ )
+        for ( int j = 0 ; j &lt; collection[i].element.size() ; j++ )
+        {
+            WF&amp; tt = collection[i].element[j];
+            if ( tt.right[tt.right.length()-1] == CH )
+            {
+                if ( tt.left[0] == 'S' )
+                    action[i]['#'] = Content ( 2 , -1 );
+                else 
+                    for ( int k = 0 ; k &lt; V.size() ; k++ )
+                    {
+                        int y = V[k];
+                        //cout &lt;&lt; "YES " &lt;&lt; endl;
+                        //cout &lt;&lt; tt.left &lt;&lt; "-&gt;" &lt;&lt; tt.right &lt;&lt; " " &lt;&lt; tt.back &lt;&lt; endl;
+                        if ( !follow[tt.left].count( V[k] ) ) continue;
+                       //cout &lt;&lt;tt.left &lt;&lt; "-&gt;" &lt;&lt; tt.right &lt;&lt; " " &lt;&lt;  i &lt;&lt; " " &lt;&lt; V[k] &lt;&lt; " " &lt;&lt; tt.back &lt;&lt; endl;
+                        action[i][y] = Content ( 1, tt.back );
+                    }
+            }
+        }
+#ifdef DEBUG
+    puts ( "------------------------------------------LR(0)分析表--------------------------------------------------------" );
+    printf ( "%10s%5c%5s" , "|" , V[0]  , "|");
+    for ( int i = 1 ; i &lt; V.size() ; i++ )
+        printf ( "%5c%5s" , V[i] , "|" );
+    puts ("");
+    for ( int i = 0 ; i &lt; (V.size()+1)*10 ; i++ )
+        printf ( "-" );
+    puts("");
+    stringstream sin;
+    for ( int i = 0 ; i &lt; collection.size() ; i++ )
+    {
+        printf ( "%5d%5s" , i , "|" );
+        for ( int j = 0 ; j &lt; V.size() ; j++ )
+        {
+            char ch = V[j];
+            if ( isupper(ch) )
+            {
+                if ( Goto[i][ch] == -1 )
+                    printf ( "%10s" , "|" );
+                else 
+                    printf ( "%5d%5s" , Goto[i][ch] , "|" );
+            }
+            else
+            {
+                sin.clear();
+                if ( action[i][ch].type == -1 ) 
+                    printf ( "%10s" , "|" ); 
+                else 
+                {
+                    Content&amp; temp = action[i][ch];
+                    if ( temp.type == 0 ) 
+                        sin &lt;&lt; "S";
+                    if ( temp.type == 1 ) 
+                        sin &lt;&lt; "R";
+                    if ( temp.type == 2 )
+                        sin &lt;&lt; "acc";
+                    if ( temp.num != -1 )
+                        sin &lt;&lt; temp.num;
+                    sin &gt;&gt; temp.out;
+                    printf ( "%7s%3s" , temp.out.c_str() , "|" );
+                }
+            }
+        }
+        puts ("");
+    }
+    for ( int i = 0 ; i &lt; (V.size()+1)*10 ; i++ )
+        printf ( "-" );
+    puts("");
+#endif
+}
+
+void print ( string s1 , string s2 , string s3 , string s4 , string s5 , string s6 , string s7 )
+{
+    printf ( "%-15s|%-15s%-15s%-20s|%-15s%-15s%-15s\n" , s1.c_str() , s2.c_str() , s3.c_str() ,s4.c_str(),s5.c_str(),
+                                                        s6.c_str() , s7.c_str() );                            
+}
+
+string get_steps ( int x )
+{
+    stringstream sin;
+    sin &lt;&lt; x;
+    string ret;
+    sin &gt;&gt; ret;
+    return ret;
+}
+
+template&lt;class T&gt;
+string get_stk ( vector&lt;T&gt; stk )
+{
+    stringstream sin;
+    for ( int i = 0 ; i &lt; stk.size() ; i++ )
+        sin &lt;&lt; stk[i];
+    string ret;
+    sin &gt;&gt; ret;
+    return ret;
+}
+
+string get_shift ( WF&amp; temp )
+{
+    stringstream sin;
+    sin &lt;&lt; "reduce(" &lt;&lt; temp.left &lt;&lt; "-&gt;" &lt;&lt; temp.right &lt;&lt;")";
+    string out;
+    sin &gt;&gt; out;
+    return out;
+}
+
+void analyse ( string src )
+{
+    print ( "steps","op-stack" ,"input","operation","state-stack" , "ACTION" , "GOTO" );
+    vector&lt;char&gt; op_stack;
+    vector&lt;int&gt; st_stack;
+    src+= "#";
+    op_stack.push_back ( '#' );
+    st_stack.push_back ( 0 );
+    int steps= 1;
+    for ( int i = 0 ; i &lt; src.length() ; i++ )
+    {
+        char u = src[i];
+        int top = st_stack[st_stack.size()-1];
+        Content&amp; act = action[top][u];
+        //cout &lt;&lt; "YES : " &lt;&lt; i &lt;&lt; " " &lt;&lt; u &lt;&lt; " " &lt;&lt; top &lt;&lt; " " &lt;&lt; act.type &lt;&lt; endl;
+        if ( act.type == 0 )
+        {
+            print ( get_steps ( steps++ ) , get_stk ( op_stack ) , src.substr(i), "shift",  get_stk( st_stack ) , act.out , "" );
+            op_stack.push_back ( u );
+            st_stack.push_back ( act.num );
+        }
+        else if ( act.type == 1 )
+        {
+            WF&amp; tt = wf[act.num];
+            int y = st_stack[st_stack.size()-tt.right.length()-1];
+            int x = Goto[y][tt.left[0]];
+            //cout &lt;&lt; y &lt;&lt; " " &lt;&lt; tt.left[0] &lt;&lt; " " &lt;&lt; x &lt;&lt; endl;
+            print ( get_steps ( steps++ ) , get_stk ( op_stack ) , src.substr(i) , get_shift(tt) ,get_stk( st_stack),act.out,get_steps(x));
+            for ( int j = 0 ; j &lt; tt.right.length() ; j++ )
+            {
+                st_stack.pop_back();
+                op_stack.pop_back();
+            }
+            op_stack.push_back ( tt.left[0] );
+            st_stack.push_back ( x );
+            i--;
+        }
+        else if ( act.type == 2 )
+        {
+            print ( get_steps( steps++ ), get_stk( op_stack ) , src.substr(i) , "Accept" , get_stk(st_stack) , act.out , "" );
+            //i--;
+        }
+        else continue;
+    }
+} 
+
+int main ( )
+{
+    int n;
+    char s[MAX];
+    while ( ~scanf ( "%d" , &amp;n ) )
+    {
+        for ( int i = 0 ; i &lt; n ; i++ )
+        {
+            scanf ( "%s" , s );
+            int len = strlen(s),j;
+            for ( j = 0 ; j &lt; len ; j++ )
+                if ( s[j] == '-' ) break;
+            s[j] = 0;
+            wf.push_back ( WF ( s , s+j+2 ,-1 , -1 ) );
+#ifdef DEBUG
+            wf[wf.size()-1].print();
+#endif
+        }
+        make_item();
+        make_first();
+        make_follow();
+        make_set();
+        make_V();
+        make_go();
+        make_table();
+        analyse ( "(i*i)+i" );
+    }
+}
+
+</code></pre></div></div>
+
+:ET

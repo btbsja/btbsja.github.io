@@ -1,0 +1,502 @@
+I":<h1 id="ll1分析法">LL（1）分析法</h1>
+
+<h2 id="1实验目的">1.实验目的</h2>
+
+<p>学习和掌握LL（1）文法的判定和LL（1）分析方法。</p>
+
+<h2 id="2设计方法">2.设计方法</h2>
+
+<h3 id="21实验原理">2.1实验原理</h3>
+
+<p>LL（1）分析法，就是指从左到右扫描输入串（源程序），同时采用最左推导，且对每次直接推导只需向前看一个输入符号，便可确定当前所应当选择的规则。实现LL（1）分析的程序又称为LL（1）分析程序或LL（1）分析器。</p>
+
+<p>一个文法要能进行LL（1）分析，那么这个文法应该满足：无二义性，无左递归，无左公因子。当文法满足条件后，再分别构造文法每个非终结符的FIRST和FOLLOW集合，然后根据FIRST和FOLLOW集合构造LL（1）分析表，最后利用分析表，根据LL(1)语法分析构造一个分析器。LL（1）的语法分析程序包含了三个部分：控制程序，预测分析表函数，先进先出的语法分析栈。LL(1)分析法又称预测分析法，是一种不带回溯的非递归自顶向下分析法。LL(1)的含义是：第一个 L 表明自顶向下分析是从左至右扫描输入串的；第二个 L 表明分析过程中将用最左推导；”1”表明只需向右查看一个符号就可以决定如 何推导（即可知用哪一个产生式进行推导）。</p>
+
+<blockquote>
+  <p>LL(1)分析器结构如图 1：</p>
+
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093327.png" alt="" />{width=”5.18125in” height=”2.1319444444444446in”}</p>
+
+  <p>图 1 LL(1)分析器</p>
+
+  <p>使用 LL(1)分析法将会涉及到 LL(1)分析表，而分析表又会涉及到 FIRST</p>
+
+  <p>和 FOLLOW 集。</p>
+</blockquote>
+
+<p>FIRST 集构造</p>
+
+<blockquote>
+  <p>对文法中的每一个非终结符 X 构造 FIRST(X)，其方法是连续使用以下规则， 直到每个集合的 FIRST 不再增大为止。</p>
+
+  <p>若有产生式 <em>X</em> → <em>a</em>...，且 <em>a</em> ∈<em>VT</em> ，则把 a 加入到 FIRST(X)中；若存在 <em>X</em> → <em>ε</em>， 则将ε也加入到 FIRST(X)中。</p>
+
+  <p>若有 <em>X</em> → <em>Y</em> ...且 <em>Y</em> ∈<em>VN</em> ，则将 FIRST(Y)中的所有非ε元素（记为”\{ε}”）都 加入到 FIRST(X)中；若有 <em>X</em> → <em>Y</em>1<em>Y</em>2 ...<em>YK</em> ，且 <em>Y</em>1 ~ <em>Yi</em> 都是非终结符，而 <em>Y</em>1 ~ <em>Yi</em> 的候 选式都有ε存在，则把 FIRST( <em>Yj</em> )(j=1,2,...i)的所有非ε元素都加入到 FIRST(X)中； 特别是当 <em>Y</em>1 ~ <em>Yk</em> 均含有ε产生式时，应把ε也加入到 FIRST(X)中。</p>
+</blockquote>
+
+<p>FOLLOW 集构造</p>
+
+<blockquote>
+  <p>对文法 G[S]的每一个非终结符 A 构造 FOLLOW(A)，其方法是连续使用以下 规则，直到每个集合的 FOLLOW 不再增大为止。</p>
+
+  <p>对文法开始符号 S，置#于 FOLLOW(S)中（由语句括号”#S#“中的 S#得到）。</p>
+
+  <p>若有 <em>A</em> → <em>αBβ</em>（<em>α</em>可为空），则将 FIRST( <em>β</em>)\{ε}加入到 FOLLOW(B)中。</p>
+
+  <p>若有 <em>A</em> → <em>αB</em> 或 <em>A</em> → <em>αBβ</em>，且 <em>β</em>⇒<em>ε</em>（即<em>ε</em>∈ <em>FIRST</em> (<em>β</em>) ），则把 FOLLOW(A)</p>
+</blockquote>
+
+<p>加到 FOLLOW(B)中（此处<em>α</em>也可为空）。</p>
+
+<h3 id="22程序流程图">2.2程序流程图</h3>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093328.png" alt="" />{width=”5.767361111111111in” height=”6.361805555555556in”}</p>
+
+<h2 id="3实验结果">3.实验结果</h2>
+
+<blockquote>
+  <p>1：首先实现集合FIRST(X)构造算法和集合FOLLOW(A)构造算法。<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093329.png" alt="" />{width=”5.383333333333334in” height=”4.683333333333334in”}</p>
+</blockquote>
+
+<p>2：再根据FIRST和FOLLOW集合构造出预测分析表。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093330.png" alt="" />{width=”5.516666666666667in” height=”1.0083333333333333in”}</p>
+
+<p>3：并对指定的句子打印出分析栈的分析过程，判断是否为该文法的句子。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093331.png" alt="" />{width=”4.566666666666666in” height=”3.45in”}</p>
+
+<h2 id="4实验总结">4.实验总结</h2>
+
+<p>本实验程序较好地完成了预测分析法分析程序的设计与实现，能够对所给字符串进行识别，判断是否是给定文法的句子。通过这次的实验，我了解了LL(1)文法预测分析法设计和实现，加深了对LL（1）文法的理解和认识，使我的编译原理的知识更加巩固，而且可以使理论与实践相结合，更好的掌握所学知识。</p>
+
+<h2 id="5源代码清单">5.源代码清单</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#ifndef _BASE_H_
+#define _BASE_H_
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+#include &lt;iomanip&gt;
+#include &lt;map&gt;
+#include &lt;cmath&gt;
+#include &lt;stack&gt;
+#ifndef _TABLESTACK_H_
+#define _TABLESTACK_H_
+using namespace std;
+
+struct node
+{
+	char left;
+	string right;
+};
+
+class Base
+{
+protected:
+	int T;
+	node analy_str[100]; //输入文法解析
+
+	set&lt;char&gt; first_set[100];//first集
+	set&lt;char&gt; follow_set[100];//follow集
+	vector&lt;char&gt; ter_copy; //去$终结符
+	vector&lt;char&gt; ter_colt;//终结符
+	vector&lt;char&gt; non_colt;//非终结符
+
+public:
+	Base() :T(0){}
+	bool isNotSymbol(char c);
+	int get_index(char target);//获得在终结符集合中的下标
+	int get_nindex(char target);//获得在非终结符集合中的下标
+	void get_first(char target); //得到first集合
+	void get_follow(char target);//得到follow集合
+	void inputAndSolve(); //处理得到first和follow
+	void display(); //显示
+
+};
+#endif
+
+class TableStack :public Base
+{
+protected:
+	vector&lt;char&gt; to_any; //分析栈
+	vector&lt;char&gt; left_any;//剩余输入串
+	int tableMap[100][100];//预测表
+public:
+	TableStack(){ memset(tableMap, -1, sizeof(tableMap)); }
+
+	void get_table(); //得到预测表
+	void analyExp(string s); //分析栈的处理
+	void print_out();//输出
+	void getAns(); //结合处理
+};
+#endif
+
+bool Base::isNotSymbol(char c)
+{
+	if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z')
+		return true;
+	return false;
+}
+int Base::get_index(char target)
+{
+	for (int i = 0; i&lt;non_colt.size(); i++)
+	{
+		if (target == non_colt[i])
+			return i;
+	}
+	return -1;
+}
+int Base::get_nindex(char target)
+{
+	for (int i = 0; i&lt;ter_copy.size(); i++)
+	{
+		if (target == ter_copy[i])
+			return i;
+	}
+	return -1;
+}
+void Base::get_first(char target)
+{
+	int tag = 0;
+	int flag = 0;
+	for (int i = 0; i&lt;T; i++)
+	{
+		if (analy_str[i].left == target)//匹配产生式左部
+		{
+			if (!isNotSymbol(analy_str[i].right[0]))//对于终结符，直接加入first
+			{
+				first_set[get_index(target)].insert(analy_str[i].right[0]);
+			}
+			else
+			{
+				for (int j = 0; j&lt;analy_str[i].right.length(); j++)
+				{
+					if (!isNotSymbol(analy_str[i].right[j]))//终结符结束
+					{
+						first_set[get_index(target)].insert(analy_str[i].right[j]);
+						break;
+					}
+					get_first(analy_str[i].right[j]);//递归
+					//	cout&lt;&lt;"curr :"&lt;&lt;analy_str[i].right[j];
+					set&lt;char&gt;::iterator it;
+					for (it = first_set[get_index(analy_str[i].right[j])].begin(); it != first_set[get_index(analy_str[i].right[j])].end(); it++)
+					{
+						if (*it == '$')
+							flag = 1;
+						else
+							first_set[get_index(target)].insert(*it);//将FIRST(Y)中的非$就加入FIRST(X)
+					}
+					if (flag == 0)
+						break;
+					else
+					{
+						tag += flag;
+						flag = 0;
+					}
+				}
+				if (tag == analy_str[i].right.length())//所有右部first(Y)都有$,将$加入FIRST(X)中
+					first_set[get_index(target)].insert('$');
+			}
+		}
+	}
+
+}
+void Base::get_follow(char target)
+{
+	for (int i = 0; i&lt;T; i++)
+	{
+		int index = -1;
+		int len = analy_str[i].right.length();
+		for (int j = 0; j&lt;len; j++)
+		{
+			if (analy_str[i].right[j] == target)
+			{
+				index = j;
+				break;
+			}
+		}
+		if (index != -1 &amp;&amp; index &lt; len - 1)
+		{
+			char nxt = analy_str[i].right[index + 1];
+			if (!isNotSymbol(nxt))
+			{
+				follow_set[get_index(target)].insert(nxt);
+			}
+			else
+			{
+				int isExt = 0;
+				set&lt;char&gt;::iterator it;
+				for (it = first_set[get_index(nxt)].begin(); it != first_set[get_index(nxt)].end(); it++)
+				{
+					if (*it == '$')
+						isExt = 1;
+					else
+						follow_set[get_index(target)].insert(*it);
+				}
+
+				if (isExt &amp;&amp; analy_str[i].left != target)
+				{
+					get_follow(analy_str[i].left);
+					set&lt;char&gt;::iterator it;
+					char tmp = analy_str[i].left;
+					for (it = follow_set[get_index(tmp)].begin(); it != follow_set[get_index(tmp)].end(); it++)
+						follow_set[get_index(target)].insert(*it);
+				}
+			}
+		}
+
+		else if (index != -1 &amp;&amp; index == len - 1 &amp;&amp; target != analy_str[i].left)
+		{
+			get_follow(analy_str[i].left);
+			set&lt;char&gt;::iterator it;
+			char tmp = analy_str[i].left;
+			for (it = follow_set[get_index(tmp)].begin(); it != follow_set[get_index(tmp)].end(); it++)
+				follow_set[get_index(target)].insert(*it);
+		}
+
+	}
+}
+void Base::inputAndSolve()
+{
+	string s;
+	cout &lt;&lt; "输入的产生式的个数：" &lt;&lt; endl;
+	cin &gt;&gt; T;
+	for (int index = 0; index&lt;T; index++)
+	{
+		cin &gt;&gt; s;
+		string temp = "";
+		for (int i = 0; i&lt;s.length(); i++)
+		{
+			if (s[i] != ' ')
+				temp += s[i];
+		}
+		analy_str[index].left = temp[0];
+		for (int i = 3; i&lt;temp.length(); i++)
+			analy_str[index].right += temp[i];
+
+
+		for (int i = 0; i&lt;temp.length(); i++)
+		{
+			if (temp[i] != '-' &amp;&amp; temp[i] != '&gt;')
+			{
+				if (isNotSymbol(temp[i]))
+				{
+					int flag = 0;
+					for (int j = 0; j&lt;non_colt.size(); j++)
+					{
+						if (non_colt[j] == temp[i])
+						{
+							flag = 1;
+							break;
+						}
+					}
+					if (!flag)
+						non_colt.push_back(temp[i]);
+
+				}
+				else
+				{
+					int flag = 0;
+					for (int j = 0; j&lt;ter_colt.size(); j++)
+					{
+						if (ter_colt[j] == temp[i])
+						{
+							flag = 1;
+							break;
+						}
+					}
+					if (!flag)
+						ter_colt.push_back(temp[i]);
+				}
+			}
+		}
+
+	}
+	ter_colt.push_back('#');
+	//first
+	for (int i = 0; i&lt;non_colt.size(); i++)
+	{
+		get_first(non_colt[i]);
+	}
+
+	for (int i = 0; i&lt;non_colt.size(); i++)
+	{
+		if (i == 0)
+			follow_set[0].insert('#');
+		get_follow(non_colt[i]);
+	}
+
+	for (int i = 0; i&lt;ter_colt.size(); i++)
+	{
+		if (ter_colt[i] != '$')
+			ter_copy.push_back(ter_colt[i]);
+	}
+}
+
+void Base::display()
+{
+	cout &lt;&lt; "FIRST集合" &lt;&lt; endl;
+	for (int i = 0; i&lt;non_colt.size(); i++)
+	{
+		cout &lt;&lt; non_colt[i] &lt;&lt; ": ";
+		set&lt;char&gt;::iterator it;
+		for (it = first_set[i].begin(); it != first_set[i].end(); it++)
+			cout &lt;&lt; *it &lt;&lt; "  ";
+		cout &lt;&lt; endl;
+	}
+
+	cout &lt;&lt; "FOLLOW集合" &lt;&lt; endl;
+	for (int i = 0; i&lt;non_colt.size(); i++)
+	{
+		cout &lt;&lt; non_colt[i] &lt;&lt; ": ";
+		set&lt;char&gt;::iterator it;
+		for (it = follow_set[i].begin(); it != follow_set[i].end(); it++)
+			cout &lt;&lt; *it &lt;&lt; "  ";
+		cout &lt;&lt; endl;
+	}
+}
+
+void TableStack::get_table()
+{
+	for (int i = 0; i&lt;T; i++)
+	{
+		char tmp = analy_str[i].right[0];
+		if (!isNotSymbol(tmp))
+		{
+			if (tmp != '$')
+				tableMap[get_index(analy_str[i].left)][get_nindex(tmp)] = i;
+			if (tmp == '$')
+			{
+				set&lt;char&gt;::iterator  it;
+				for (it = follow_set[get_index(analy_str[i].left)].begin(); it != follow_set[get_index(analy_str[i].left)].end(); it++)
+				{
+					tableMap[get_index(analy_str[i].left)][get_nindex(*it)] = i;
+				}
+			}
+		}
+		else
+		{
+			set&lt;char&gt;::iterator ti;
+			for (ti = first_set[get_index(tmp)].begin(); ti != first_set[get_index(tmp)].end(); ti++)
+			{
+				tableMap[get_index(analy_str[i].left)][get_nindex(*ti)] = i;
+			}
+			if (first_set[get_index(tmp)].count('$') != 0)
+			{
+				set&lt;char&gt;::iterator  it;
+				for (it = follow_set[get_index(analy_str[i].left)].begin(); it != follow_set[get_index(analy_str[i].left)].end(); it++)
+				{
+					tableMap[get_index(analy_str[i].left)][get_nindex(*it)] = i;
+				}
+			}
+		}
+	}
+}
+void TableStack::analyExp(string s)
+{
+	for (int i = s.length() - 1; i &gt;= 0; i--)
+		left_any.push_back(s[i]);
+
+	to_any.push_back('#');
+	to_any.push_back(non_colt[0]);
+
+
+	while (left_any.size()&gt;0)
+	{
+		//cout&lt;&lt;"分析栈：";
+		string outs = "";
+		for (int i = 0; i&lt;to_any.size(); i++)
+			outs += to_any[i];
+		cout &lt;&lt; setw(15) &lt;&lt; outs;
+
+		//cout&lt;&lt;"剩余输入串：";
+		outs = "";
+		for (int i = left_any.size() - 1; i &gt;= 0; i--)
+			outs += left_any[i];
+		cout &lt;&lt; setw(15) &lt;&lt; outs;
+
+		char char1 = to_any[to_any.size() - 1];
+		char char2 = left_any[left_any.size() - 1];
+		if (char1 == char2 &amp;&amp; char1 == '#')
+		{
+			cout &lt;&lt; setw(15) &lt;&lt; "Accepted!" &lt;&lt; endl;
+			return;
+		}
+		if (char1 == char2)
+		{
+			to_any.pop_back();
+			left_any.pop_back();
+			cout &lt;&lt; setw(15) &lt;&lt; char1 &lt;&lt; "匹配" &lt;&lt; endl;
+		}
+		else if (tableMap[get_index(char1)][get_nindex(char2)] != -1)
+		{
+			int tg = tableMap[get_index(char1)][get_nindex(char2)];
+			to_any.pop_back();
+
+			if (analy_str[tg].right != "$")
+			{
+				for (int i = analy_str[tg].right.length() - 1; i &gt;= 0; i--)
+					to_any.push_back(analy_str[tg].right[i]);
+			}
+			//cout&lt;&lt;"推导："&lt;&lt;analy_str[tg].right&lt;&lt;endl;
+			cout &lt;&lt; setw(15) &lt;&lt; analy_str[tg].right &lt;&lt; endl;
+		}
+		else
+		{
+			cout &lt;&lt; setw(15) &lt;&lt; "error!" &lt;&lt; endl;
+			return;
+		}
+	}
+}
+void TableStack::print_out()
+{
+	//table
+	for (int i = 0; i&lt;ter_copy.size(); i++)
+	{
+		cout &lt;&lt; setw(10) &lt;&lt; ter_copy[i];
+	}
+	cout &lt;&lt; endl;
+	for (int i = 0; i&lt;non_colt.size(); i++)
+	{
+		cout &lt;&lt; non_colt[i] &lt;&lt; ": ";
+		for (int j = 0; j&lt;ter_copy.size(); j++)
+		{
+			if (tableMap[i][j] == -1)
+				cout &lt;&lt; setw(10) &lt;&lt; "error";
+			else
+				cout &lt;&lt; setw(10) &lt;&lt; analy_str[tableMap[i][j]].right;
+
+		}
+		cout &lt;&lt; endl;
+	}
+}
+
+void TableStack::getAns()
+{
+	inputAndSolve();
+	display();
+	get_table();
+	print_out();
+	//栈匹配
+	string ss;
+	cout &lt;&lt; "请输入符号串：" &lt;&lt; endl;
+	cin &gt;&gt; ss;
+	cout &lt;&lt; setw(15) &lt;&lt; "分析栈" &lt;&lt; setw(15) &lt;&lt; "剩余输入串" &lt;&lt; setw(15) &lt;&lt; "推导式" &lt;&lt; endl;
+	analyExp(ss);
+
+}
+
+int main()
+{
+	TableStack res;
+	res.getAns();
+	return 0;
+}
+</code></pre></div></div>
+
+:ET

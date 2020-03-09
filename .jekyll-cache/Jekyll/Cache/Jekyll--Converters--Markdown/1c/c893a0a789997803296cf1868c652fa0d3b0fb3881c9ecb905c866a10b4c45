@@ -1,0 +1,62 @@
+I"L<h1 id="缓冲区溢出">缓冲区溢出</h1>
+
+<h2 id="一实验要求">一、实验要求</h2>
+
+<p>调试课堂介绍的有关栈溢出、堆溢出实例、BSS溢出和格式化字符串溢出实例，围绕着这些实例采用的溢出方法，自行调整溢出使用的字符串，摸索并掌握控制程序流程的字符串设计方法，并分析其特征和规律。注意事项如下：</p>
+
+<p>1、 栈溢出需要重点体验函数调用与返回过程中栈帧的结构与变化，以及返回函数地址（EIP）的控制方法</p>
+
+<p>2、 堆溢出需要关注堆的大小、堆的反复创建与释放可能造成的碎片、连续创建堆之间的间隙</p>
+
+<p>3、 格式化字符串需要关注各种格式化字符串结合自行设置的变量造成溢出的规律</p>
+
+<p>4、 BSS溢出对于指针函数的获取方法，可以自行涉及一个PE文件</p>
+
+<h2 id="二实验步骤">二、实验步骤</h2>
+
+<p>堆溢出中文字符</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095426.png" alt="" />{width=”5.333333333333333in” height=”4.541666666666667in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095427.png" alt="../Library/Containers/com.tencent.qq/Data/Library/Application%20Support/QQ/Users/934356561/QQ/Temp.db/AC082E79-049C-4FAC-BA11-49FA33198324.png" />{width=”5.760416666666667in” height=”1.2291666666666667in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095428.png" alt="../Library/Containers/com.tencent.qq/Data/Library/Application%20Support/QQ/Users/934356561/QQ/Temp.db/B8330CE9-6BD0-4CF9-8858-BAA62644D11E.png" />{width=”5.760416666666667in” height=”4.239583333333333in”}</p>
+
+<p><strong>根据C函数调用约定，参数从右向左依次压栈，所以参数&amp;num比参数num先压入栈中。也就是说，程序中将&amp;num (num的地址)压入栈作为printf()的第三个参数，而使用打印格式%n会将打印总长度保存到对应参数(&amp;num)的地址中去，从而改变了num的值。</strong></p>
+
+<p><strong>整个程序的输出结果为：</strong></p>
+
+<p><strong>Before : num = 0x61616161</strong></p>
+
+<p><strong>00000000001633771873</strong></p>
+
+<p><strong>After : num = 0x14</strong></p>
+
+<p><strong>变量num的值已经变成了0x14（20）。</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095429.png" alt="../Library/Containers/com.tencent.qq/Data/Library/Application%20Support/QQ/Users/934356561/QQ/Temp.db/9C719332-9FE3-441E-ABB5-9476D391FDC3.png" />{width=”4.760416666666667in” height=”1.3125in”}</p>
+
+<p><strong>如果将第二个printf语句修改为：</strong></p>
+
+<p><strong>printf (″%.20d %n \n″, num) ;</strong></p>
+
+<p><strong>//注意，这里没有压num的地址入栈</strong></p>
+
+<p><strong>则运行的结果为：</strong></p>
+
+<p><strong>Before : num= 0x61616161</strong></p>
+
+<p><strong>Segmentation fault (core dumped)</strong></p>
+
+<p><strong>//执行第二个printf()时发生段错误了</strong></p>
+
+<p><strong>原因：printf()将堆栈中main()函数的变量num当作了%n所对应的参数，因此会将0x14保存到地址0x61616161中去，而0x61616161是不能访问的地址，因此系统提示发生段错误。如果可以控制num的内容，那么就意味着可以修改任意地址（当然是允许写入的地址）的内容。</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095430.png" alt="../Library/Containers/com.tencent.qq/Data/Library/Application%20Support/QQ/Users/934356561/QQ/Temp.db/C7C1E905-6C0B-41BB-9900-DBE64D093875.png" />{width=”5.760416666666667in” height=”3.03125in”}</p>
+
+<p><strong>BSS溢出</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095431.png" alt="../Library/Containers/com.tencent.qq/Data/Library/Application%20Support/QQ/Users/934356561/QQ/Temp.db/440F1A5D-0FC1-42CA-B5D0-4CE001D447E7.png" />{width=”5.760416666666667in” height=”4.020833333333333in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095432.png" alt="../Library/Containers/com.tencent.qq/Data/Library/Application%20Support/QQ/Users/934356561/QQ/Temp.db/E4BF9C85-8F7A-4161-9E76-95662D0986B1.png" />{width=”5.760416666666667in” height=”1.4375in”}</p>
+:ET

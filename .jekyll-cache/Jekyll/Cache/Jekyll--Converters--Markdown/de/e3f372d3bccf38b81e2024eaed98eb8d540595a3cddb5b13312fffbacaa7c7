@@ -1,0 +1,214 @@
+I"T<h1 id="文本分类">文本分类</h1>
+
+<h2 id="一实验内容">一、实验内容</h2>
+
+<p>1、 数据源sogou新闻数据集，题目一和题目二任选一个。</p>
+
+<p>2、 对语料库进行数据预处理，利用朴素贝叶斯算法或SVM完成对测试集的文本进行分类</p>
+
+<p>3、 对语料库进行数据预处理，利用不同特征提取方法，如chi2(卡方)、MI等，利用贝叶斯，KNN，SVM等分类算法实现文本分类，并对比不同特征数下的分 类的准确率</p>
+
+<p>4、 比较不同方法下分类的准确率（选做）</p>
+
+<h2 id="二-实验环境">二、 实验环境</h2>
+
+<p>实验环境：Python3.6.2，</p>
+
+<p>IDE为Pycharm 2019.1.3</p>
+
+<h2 id="三-实验功能及代码">三、 实验功能及代码</h2>
+
+<h3 id="一数据预处理">（一）数据预处理</h3>
+
+<p>利用jieba，对原始文本进行分词和去停用词。代码如下：</p>
+
+<p># -*- coding: utf-8 -*-</p>
+
+<p>import jieba</p>
+
+<p>def word_segment(inpath, outpath):</p>
+
+<p>stopwords = {}</p>
+
+<p>fso = open('C:/Users/lulu/Desktop/题目一/stopwords.txt'.decode('utf-8'), 'rb')</p>
+
+<p>for word in fso:</p>
+
+<p>stopwords[word.strip().decode('utf-8', 'ignore')] = word.strip().decode('utf-8', 'ignore')#将停用词保存为字典，查询速度快</p>
+
+<p>fso.close()</p>
+
+<p>fin = open(inpath).readlines()</p>
+
+<p>fout = open(outpath, 'wb')</p>
+
+<p>#jieba.cut_for_search(4)</p>
+
+<p>for line in fin:</p>
+
+<p>lines = line.strip().decode('utf-8', 'ignore')</p>
+
+<p>word_list = list(jieba.cut(lines))</p>
+
+<p>result = ''</p>
+
+<p>for word in word_list:</p>
+
+<p>if word not in stopwords:#去停用词</p>
+
+<p>if word != 'contenttitle' and word != 'content' and word != 'docs' and word != 'doc':</p>
+
+<p>result += word</p>
+
+<p>result += ' '</p>
+
+<p>result_word=result.strip().encode('utf-8')</p>
+
+<p>fout.writelines(result_word)</p>
+
+<p>fout.close()</p>
+
+<p>#对每一篇预处理</p>
+
+<p>def preprocess_text(inRootPath,outRootPath):</p>
+
+<p>category = os.listdir(inRootPath)</p>
+
+<p>for categoryName in category:</p>
+
+<p>categoryPath = os.path.join(inRootPath,categoryName)</p>
+
+<p>out_categoryPath = os.path.join(outRootPath,categoryName)</p>
+
+<p>filesList = os.listdir(categoryPath)</p>
+
+<p>for filename in filesList:</p>
+
+<p>word_segment(categoryPath+'/'+filename, out_categoryPath+'/'+filename)</p>
+
+<p>#调用函数preprocess_text</p>
+
+<p>preprocess_text('C:/Users/lulu/Desktop/题目一/题目三数据集/'.decode('utf-8'),'C:/Users/lulu/Desktop/题目一/题目三数据集分词后/'.decode('utf-8'))</p>
+
+<h3 id="二读入经过分词等预处理后的文件划分训练集和测试集">（二）读入经过分词等预处理后的文件，划分训练集和测试集</h3>
+
+<p>代码如下：</p>
+
+<p>def read_text(rootPath):</p>
+
+<p>contents = []</p>
+
+<p>labels = []</p>
+
+<p>category = os.listdir(rootPath)</p>
+
+<p>for categoryName in category:</p>
+
+<p>categoryPath = rootPath + '/' + categoryName</p>
+
+<p># categoryPath = os.path.join(rootPath,categoryName) # 这个类别的路径</p>
+
+<p>filesList = os.listdir(categoryPath) # 这个类别内所有文件列表</p>
+
+<p>for filename in filesList:</p>
+
+<p># lines=open(os.path.join(categoryPath,filename))</p>
+
+<p>lines = open(categoryPath + '/' + filename).readlines()</p>
+
+<p>for i in range(len(lines)):</p>
+
+<p>if len(lines[i]) &gt; 200:</p>
+
+<p>contents.append(lines[i].decode('utf-8'))</p>
+
+<p>labels.append(categoryName)</p>
+
+<p>return contents, labels, lines</p>
+
+<p>rootPath = unicode('D:/PyCharm Community Edition 2018.1/项目/result/','utf-8')</p>
+
+<p>docs, labels, lines = read_text(rootPath)</p>
+
+<p>from sklearn.model_selection import train_test_split</p>
+
+<p>X_train0, X_test0, y_train, y_test = train_test_split(docs, labels, test_size=0.2)</p>
+
+<h3 id="三基于tfidf进行特征提取使用贝叶斯进行分类">（三）基于tfidf进行特征提取，使用贝叶斯进行分类</h3>
+
+<p>代码如下：</p>
+
+<p>from sklearn.feature_extraction.text import TfidfVectorizer</p>
+
+<p>#将文档列表转换为词向量模型scipy.sparse.csr.csr_matrix</p>
+
+<p>vectorizer = TfidfVectorizer(stop_words=None, sublinear_tf=True, max_df=0.5)</p>
+
+<p>X_train = vectorizer.fit_transform(X_train0)</p>
+
+<p># print len(X_train),len(X_train[0])</p>
+
+<p>X_test=vectorizer.transform(X_test0)</p>
+
+<p>#Bayes</p>
+
+<p>from sklearn.naive_bayes import MultinomialNB # 导入多项式贝叶斯算法</p>
+
+<p>clf = MultinomialNB(alpha=0.001).fit(X_train, y_train)</p>
+
+<p>y_pridict=clf.predict(X_test)</p>
+
+<p>#评估</p>
+
+<p>from sklearn.metrics import classification_report</p>
+
+<p>print classification_report(y_test,y_pridict)</p>
+
+<h3 id="四基于词频chi2进行特征提取使用贝叶斯进行分类">（四）基于词频、chi2进行特征提取，使用贝叶斯进行分类</h3>
+
+<p>代码如下</p>
+
+<p>from sklearn.feature_extraction.text import CountVectorizer</p>
+
+<p>#将文档列表转换为词向量模型scipy.sparse.csr.csr_matrix</p>
+
+<p>vectorizer = CountVectorizer(binary=True)</p>
+
+<p>X_train = vectorizer.fit_transform(X_train0)</p>
+
+<p>X_test=vectorizer.transform(X_test0)</p>
+
+<p>#卡方校验提取k维特征</p>
+
+<p>from sklearn.feature_selection import SelectKBest,chi2</p>
+
+<p>ch2=SelectKBest(chi2,k=7000)###</p>
+
+<p>X_train=ch2.fit_transform(X_train,y_train).toarray()</p>
+
+<p>X_test=ch2.transform(X_test).toarray()</p>
+
+<p>#Bayes</p>
+
+<p>from sklearn.naive_bayes import MultinomialNB # 导入多项式贝叶斯算法</p>
+
+<p>clf = MultinomialNB(alpha=0.001).fit(X_train, y_train)</p>
+
+<p>y_pridict=clf.predict(X_test)</p>
+
+<p>#评估</p>
+
+<p>from sklearn.metrics import classification_report</p>
+
+<p>print classification_report(y_test,y_pridict)</p>
+
+<h2 id="四实验截图">四、实验截图</h2>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309090537.jpeg" alt="" />{width=”4.743055555555555in” height=”3.658929352580927in”}</p>
+
+<h2 id="五实验总结">五、实验总结</h2>
+
+<p>1.从运行结果看来，tfidf和chi2两种特征提取方法对分类效果的影响相差不大。其中，采用tfidf提取的特征，最后的分类效果稍微好一点。</p>
+
+<p>2.使用贝叶斯进行文本分类的准确率和召回率较高，均达96%。</p>
+:ET

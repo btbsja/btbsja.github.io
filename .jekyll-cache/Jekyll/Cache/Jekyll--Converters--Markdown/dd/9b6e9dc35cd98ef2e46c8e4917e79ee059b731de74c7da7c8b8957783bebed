@@ -1,0 +1,771 @@
+I"Ie<h1 id="非对称密码算法加密与解密的实现rsa">非对称密码算法加密与解密的实现（RSA)</h1>
+
+<h2 id="一实验目的">一、实验目的</h2>
+
+<p>通过实际编程了解非对称密码算法RSA的加密和解密过程，加深对非对称密码算法的认识。</p>
+
+<h2 id="二实验内容和步骤">二、实验内容和步骤</h2>
+
+<h3 id="1-rsa算法与des算法的比较">1 、RSA算法与DES算法的比较</h3>
+
+<p>运行附件的RSATool，输入一大段文字，记录运行时间。再使用DES算法加密相同的文字，记录运行时间，对比这两个时间发现，RSA算法比DES算法慢很多，因为RSA算法进行的是大数运算，所以程序运行的速度比DES慢很多。因此RSA算法只适合于少量数据加密，不适合于大量数据加密。</p>
+
+<h3 id="2算法设计">2、算法设计</h3>
+
+<p>主要的方法：</p>
+
+<p>（1）<strong>public static void GetPrime()</strong></p>
+
+<blockquote>
+  <p><strong>方法名称：</strong>产生大数的方法。</p>
+
+  <p><strong>说明：</strong></p>
+
+  <p>利用Java语言的中的java.math.BigInteger类的方法中随机产生大数。</p>
+</blockquote>
+
+<p>（2）<strong>public static boolean MillerRobin(BigInteger num)</strong></p>
+
+<blockquote>
+  <p>方法名称：判断是否是素数的方法。</p>
+</blockquote>
+
+<p><strong>参数说明：</strong></p>
+
+<blockquote>
+  <p>num是由GetPrime方法产生的大数。</p>
+</blockquote>
+
+<p><strong>说明：</strong></p>
+
+<blockquote>
+  <p>这个方法判断GetPrime方法传过来的是否是一个素数，是就返回true,否就返回false。</p>
+</blockquote>
+
+<p>（3）<strong>public static BigInteger powmod( BigInteger a, BigInteger t, BigInteger num )</strong></p>
+
+<blockquote>
+  <p><strong>方法名称：</strong>大数的幂运算方法。</p>
+</blockquote>
+
+<p><strong>说明：</strong></p>
+
+<p>这个方法对传入的大数进行幂运算。</p>
+
+<p>（4）<strong>public static BigInteger invmod(BigInteger a, BigInteger b)</strong></p>
+
+<blockquote>
+  <p><strong>方法名称：</strong>大数的取模运算方法。</p>
+</blockquote>
+
+<p><strong>说明：</strong></p>
+
+<p>这个方法对大数进行取模运算。</p>
+
+<p>（5）<strong>public static String Encode(String inStr,BigInteger PrimeP,BigInteger PrimeQ,</strong></p>
+
+<p><strong>BigInteger n,int nLen,int m,JTextField d)</strong></p>
+
+<blockquote>
+  <p><strong>方法名称：</strong>加密算法。</p>
+</blockquote>
+
+<p><strong>参数说明：</strong></p>
+
+<p>inStr是从界面输入的明文。</p>
+
+<p>PrimeP和PrimeQ是由GetPrime方法产生的两个大素数。</p>
+
+<p>n是由PrimeP和PrimeQ得到的值。</p>
+
+<p>nLen为n的长度。</p>
+
+<p>d为公钥。</p>
+
+<p>（6）<strong>public static String Decode(String inStr,BigInteger PrimeP,BigInteger PrimeQ,</strong></p>
+
+<p><strong>BigInteger n,int nLen,int m,JTextField e)</strong></p>
+
+<blockquote>
+  <p><strong>方法名称</strong>：解密算法。</p>
+</blockquote>
+
+<p><strong>参数说明：</strong></p>
+
+<p>inStr是从界面输入的明文。</p>
+
+<p>PrimeP和PrimeQ是由GetPrime方法产生的两个大素数。</p>
+
+<p>n是由PrimeP和PrimeQ得到的值。</p>
+
+<p>nLen为n的长度。</p>
+
+<p>e为私钥。</p>
+
+<h2 id="三实验结果">三、实验结果</h2>
+
+<p>实验结果如下图所示：</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309084934.png" alt="image-20200309084917340" /></p>
+
+<p>运行程序，弹出的对话框如上图所示。</p>
+
+<p>点击按钮”生成质数P和Q”，自动生成质数P和质数Q；</p>
+
+<p>然后点击按钮”生成公钥和私钥”，就自动生成公钥和私钥；</p>
+
+<p>输入明文：hello world</p>
+
+<p>点击”加密”按钮，生成的密文如上图所示。</p>
+
+<p>点击”解密”按钮，即可解密密文。</p>
+
+<p><strong>如果一旦公钥与私钥形成的与两个质数不对应编无法得到正确的明文消息：</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309085000.png" alt="image-20200309084950561" /></p>
+
+<p>可以看见公钥改变就会那么也就得不到想要的明文</p>
+
+<h2 id="四实验源代码">四、实验源代码</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import javax.swing.*;   
+import java.awt.event.*;   
+import java.math.*;   
+import java.util.*;   
+import java.awt.*;   
+import java.io.*;      
+public class RSA1{   
+    public static void main(String[] args)   
+    {   
+        MyFrame frame = new MyFrame();   
+        MyPanel_fbutton panel_fbutton = new MyPanel_fbutton(frame,frame.P,frame.Q,frame.d,frame.e);   
+        FlowLayout fl = new FlowLayout (FlowLayout.CENTER,0,0);   
+        frame.setLayout(fl);   
+        frame.add(panel_fbutton);   
+        frame.setBounds( 150, 100, 500, 480 );   
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
+        frame.setVisible(true);    
+    }   
+       
+}      
+class MyFrame extends JFrame   
+{   
+    public MyFrame()   
+    {   
+        setTitle("RSA算法");   
+           
+        add(wel);   
+        MyPanel_p panel_p = new MyPanel_p(P);   
+        add(panel_p);   
+        MyPanel_q panel_q = new MyPanel_q(Q);   
+        add(panel_q);
+        MyPanel_d panel_d = new MyPanel_d(d);   
+        add(panel_d);   
+        MyPanel_e panel_e = new MyPanel_e(e);   
+        add(panel_e);   
+        
+        MyPanel_in panel_in = new MyPanel_in(input);   
+        add(panel_in);   
+        MyPanel_out panel_out = new MyPanel_out(output);   
+        add(panel_out);   
+        MyPanel_out1 panel_out1 = new MyPanel_out1(output1);   
+        add(panel_out1);
+        
+        MyPanel_button panel_button = new MyPanel_button(P,Q,d,e,input,output,output1);   
+        add(panel_button);     
+    }   
+    private JLabel wel = new JLabel("         RSA算法演示                     ");   
+    protected JTextField P = new JTextField(35);   
+    protected JTextField Q = new JTextField(35);   
+    protected JTextField d = new JTextField(35);   
+    protected JTextField e = new JTextField(35);   
+    protected JTextArea input = new JTextArea(4,35);   
+    protected JTextArea output = new JTextArea(4,35);   
+    protected JTextArea output1 = new JTextArea(4,35);         
+}      
+class MyPanel_fbutton extends JPanel   
+{   
+    public MyPanel_fbutton(Frame aframe,JTextField aP, JTextField aQ, JTextField ad, JTextField ae)   
+    {   
+        frame =  aframe;   
+        P = aP;   
+        Q = aQ;   
+        e = ae;   
+        d = ad;       
+    }   
+    private Frame frame;    
+    private JTextField P;   
+    private JTextField Q;   
+    private JTextField d;   
+    private JTextField e;          
+}      
+class MyPanel_p extends JPanel   
+{   
+    public MyPanel_p(JTextField aP)   
+    {   
+        P=aP;   
+        add(new JLabel("             质数 P:"));   
+        add(P);   
+    }   
+    private JTextField P;      
+}         
+class MyPanel_q extends JPanel   
+{   
+    public MyPanel_q(JTextField aQ)   
+    {   
+        Q=aQ;   
+        add(new JLabel("             质数 Q:"));   
+        add(Q);   
+    }   
+    private JTextField Q;      
+}      
+class MyPanel_d extends JPanel   
+{   
+    public MyPanel_d(JTextField ad)   
+    {   
+        d=ad;   
+        add(new JLabel("             公    钥:"));   
+        add(d);   
+    }   
+    private JTextField d;      
+}      
+class MyPanel_e extends JPanel   
+{   
+    public MyPanel_e(JTextField ae)   
+    {   
+        e=ae;   
+        add(new JLabel("             私    钥:"));   
+        add(e);   
+    }   
+    private JTextField e;   
+}      
+class MyPanel_in extends JPanel   
+{   
+    public MyPanel_in(JTextArea ainput)   
+    {   
+        input =  ainput;   
+        add(new JLabel("        输入明文:"));   
+        JScrollPane jsp1 = new JScrollPane (input,v,h);   
+        add(jsp1);   
+    }   
+    private JTextArea input;   
+    int v=JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;   
+    int h=JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;   
+}      
+class MyPanel_out extends JPanel   
+{   
+    public MyPanel_out(JTextArea aoutput)   
+    {   
+        output = aoutput;   
+        add(new JLabel("    生成的密文:"));   
+        JScrollPane jsp = new JScrollPane (output,v,h);   
+        add(jsp);   
+    }   
+    private JTextArea output;   
+    int v=JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;   
+    int h=JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;   
+}      
+class MyPanel_out1 extends JPanel   
+{   
+    public MyPanel_out1(JTextArea aoutput1)   
+    {   
+        output1 =  aoutput1;   
+        add(new JLabel("解密后的明文:"));   
+        JScrollPane jsp = new JScrollPane (output1,v,h);   
+        add(jsp);   
+    }   
+    private JTextArea output1;   
+    int v=JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED;   
+    int h=JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED;   
+}    
+class MyPanel_button extends JPanel   
+{   
+    public MyPanel_button(JTextField aP,JTextField aQ,JTextField ad,JTextField ae,   
+                          JTextArea ainput,JTextArea aoutput,JTextArea aoutput1)   
+    {              
+        P = aP;   
+        Q = aQ;   
+        e = ae;   
+        d = ad;   
+        input = ainput ;   
+        output = aoutput ;   
+        output1 = aoutput1 ;   
+        randProduce.addActionListener(new RandListener( P, Q ));   
+        add(randProduce);   
+        randD.addActionListener(new RandDListener( P, Q, d, e ));   
+        add(randD);   
+        encode.addActionListener(new EncodeListener( P, Q, d, e, input, output ));   
+        add(encode);   
+        decode.addActionListener(new DecodeListener( P, Q, d, e, output, output1 ));   
+        add(decode);     
+    }   
+    private JTextField P;   
+    private JTextField Q;   
+    private JTextField d;   
+    private JTextField e;   
+    private JTextArea input;   
+    private JTextArea output;   
+    private JTextArea output1;   
+    private JButton randProduce = new JButton("生成质数P和Q");   
+    private JButton randD = new JButton("生成公钥和私钥");   
+    private JButton encode = new JButton("加密");   
+    private JButton decode = new JButton("解密");   
+}   
+class FileEncodeListener implements ActionListener   
+{   
+    public FileEncodeListener(Frame f,JTextField ap, JTextField aq,JTextField ae,JTextField ad)   
+    {   
+        P = ap;   
+        Q = aq;   
+        E = ae;   
+        D = ad;   
+        fr = f;   
+    }   
+    public void actionPerformed(ActionEvent ee)   
+    {   
+        FileDialog fd = new FileDialog(fr);   
+        fd.setVisible(true);   
+        String infileName =fd.getDirectory()+fd.getFile();   
+        String inStr = new String();   
+        inStr = PublicMethod.read(infileName);   
+        BigInteger PrimeP = new BigInteger(P.getText());   
+        BigInteger PrimeQ = new BigInteger(Q.getText());   
+        BigInteger n =PrimeP.multiply(PrimeQ);   
+        int nLen = n.bitLength();   
+        int m=(int)(Math.ceil((double)(nLen)/16.0));   
+        nLen = (nLen-1) / 16;   
+        String outStr = new String();   
+        outStr = PublicMethod.Encode(inStr,PrimeP,PrimeQ,n,nLen,m,D);   
+        for(i=infileName.length()-1;i&gt;=0;--i)   
+        {   
+            if(infileName.charAt(i)=='.')  break;      
+        }   
+        String outfileName = infileName.substring(0,i);   
+        outfileName = outfileName + new String(".EncodeRsa") + infileName.substring(i,infileName.length());   
+        PublicMethod.output(outfileName,outStr);   
+    }   
+    private JTextField P;   
+    private JTextField Q;   
+    private JTextField E;   
+    private JTextField D;   
+    private Frame fr;   
+    int i;   
+}      
+class FileDecodeListener implements ActionListener   
+{   
+    public FileDecodeListener(Frame f,JTextField ap, JTextField aq,JTextField ae,JTextField ad)   
+    {   
+        P = ap;   
+        Q = aq;   
+        E = ae;   
+        D = ad;   
+        fr = f;   
+    }   
+    public void actionPerformed(ActionEvent ee)   
+    {   
+        FileDialog fd = new FileDialog(fr);   
+        fd.setVisible(true);   
+        String infileName =fd.getDirectory()+fd.getFile();   
+        String inStr = new String();   
+        inStr = PublicMethod.input(infileName);   
+        System.out.println(inStr);   
+        BigInteger PrimeP = new BigInteger(P.getText());   
+        BigInteger PrimeQ = new BigInteger(Q.getText());   
+        BigInteger n =PrimeP.multiply(PrimeQ);   
+        int nLen = n.bitLength();   
+        int m=(int)(Math.ceil((double)(nLen)/16.0));   
+        nLen = (nLen-1) / 16;   
+        String outStr = new String();   
+        outStr = PublicMethod.Decode(inStr,PrimeP,PrimeQ,n,nLen,m,E);   
+        for(i=infileName.length()-1;i&gt;=0;--i)   
+        {   
+            if(infileName.charAt(i)=='.')  break;      
+        }   
+        String outfileName = infileName.substring(0,i);   
+        outfileName = outfileName + new String(".DecodeRsa") + infileName.substring(i,infileName.length());   
+        PublicMethod.write(outfileName,outStr);   
+    }   
+    private JTextField P;   
+    private JTextField Q;   
+    private JTextField E;   
+    private JTextField D;   
+    private Frame fr;   
+    int i;   
+}      
+class RandListener implements ActionListener   
+{   
+    public RandListener(JTextField aP, JTextField aQ)   
+    {   
+        P = aP;   
+        Q = aQ;   
+    }   
+    public void actionPerformed(ActionEvent e)   
+    {   
+        PublicMethod.GetPrime( P );   
+        PublicMethod.GetPrime( Q );   
+    }   
+       
+    private JTextField P;   
+    private JTextField Q;   
+}      
+class RandDListener implements ActionListener   
+{   
+    public RandDListener(JTextField aP, JTextField aQ, JTextField ad, JTextField ae)   
+    {   
+        P = aP;   
+        Q = aQ;   
+        d = ad;   
+        e = ae;   
+    }   
+    public void actionPerformed(ActionEvent ee)   
+    {   
+        BigInteger PP = new BigInteger(P.getText());   
+        BigInteger QQ = new BigInteger(Q.getText());   
+        BigInteger temp = (PP.subtract(new BigInteger("1"))).multiply(QQ.subtract(new BigInteger("1")));   
+        BigInteger temp1;   
+        do   
+        {   
+            temp1=new BigInteger(100, new Random()).mod(temp);     
+        }   
+        while(PublicMethod.MillerRobin(temp1)==false);   
+        d.setText(temp1.toString());   
+        e.setText(PublicMethod.invmod(temp1, temp).toString());   
+    }   
+    private JTextField P;   
+    private JTextField Q;   
+    private JTextField d;   
+    private JTextField e;   
+}      
+class EncodeListener implements ActionListener   
+{   
+    public EncodeListener(JTextField aP, JTextField aQ, JTextField ad, JTextField ae,   
+            JTextArea in, JTextArea out)   
+    {   
+        P = aP;   
+        Q = aQ;   
+        d = ad;   
+        e = ae;   
+        input = in;   
+        output = out;   
+    }   
+    public void actionPerformed(ActionEvent ee)   
+    {   
+     
+        BigInteger PrimeP = new BigInteger(P.getText());   
+        BigInteger PrimeQ = new BigInteger(Q.getText());   
+        BigInteger n =PrimeP.multiply(PrimeQ);   
+        int nLen = n.bitLength();   
+        int m=(int)(Math.ceil((double)(nLen)/16.0));   
+        nLen = (nLen-1) / 16;   
+        String inStr = input.getText();   
+        output.setText(PublicMethod.Encode(inStr,PrimeP,PrimeQ,n,nLen,m,e));   
+    }   
+    private JTextField P;   
+    private JTextField Q;   
+    private JTextField d;   
+    private JTextField e;   
+    private JTextArea input;   
+    private JTextArea output;   
+}      
+class DecodeListener implements ActionListener   
+{   
+    public DecodeListener(JTextField aP, JTextField aQ, JTextField ad, JTextField ae,   
+            JTextArea out, JTextArea out1)   
+    {   
+        P = aP;   
+        Q = aQ;   
+        d = ad;   
+        e = ae;   
+        output = out;   
+        output1 = out1;   
+    }   
+    public void actionPerformed(ActionEvent ee)   
+    {      
+        BigInteger PrimeP = new BigInteger(P.getText());   
+        BigInteger PrimeQ = new BigInteger(Q.getText());   
+        BigInteger n =PrimeP.multiply(PrimeQ);   
+        int nLen = n.bitLength();   
+        int m=(int)(Math.ceil((double)(nLen)/16.0));   
+        nLen = (nLen-1) / 16;   
+        String inStr = output.getText();   
+        output1.setText(PublicMethod.Decode(inStr,PrimeP,PrimeQ,n,nLen,m,d));   
+    }   
+    private JTextField P;   
+    private JTextField Q;   
+    private JTextField d;   
+    private JTextField e;   
+    private JTextArea output;   
+    private JTextArea output1;   
+}      
+class PublicMethod   
+{   
+    public static void GetPrime( JTextField prime )   
+    {   
+        BigInteger num = new BigInteger("0");   
+        Random rand = new Random();   
+        do   
+        {   
+            int length = (int)(Math.random()*20+100);   
+            System.out.println(length);   
+            num = new BigInteger( length, 5 , rand );   
+            prime.setText(num.toString());   
+        }   
+        while(MillerRobin(num)==false);   
+    }       
+    //随机产生大数num
+    public static boolean MillerRobin(BigInteger num)   
+    {   
+        int time = 1000;   
+        BigInteger mod = num.mod(new BigInteger("2"));   
+        if(mod.equals(new BigInteger("0")))   
+        {   
+            return false;   
+        }   
+        int s = 0, j=0;   
+        BigInteger t=num.subtract(new BigInteger("1"));   
+        while( t.mod(new BigInteger("2")).equals("0") )   
+        {   
+            t.divide(new BigInteger("2"));   
+            ++s;   
+        }   
+        for(int i=0; i&lt;time; ++i)   
+        {   
+            BigInteger a = new BigInteger(100, new Random()).mod(num.subtract(new BigInteger("3"))).add(new BigInteger("2"));   
+            BigInteger y = powmod(a, t, num);   
+            if(y.equals(new BigInteger("1"))==false   
+            &amp;&amp; y.equals(num.subtract(new BigInteger("1")))==false)   
+            {   
+                j=1;   
+                while(j==s&amp;&amp;y.equals(num.subtract(new BigInteger("1")))==false)   
+                {   
+                    y = y.multiply(y).mod(num);   
+                    if(y.equals(new BigInteger("1")))   
+                    {   
+                        return false;   
+                    }   
+                    ++j;   
+                }   
+                if(y.equals(num.subtract(new BigInteger("1")))==false)   
+                {   
+                    return false;   
+                }   
+            }   
+        }   
+        return true;   
+    } 
+    //判断产生的大数是否是素数
+    public static BigInteger powmod( BigInteger a, BigInteger t, BigInteger num )   
+    {   
+        BigInteger A = new BigInteger("1");   
+        while(t.equals(new BigInteger("0"))==false)   
+        {   
+            if(t.mod(new BigInteger("2")).equals(new BigInteger("1")))   
+            {   
+                A = A.multiply(a).mod(num);   
+            }   
+            a = a.multiply(a).mod(num);   
+            t=t.divide(new BigInteger("2"));   
+        }   
+        return A;   
+    }    
+    //进行幂运算
+    public static BigInteger invmod(BigInteger a, BigInteger b)   
+    {   
+        System.out.println(a+" "+b);   
+        BigInteger s0=new BigInteger("1"), s1=new BigInteger("0"), s2, q, t, b0=b;   
+        while(b.equals(new BigInteger("0"))==false)   
+        {   
+            q=a.divide(b);   
+            s2=s0.subtract(  q.multiply(s1)  );   
+            if(s2.compareTo(new BigInteger("0"))!=-1)   
+            {   
+                s2=s2.mod(b0);   
+            }   
+            else   
+            {   
+                s2=b0.subtract( s2.multiply(new BigInteger("-1")).mod(b0) );   
+            }   
+            s0=s1;   
+            s1=s2;   
+            t=b;   
+            b=a.mod(b);   
+            a=t;   
+        }   	
+        if(a.equals(new BigInteger("1")))   
+        {   
+            return s0;   
+        }   
+        else   
+        {   
+            return new BigInteger("0");   
+        }   
+    }   
+    //取模运算
+    public static String Encode(String inStr,BigInteger PrimeP,BigInteger PrimeQ,   
+                                BigInteger n,int nLen,int m,JTextField d)   
+    {   
+        BigInteger res = new BigInteger("0");   
+        StringBuffer outBuf = new StringBuffer();   
+        int i,k,j;   
+        for(i=0;i&lt;inStr.length();i=j)   
+        {   
+            BigInteger t = new BigInteger("0");   
+            for(j=i;j&lt;i+nLen&amp;&amp;j&lt;inStr.length();j++)   
+            {   
+                t=t.shiftLeft(16);   
+                long num = inStr.charAt (j);   
+                t=t.add(BigInteger.valueOf(num));   
+            }                                      
+            res = PublicMethod.powmod(t,new BigInteger(d.getText()),n);                    
+            String buf = new String();   
+            for(k=0;k&lt;m;++k)   
+            {   
+                   
+                long num = (res.and(BigInteger.valueOf(65535))).longValue();   
+                res = res.shiftRight(16);          
+                buf = (char)(num)+buf;   
+            }      
+            outBuf = outBuf.append(buf);   
+        }          
+        return outBuf.toString();   
+    }   
+    //加密
+    public static String Decode(String inStr,BigInteger PrimeP,BigInteger PrimeQ,   
+                                BigInteger n,int nLen,int m,JTextField e)   
+    {   
+        StringBuffer outBuf = new StringBuffer();   
+        BigInteger res = new BigInteger("0");   
+        int i,j;   
+        for(i=0;i&lt;inStr.length();i+=j)   
+        {   
+            BigInteger t = new BigInteger("0");   
+            for(j=0;j&lt;m&amp;&amp;j+i&lt;inStr.length();j++)   
+            {   
+                t =  t.shiftLeft(16);   
+                long num =(long)(inStr.charAt (j+i));      
+                t=t.add(BigInteger.valueOf(num));   
+            }      
+            res = PublicMethod.powmod(t,new BigInteger(e.getText()),n);    
+            String buf = new String();   
+            while(res.compareTo(new BigInteger("0"))&gt;0)   
+            {   
+                long num =(res.and(BigInteger.valueOf(65535))).longValue();   
+                buf =  (char)(num) + buf;   
+                res = res.shiftRight(16)    ;   
+            }   
+            outBuf =  outBuf.append(buf);   
+        }          
+        return outBuf.toString();   
+    }     
+    //解密
+    public static String read(String infileName)   
+    {   
+        String ans =  new String ();   
+        try   
+        {                    
+            FileInputStream fis = new FileInputStream(infileName);   
+            InputStreamReader isr = new InputStreamReader(fis);    
+            BufferedReader br = new BufferedReader (isr);   
+            int t;   
+            while(true)   
+            {   
+                t= br.read();   
+                System.out.println(t);   
+                if(t==-1)  break;   
+                ans = ans + (char)(t);     
+            }     
+            br.close();   
+            isr.close();       
+            fis.close();   
+        }   
+        catch(FileNotFoundException e)   
+        {   
+            System.out.println("FileStreamsTest: "+e);   
+        }   
+        catch(IOException e)    
+        {   
+            System.err.println("FileStreamsTest: "+e);   
+        }   
+        System.out.println("READSTR="+ans.length());           
+        return ans;   
+    }   
+    public static void write(String outfileName,String outStr)   
+    {   
+           
+        try   
+        {     
+            FileOutputStream fos = new FileOutputStream(outfileName);   
+            OutputStreamWriter osw = new OutputStreamWriter(fos,"UNICODE");    
+            BufferedWriter out = new BufferedWriter (osw);     
+               
+            int c;   
+            for(int i=0;i&lt;outStr.length();i++)   
+            {   
+                c=(int)outStr.charAt(i);   
+                System.out.println(c);   
+                out.write(c);    
+            }   
+            out.close();   
+            osw.close();   
+            fos.close();     
+        }   
+        catch(FileNotFoundException e)   
+        {   
+            System.out.println("FileStreamsTest: "+e);   
+        }   
+        catch(IOException e)    
+        {   
+            System.err.println("FileStreamsTest: "+e);   
+        }   
+        System.out.println("WRITE="+outStr.length());   
+        return ;   
+    }   
+    public static String input(String infileName)   
+    {   
+        String ans = new String();   
+        try   
+        {          
+            FileInputStream in = new FileInputStream(infileName);    
+            ObjectInputStream s = new ObjectInputStream(in);    
+            ans = (String)s.readObject();   
+            s.close();   
+            in.close();   
+        }    
+        catch(FileNotFoundException e)   
+        {   
+            System.out.println("FileStreamsTest: "+e);   
+        }   
+        catch(IOException e)    
+        {   
+            System.err.println("FileStreamsTest: "+e);   
+        }   
+        catch(ClassNotFoundException e)   
+        {   
+            System.out.println("FileStreamsTest: "+e);   
+        }   
+        return ans;   
+    }         
+    public static void output(String outfileName,String outStr)   
+    {   
+        try   
+        {   
+            FileOutputStream f = new FileOutputStream(outfileName);    
+            ObjectOutputStream s = new ObjectOutputStream(f);    
+            s.writeObject(outStr);   
+            s.close();   
+            f.close();    
+        }   
+        catch(FileNotFoundException e)   
+        {   
+            System.out.println("FileStreamsTest: "+e);   
+        }   
+        catch(IOException e)    
+        {   
+            System.err.println("FileStreamsTest: "+e);   
+        }      
+    } 
+}  
+
+</code></pre></div></div>
+
+:ET

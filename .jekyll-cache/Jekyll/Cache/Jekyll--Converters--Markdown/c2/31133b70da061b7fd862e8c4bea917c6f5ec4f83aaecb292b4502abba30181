@@ -1,0 +1,462 @@
+I"$><h1 id="linux内核模块设计">Linux内核模块设计</h1>
+
+<h2 id="一实验要求">一、实验要求</h2>
+
+<p>理解Linux内核模块，熟悉Linux内核模块编程环境、编译环境、内核模块加载过程，掌握Linux内核模块调试过程与调试方法。</p>
+
+<p>（1）编写一个简单的内核模块程序；</p>
+
+<p>（2）编译内核模块；</p>
+
+<p>（3）加载并调试内核模块。</p>
+
+<h2 id="二实验内容">二、实验内容</h2>
+
+<p>开发一个简单的内核模块用以创建一个/dev/reverse设备。写入该设备的字符串将以相反字序的方式读回。</p>
+
+<p>Linux模块是一些可以作为独立程序来编译的函数和数据类型的集合。在装载这些模块时，将它的代码链接到内核中。。Linux模块可以在内核启动时装载，也可以在内核运行的过程中装载。如果在模块装载之前就调用了动态模块的一个函数，那么这次调用将会失败。如果这个模块已被加载，那么内核就可以使用系统调用，并将其传递到模块中的相应函数。我们不难发现Linux大部分都是用C语言编写的，我们同样也是用C语言完成的这次实验。</p>
+
+<h2 id="三实验关键代码">三、实验关键代码</h2>
+
+<h3 id="文件头">文件头</h3>
+
+<p>并用预定义的宏来描述模块：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;linux/init.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/module.h&gt;
+ 
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Valentine Sinitsyn &lt;valentine.sinitsyn@gmail.com&gt;");
+MODULE_DESCRIPTION("In-kernel phrase reverser");
+</code></pre></div></div>
+
+<h3 id="回调函数">回调函数</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static int __init reverse_init(void)
+{
+    printk(KERN_INFO "reverse device has been registered\n");
+    return 0;
+}
+ 
+static void __exit reverse_exit(void)
+{
+    printk(KERN_INFO "reverse device has been unregistered\n");
+}
+ 
+module_init(reverse_init);
+module_exit(reverse_exit);
+</code></pre></div></div>
+
+<p>模块可以接收参数</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># modprobe foo bar=1
+</code></pre></div></div>
+
+<h3 id="缓冲区">缓冲区</h3>
+
+<p>我们将给每个打开的文件描述符分配一个新的缓冲区，并在它关闭时释放，我们需要一个结构函数来描述缓冲区。内核提供了许多常规的数据结构：链接列表（双联的），哈希表，树等等之类。不过，缓冲区常常从头设计。我们将调用我们的“struct buffer”</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct buffer {
+    char *data, *end, *read_ptr;
+    unsigned long size;
+};
+</code></pre></div></div>
+
+<p>模块需要一个缓冲区来存储参数 —— 让我们把这大小设置为用户可配置。在MODULE_DESCRIPTION()下添加如下三行</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static unsigned long buffer_size = 8192;
+module_param(buffer_size, ulong, (S_IRUSR | S_IRGRP | S_IROTH));
+MODULE_PARM_DESC(buffer_size, "Internal buffer size");
+</code></pre></div></div>
+
+<p>定义了一个变量来存储该值，封装成一个参数，并通过sysfs来让所有人可读</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static int __init reverse_init()
+{
+    if (!buffer_size)
+        return -1;
+    printk(KERN_INFO
+        "reverse device has been registered, buffer size is %lu bytes\n",
+        buffer_size);
+    return 0;
+}
+
+</code></pre></div></div>
+
+<p>一个标准的Makefile模板：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>obj-m += reverse.o
+all:
+    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+clean:
+    make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+</code></pre></div></div>
+
+<p>为该设备注册一个次设备号（以及一个接入点），声明 <strong>struct misc_device</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static struct miscdevice reverse_misc_device = {
+    .minor = MISC_DYNAMIC_MINOR,
+    .name = "reverse",
+    .fops = &amp;reverse_fops
+};
+static int __init reverse_init()
+{
+    ...
+    misc_register(&amp;reverse_misc_device);
+    printk(KERN_INFO ...
+}
+</code></pre></div></div>
+
+<p>‘fops’字段存储了一个指针，指向一个file_operations结构（在Linux/fs.h中声明），而这正是我们模块的接入点。reverse_fops定义如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static struct file_operations reverse_fops = {
+    .owner = THIS_MODULE,
+    .open = reverse_open,
+    ...
+    .llseek = noop_llseek
+};
+</code></pre></div></div>
+
+<h3 id="读和写">读和写</h3>
+
+<p>“read”和“write”方法是真正完成工作的地方。当数据写入到缓冲区时，我们放弃之前的内容和反向地存储该字段，不需要任何临时存储。read方法仅仅是从内核缓冲区复制数据到用户空间。</p>
+
+<p>read”方法</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static ssize_t reverse_read(struct file *file, char __user * out,
+        size_t size, loff_t * off)
+{
+    struct buffer *buf = file-&gt;private_data;
+    ssize_t result;
+    while (buf-&gt;read_ptr == buf-&gt;end) {
+        if (file-&gt;f_flags &amp; O_NONBLOCK) {
+            result = -EAGAIN;
+            goto out;
+        }
+        if (wait_event_interruptible
+        (buf-&gt;read_queue, buf-&gt;read_ptr != buf-&gt;end)) {
+            result = -ERESTARTSYS;
+            goto out;
+        }
+    }
+...
+
+</code></pre></div></div>
+
+<p>copy_to_user()内核函数</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	size = min(size, (size_t) (buf-&gt;end - buf-&gt;read_ptr));
+    if (copy_to_user(out, buf-&gt;read_ptr, size)) {
+        result = -EFAULT;
+        goto out;
+}
+
+</code></pre></div></div>
+
+<p>检查缓冲区是否有足够的空间，然后我们使用copy_from_userspace()函数来获取数据。再然后read_ptr和结束指针会被重置，并且反转存储缓冲区内容：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    buf-&gt;end = buf-&gt;data + size;
+    buf-&gt;read_ptr = buf-&gt;data;
+    if (buf-&gt;end &gt; buf-&gt;data)
+        reverse_phrase(buf-&gt;data, buf-&gt;end - 1);
+
+</code></pre></div></div>
+
+<p>wake_up_interruptible()唤醒read_queue中等待数据的进程</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wake_up_interruptible(&amp;buf-&gt;read_queue);
+</code></pre></div></div>
+
+<h2 id="四实验结果">四、实验结果</h2>
+
+<h3 id="编译模块">编译模块</h3>
+
+<blockquote>
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092418.png" alt="" />{width=”4.640983158355206in” height=”4.145833333333333in”}</p>
+
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092419.png" alt="" />{width=”5.200699912510936in” height=”4.645833333333333in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092420.png" alt="" />{width=”5.1886876640419946in” height=”4.635103893263342in”}</p>
+</blockquote>
+
+<h3 id="加载进内核">加载进内核</h3>
+
+<blockquote>
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092421.png" alt="" />{width=”5.049109798775153in” height=”4.510416666666667in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092422.png" alt="" />{width=”5.048611111111111in” height=”4.509970472440945in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092423.png" alt="" />{width=”5.002466097987751in” height=”4.46875in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092424.png" alt="" />{width=”5.002083333333333in” height=”4.468407699037621in”}</p>
+</blockquote>
+
+<h3 id="运行">运行</h3>
+
+<blockquote>
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092425.png" alt="" />{width=”5.6875in” height=”0.3020833333333333in”}</p>
+
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309092426.png" alt="" />{width=”4.135416666666667in” height=”0.23958333333333334in”}</p>
+</blockquote>
+
+<h2 id="五实验心得">五、实验心得</h2>
+
+<p>学习内核编程的最简单的方式也许就是写个内核模块：一段可以动态加载进内核的代码，Linux内核和它的用户空间是大不相同的，抛开漫不经心，必须小心翼翼，因为编程中的一个bug就会影响到整个系统。浮点运算做起来可不容易，堆栈固定而狭小，而写的代码总是异步的。而除了所有这一切之外，Linux内核只是一个很大的、很复杂的C程序，它对每个人开放，任何人都去读它、学习它并改进它。</p>
+
+<p>知识：学习x86体系结构及系统初始化过程，将操作系统基本原理与Linux系统内核的进程管理、存储器管理、设备管理及文件系统的具体实现相结合；了解Linux高级程序设计方法、设计流程、开发环境等；了解Linux字符设备和块设备驱动程序设计方法；了解Linux高级程序设计尤其与系统安全相关API，学习Linux安全相关特性。</p>
+
+<p>能力：通过对Linux内核的深入剖析，加深对操作系统原理的理解，并培养对Linux操作系统的系统级分析能力；初步掌握Linux内核模块编程、Linux简单字符设备和块设备编程能力；培养Linux系统安全相关系统设计及程序开发能力；培养能够进行Linux系统级大型应用设计开发能力。</p>
+
+<p>素质：通过对Linux操作系统具体实现方法的整体分析，建立系统级应用开发概念，体会系统级程序设计及系统安全相关设计的复杂性、关联性、整体性；提高基本理论与具体实现相结合的综合素质。</p>
+
+<h2 id="六源代码">六、源代码</h2>
+
+<p><strong>Makefile</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+obj-m += reverse.o
+CFLAGS_reverse.o += -DDEBUG
+
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+
+clean:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+
+</code></pre></div></div>
+
+<p><strong>reverse.c</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+#include &lt;linux/init.h&gt;		/* __init and __exit macroses */
+#include &lt;linux/kernel.h&gt;	/* KERN_INFO macros */
+#include &lt;linux/module.h&gt;	/* required for all kernel modules */
+#include &lt;linux/moduleparam.h&gt;	/* module_param() and MODULE_PARM_DESC() */
+
+#include &lt;linux/fs.h&gt;		/* struct file_operations, struct file */
+#include &lt;linux/miscdevice.h&gt;	/* struct miscdevice and misc_[de]register() */
+#include &lt;linux/mutex.h&gt;	/* mutexes */
+#include &lt;linux/string.h&gt;	/* memchr() function */
+#include &lt;linux/slab.h&gt;		/* kzalloc() function */
+#include &lt;linux/sched.h&gt;	/* wait queues */
+#include &lt;linux/uaccess.h&gt;	/* copy_{to,from}_user() */
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Valentine Sinitsyn &lt;valentine.sinitsyn@gmail.com&gt;");
+MODULE_DESCRIPTION("In-kernel phrase reverser");
+
+static unsigned long buffer_size = 8192;
+module_param(buffer_size, ulong, (S_IRUSR | S_IRGRP | S_IROTH));
+MODULE_PARM_DESC(buffer_size, "Internal buffer size");
+
+struct buffer {
+	wait_queue_head_t read_queue;
+	struct mutex lock;
+	char *data, *end;
+	char *read_ptr;
+	unsigned long size;
+};
+
+static struct buffer *buffer_alloc(unsigned long size)
+{
+	struct buffer *buf = NULL;
+
+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+	if (unlikely(!buf))
+		goto out;
+
+	buf-&gt;data = kzalloc(size, GFP_KERNEL);
+	if (unlikely(!buf-&gt;data))
+		goto out_free;
+
+	init_waitqueue_head(&amp;buf-&gt;read_queue);
+
+	mutex_init(&amp;buf-&gt;lock);
+
+	/* It's unused for now, but may appear useful later */
+	buf-&gt;size = size;
+
+ out:
+	return buf;
+
+ out_free:
+	kfree(buf);
+	return NULL;
+}
+
+static void buffer_free(struct buffer *buffer)
+{
+	kfree(buffer-&gt;data);
+	kfree(buffer);
+}
+
+static inline char *reverse_word(char *start, char *end)
+{
+	char *orig_start = start, tmp;
+
+	for (; start &lt; end; start++, end--) {
+		tmp = *start;
+		*start = *end;
+		*end = tmp;
+	}
+
+	return orig_start;
+}
+
+static char *reverse_phrase(char *start, char *end)
+{
+	char *word_start = start, *word_end = NULL;
+
+	while ((word_end = memchr(word_start, ' ', end - word_start)) != NULL) {
+		reverse_word(word_start, word_end - 1);
+		word_start = word_end + 1;
+	}
+
+	reverse_word(word_start, end);
+
+	return reverse_word(start, end);
+}
+
+static int reverse_open(struct inode *inode, struct file *file)
+{
+	struct buffer *buf;
+	int err = 0;
+
+	/*
+	 * Real code can use inode to get pointer to the private
+	 * device state.
+	 */
+
+	buf = buffer_alloc(buffer_size);
+	if (unlikely(!buf)) {
+		err = -ENOMEM;
+		goto out;
+	}
+
+	file-&gt;private_data = buf;
+
+ out:
+	return err;
+}
+
+static ssize_t reverse_read(struct file *file, char __user * out,
+			    size_t size, loff_t * off)
+{
+	struct buffer *buf = file-&gt;private_data;
+	ssize_t result;
+
+	if (mutex_lock_interruptible(&amp;buf-&gt;lock)) {
+		result = -ERESTARTSYS;
+		goto out;
+	}
+
+	while (buf-&gt;read_ptr == buf-&gt;end) {
+		mutex_unlock(&amp;buf-&gt;lock);
+		if (file-&gt;f_flags &amp; O_NONBLOCK) {
+			result = -EAGAIN;
+			goto out;
+		}
+		if (wait_event_interruptible
+		    (buf-&gt;read_queue, buf-&gt;read_ptr != buf-&gt;end)) {
+			result = -ERESTARTSYS;
+			goto out;
+		}
+		if (mutex_lock_interruptible(&amp;buf-&gt;lock)) {
+			result = -ERESTARTSYS;
+			goto out;
+		}
+	}
+
+	size = min(size, (size_t) (buf-&gt;end - buf-&gt;read_ptr));
+	if (copy_to_user(out, buf-&gt;read_ptr, size)) {
+		result = -EFAULT;
+		goto out_unlock;
+	}
+
+	buf-&gt;read_ptr += size;
+	result = size;
+
+ out_unlock:
+	mutex_unlock(&amp;buf-&gt;lock);
+ out:
+	return result;
+}
+
+static ssize_t reverse_write(struct file *file, const char __user * in,
+			     size_t size, loff_t * off)
+{
+	struct buffer *buf = file-&gt;private_data;
+	ssize_t result;
+
+	if (size &gt; buffer_size) {
+		result = -EFBIG;
+		goto out;
+	}
+
+	if (mutex_lock_interruptible(&amp;buf-&gt;lock)) {
+		result = -ERESTARTSYS;
+		goto out;
+	}
+
+	if (copy_from_user(buf-&gt;data, in, size)) {
+		result = -EFAULT;
+		goto out_unlock;
+	}
+
+	buf-&gt;end = buf-&gt;data + size;
+	buf-&gt;read_ptr = buf-&gt;data;
+
+	if (buf-&gt;end &gt; buf-&gt;data)
+		reverse_phrase(buf-&gt;data, buf-&gt;end - 1);
+
+	wake_up_interruptible(&amp;buf-&gt;read_queue);
+
+	result = size;
+ out_unlock:
+	mutex_unlock(&amp;buf-&gt;lock);
+ out:
+	return result;
+}
+
+static int reverse_close(struct inode *inode, struct file *file)
+{
+	struct buffer *buf = file-&gt;private_data;
+
+	buffer_free(buf);
+
+	return 0;
+}
+
+static struct file_operations reverse_fops = {
+	.owner = THIS_MODULE,
+	.open = reverse_open,
+	.read = reverse_read,
+	.write = reverse_write,
+	.release = reverse_close,
+	.llseek = noop_llseek
+};
+
+static struct miscdevice reverse_misc_device = {
+	.minor = MISC_DYNAMIC_MINOR,
+	.name = "reverse",
+	.fops = &amp;reverse_fops
+};
+
+static int __init reverse_init(void)
+{
+	if (!buffer_size)
+		return -1;
+
+	misc_register(&amp;reverse_misc_device);
+	printk(KERN_INFO
+	       "reverse device has been registered, buffer size is %lu bytes\n",
+	       buffer_size);
+
+	return 0;
+}
+
+static void __exit reverse_exit(void)
+{
+	misc_deregister(&amp;reverse_misc_device);
+	printk(KERN_INFO "reverse device has been unregistered\n");
+}
+
+module_init(reverse_init);
+module_exit(reverse_exit);
+
+</code></pre></div></div>
+
+:ET

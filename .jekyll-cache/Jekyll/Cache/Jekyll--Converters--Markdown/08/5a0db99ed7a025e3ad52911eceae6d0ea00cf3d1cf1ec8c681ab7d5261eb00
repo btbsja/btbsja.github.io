@@ -1,0 +1,473 @@
+I" @<h1 id="lr1分析法">LR（1）分析法</h1>
+
+<h2 id="1实验目的">1.实验目的</h2>
+
+<p>了解LR1语法分析算法的基本思想，掌握LR（1）语法分析程序的构造方法。</p>
+
+<h2 id="2设计方法">2.设计方法</h2>
+
+<h3 id="21实验原理">2.1实验原理</h3>
+
+<p>采用与LR(0)类似的方法，可构造出所给文法G的LR(1)项目集族C及状态转换图。对于给定的文法G，当相应的LR(1)项目集族C及GO函数构造出来之后，便可按如下的算法构造它的LR(1)分析表：</p>
+
+<p>(1) 对于每个项目集Ii中形如[A→α·Xβ,b]的项目，若GO(Ii,X)=Ij，且当X为一终结符号a时，置ACTION[i,a]=sj。但若X为一非终结符号时，则置GOTO[i,X]=j。</p>
+
+<p>(2) 若归约项目[A→α·,a]∈Ii，A→α为文法的第j个产生式，则置ACTION[i,a]=rj。</p>
+
+<p>(3) 若项目[S′→S·,#]∈Ii，则置ACTION[i,#]=acc。</p>
+
+<p>(4) 在分析表中，凡不能照上述规则填入信息的元素，均置为”出错”。</p>
+
+<p>对于一个文法G来说，若按上述算法所构造的分析表不含有多重定义的元素，则称此分析表为G的LR(1)分析表。凡具有LR(1)分析表的文法称为LR(1)文法。</p>
+
+<h3 id="22程序流程图">2.2程序流程图</h3>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093342.png" alt="" />{width=”4.7in” height=”4.191666666666666in”}</p>
+
+<h2 id="3实验结果">3.实验结果</h2>
+
+<p>1：输入产生式与终结符和非终结符集</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093343.png" alt="" />{width=”3.3868055555555556in” height=”1.5444444444444445in”}</p>
+
+<p>2：生成分析表</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309093344.png" alt="" />{width=”3.957638888888889in” height=”3.870138888888889in”}</p>
+
+<p>3：输入语句检验</p>
+
+<h2 id="4实验结论">4.实验结论</h2>
+
+<p>本实验程序较好地完成了预测分析法LR(1)分析程序的设计与实现，能够对所给字符串进行识别，判断是否是给定文法的句子。通过这次的实验，我了解了LR(1)文法预测分析法设计和实现，加深了对LR（1）文法的理解和认识，使我的编译原理的知识更加巩固，而且可以使理论与实践相结合，更好的掌握所学知识。</p>
+
+<h2 id="5程序源代码">5.程序源代码</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;map&gt;
+#include&lt;vector&gt;
+#include&lt;stack&gt;
+#include&lt;set&gt;
+#include&lt;cstring&gt;
+#include&lt;queue&gt;
+using namespace std;
+map&lt;char,int&gt;getnum;
+char getchar[100];          //获得对应字符
+vector&lt;string&gt;proce;        //产生式
+int table[30][30];         //预测分析表 -1
+int tb_s_r[30][30];        //是移进项还是规约项,-1,-2.
+int num=0;int numvt=0;   //numvt是终结符集合，0是‘#’，numvt表空字
+void readin()                        //读入vt,vn,编号1-num,读入所有产生式
+{
+    memset(table,-1,sizeof(table));
+    getnum['#']=0;
+    getchar[0]='#';
+    cout&lt;&lt;"请输入终结符集："&lt;&lt;endl;
+    char x;
+    do
+    {
+      cin&gt;&gt;x;
+      getnum[x]=++num;
+      getchar[num]=x;
+    }while(cin.peek()!='\n');
+     numvt=++num;
+     getnum['@']=numvt;        //kong zi
+     getchar[num]=('@');
+    cout&lt;&lt;"请输入非终结符集："&lt;&lt;endl;
+    do
+    {
+      cin&gt;&gt;x;
+      getnum[x]=++num;
+      getchar[num]=x;
+    }while(cin.peek()!='\n');
+    cout&lt;&lt;"输入所有产生式（空字用‘@’表示）,以‘end’结束:"&lt;&lt;endl;
+    string pro;
+     while(cin&gt;&gt;pro&amp;&amp;pro!="end")
+     {
+         string ss;
+         ss+=pro[0];
+         for(int i=3;i&lt;pro.size();i++)
+         {
+             if(pro[i]=='|')
+             {
+                  proce.push_back(ss);
+                  ss.clear();ss+=pro[0];
+             }
+             else
+             {
+                 ss+=pro[i];
+             }
+         }
+          proce.push_back(ss);
+    }
+}
+struct xiangmu         //一个项目
+{
+    int nump;       //产生式编号
+    int id;        //.的位置
+    string fst;   //集合
+};
+string getp[100];   //获得某终结符在左边的产生式集合
+void getpp()
+{
+    for(int i=0;i&lt;proce.size();i++)
+    {
+        int temp=getnum[proce[i][0]];
+        getp[temp]+=char('0'+i);
+    }
+}
+string first[100];   //每个符号的first集
+bool gotfirst[100]; //是否已经完成FIRST集合
+void dfsgetfirst(int nv,int nump)  //当前的符号，和对应产生式编号
+{
+   int temp=getnum[proce[nump][1]];  //产生式推出来的首符
+    gotfirst[nump]=1;               //标记
+    if(temp&lt;=numvt)first[nv]+=char('0'+temp);  //是终结符
+    else
+    {
+        for(int i=0;i&lt;getp[temp].size();i++)    //所有temp可以推出来的符号对应的产生式
+          {
+              if(proce[nump][0]==proce[nump][1])continue; //左递归的产生式不用不影响求fisrt集
+              dfsgetfirst(temp,getp[temp][i]-'0');
+          }
+
+        first[nv]+=first[temp];                  //回溯时候沿途保存
+    }
+}
+void get_first()
+{
+    for(int i=1;i&lt;=numvt;i++)             //    终结符first集合是它自己.
+    {
+        first[i]=char('0'+i);
+    }
+     for(int i=0;i&lt;proce.size();i++)
+    {
+        if(proce[i][0]==proce[i][1])continue; //左递归的产生式不用不影响求fisrt集
+        if(gotfirst[i])continue;              //已经生成。
+        int temp=getnum[proce[i][0]];
+          dfsgetfirst(temp,i);
+    }
+}
+vector&lt;vector&lt;xiangmu&gt; &gt;v;             //项目集族
+int e[100][3]; int head[100];int nume=0;    //链式前向星项目集族图
+void addegde(int from,int to,int w)         //添加边
+{
+    e[nume][0]=to;e[nume][1]=head[from];head[from]=nume;
+    e[nume++][2]=w;
+}
+void clear()                 //初始化函数
+{
+    for(int i=0;i&lt;100;i++)
+       head[i]=-1;
+     for(int i=0;i&lt;30;i++)
+       for(int j=0;j&lt;30;j++)
+         tb_s_r[i][j]=table[i][j]=-1;
+    nume=0;
+}
+inline bool xmeq(xiangmu a,xiangmu b)
+{
+    if(a.fst==b.fst&amp;&amp;a.id==b.id&amp;&amp;a.nump==b.nump)return 1;
+    return 0;
+}
+bool isin(xiangmu a,vector&lt;xiangmu&gt; b)      //xm a is in xmji b
+{
+    for(int i=0;i&lt;b.size();i++)
+    {
+        if(xmeq(a,b[i]))return 1;
+    }
+    return 0;
+}
+vector&lt;xiangmu&gt;  hebing(vector&lt;xiangmu&gt;a ,vector&lt;xiangmu&gt;b)  //合并项目集 a,b 复给 a
+{
+    for(int i=0;i&lt;b.size();i++)
+    {
+        if(isin(b[i],a))continue;
+        else
+         a.push_back(b[i]);
+    }
+    return a;
+}
+bool xmjieq(vector&lt;xiangmu&gt; a,vector&lt;xiangmu&gt; b)  //两个项目集是否相等
+{
+    if(a.size()!=b.size())return 0;
+     for(int i=0;i&lt;a.size();i++)
+     {
+        if(!isin(a[i],b))return 0;
+     }
+     return 1;
+}
+int xmji_isin_xmjizu(vector&lt;xiangmu&gt;a,vector&lt;vector&lt;xiangmu&gt; &gt;b)  //查找项目集，若有，则返回编号,一举俩得
+{
+    for(int i=0;i&lt;b.size();i++)
+    {
+        if(xmjieq(a,b[i]))return i;
+    }
+    return -1;
+}
+vector&lt;xiangmu&gt; get_close(xiangmu t)           //对项目 T作闭包
+{
+   vector&lt;xiangmu&gt; temp;
+   temp.push_back(t);
+    queue&lt;xiangmu&gt; q;                         //bfs完成闭包
+    q.push(t);
+    while(!q.empty())
+    {
+      xiangmu cur=q.front();
+      q.pop();
+      if(cur.id==proce[cur.nump].size())          //归约项舍去
+          continue;
+     int tt=getnum[proce[cur.nump][cur.id]];       //tt is thm num of '.'zhihoudefuhao
+      if(tt&lt;=numvt)   continue ;                  //若是终结符，则不必找了
+      for(int i=0;i&lt;getp[tt].size();i++)         //对应产生式的编号
+       {
+          xiangmu c;
+         c.id=1;                               //
+         c.nump=getp[tt][i]-'0';             //
+        if(proce[cur.nump].size()-cur.id==1)   // the last : A-&gt;BC.D,a/b
+          c.fst+=cur.fst;
+         else                           //not the last  ：A-&gt;B.CFb,a/b
+        {
+          int tttnum=getnum[proce[cur.nump][cur.id+1]];
+          c.fst+=first[tttnum];
+        }
+         if(!isin(c,temp))           //排重，新的项目就加入。
+         {
+             q.push(c);
+             temp.push_back(c);
+         }
+        }
+      }
+      return temp;
+}
+void get_xiangmujizu()             //获得项目集族
+{
+    vector&lt;xiangmu&gt;temp;
+    xiangmu t;
+    t.nump=0;t.id=1;t.fst+='0';    //初始的项目集：0
+    temp=get_close(t);
+    queue&lt;vector&lt;xiangmu&gt; &gt;q;        //bfs法获得
+    q.push(temp);
+    v.push_back(temp);             //第一个入
+    while(!q.empty())
+    {
+         vector&lt;xiangmu&gt; cur=q.front();
+         q.pop();
+         for(int i=1;i&lt;=num;i++)     //所有符号
+         {
+             if(i==numvt)continue;      //'#'
+             vector&lt;xiangmu&gt; temp;
+              for(int j=0;j&lt;cur.size();j++)     //该项目集中的所有项目
+              {
+                 if(cur[j].id==proce[cur[j].nump].size())continue;  //是规约项目，无法再读入了
+                 int tt=getnum[proce[cur[j].nump][cur[j].id]];
+                if(tt==i)                                          //can read in 符号i
+                {
+                    xiangmu tempt;
+                    tempt.fst=cur[j].fst;
+                    tempt.id=cur[j].id+1;
+                    tempt.nump=cur[j].nump;
+                    temp=hebing(temp,get_close(tempt));
+                }
+              }
+              if(temp.size()==0)continue;             //该符号无法读入。
+                int numcur=xmji_isin_xmjizu(cur,v);   //当前节点标号
+                int tttnum=xmji_isin_xmjizu(temp,v);  //新目标标号
+                   if(tttnum==-1)                    //新的项目集
+                   {
+                    v.push_back(temp);
+                    q.push(temp);
+                    addegde(numcur,v.size()-1,i) ;   //添加边，权为读入的符号
+                  }
+                   else                             //老的项目集
+                   {
+                    addegde(numcur,tttnum,i);
+                   }
+         }
+    }
+}
+void print_xmjizu()              //打印项目集族
+{
+    for(int i=0;i&lt;v.size();i++)
+    {
+        cout&lt;&lt;"项目集"&lt;&lt;i&lt;&lt;":"&lt;&lt;endl;
+      for(int j=0;j&lt;v[i].size();j++)
+        {
+          cout&lt;&lt;proce[v[i][j].nump]&lt;&lt;" "&lt;&lt;v[i][j].id&lt;&lt;" "&lt;&lt;v[i][j].fst&lt;&lt;endl;
+        }
+      cout&lt;&lt;endl;
+    }
+    for(int i=0;i&lt;v.size();i++)
+    {
+        for(int j=head[i];j!=-1;j=e[j][1])
+        {
+            cout&lt;&lt;"  "&lt;&lt;getchar[e[j][2]]&lt;&lt;endl;
+            cout&lt;&lt;i&lt;&lt;"---&gt;"&lt;&lt;e[j][0]&lt;&lt;endl;
+        }
+    }
+}
+bool get_table()            //获得分析表table[i][j]=w:状态i--&gt;j,读入符号W。
+{
+    for(int i=0;i&lt;v.size();i++)          //遍历图
+    {
+        for(int j=head[i];j!=-1;j=e[j][1])
+        {
+            if(table[i][e[j][2]]!=-1)return 0;           //多重入口，报错.
+             table[i][e[j][2]]=e[j][0];
+            tb_s_r[i][e[j][2]]=-1;             //移近项-1。
+        }
+    }
+    for(int i=0;i&lt;v.size();i++)             //遍历所有项目
+    {
+      for(int j=0;j&lt;v[i].size();j++)
+        {
+            if(v[i][j].id==proce[v[i][j].nump].size())  //归约项
+            {
+                for(int k=0;k&lt;v[i][j].fst.size();k++)
+                   {
+                      if(table[i][(v[i][j].fst)[k]-'0']!=-1)return 0;           //多重入口，报错.
+                     if(  (v[i][j].fst)[k]=='0'&amp;&amp;v[i][j].nump==0)
+                        table[i][(v[i][j].fst)[k]-'0']=-3 ;           //接受态。
+                     else
+                     {
+                        table[i][(v[i][j].fst)[k]-'0']=v[i][j].nump;
+                        tb_s_r[i][(v[i][j].fst)[k]-'0']=-2;            //归约态
+                     }
+                   }
+            }
+         }
+     }
+     return 1;
+}
+void print_table()
+{
+    cout&lt;&lt;"LR(1)分析表："&lt;&lt;endl;
+    cout&lt;&lt;"状态   "&lt;&lt;"         actoin     "&lt;&lt;endl;
+     for(int j=0;j&lt;=num;j++)
+        {
+            if(j==numvt)continue;
+            cout&lt;&lt;"    "&lt;&lt;getchar[j];
+        }
+       cout&lt;&lt;endl;
+    for(int i=0;i&lt;v.size();i++)
+    {
+        cout&lt;&lt;i&lt;&lt;"   ";
+        for(int j=0;j&lt;=num;j++)
+        {
+            if(j==numvt)continue;
+            if(table[i][j]==-3)  cout&lt;&lt;"acc"&lt;&lt;"  ";       //接受
+            else if(table[i][j]==-1)cout&lt;&lt;"     ";        //空
+            else if(tb_s_r[i][j]==-1)cout&lt;&lt;"s"&lt;&lt;table[i][j]&lt;&lt;"   ";  //移近
+            else if(tb_s_r[i][j]==-2)cout&lt;&lt;"r"&lt;&lt;table[i][j]&lt;&lt;"   ";  //归约
+        }
+        cout&lt;&lt;endl;
+    }
+}
+string word;
+void  print_now_state(int count,stack&lt;int&gt;state,stack&lt;int&gt;wd,int i)
+{
+    cout&lt;&lt;count&lt;&lt;'\t'&lt;&lt;'\t';
+    stack&lt;int&gt;temp;
+    while(!state.empty())
+    {
+        temp.push(state.top());
+        state.pop();
+    }
+    while(!temp.empty())
+    {
+        cout&lt;&lt;temp.top();
+        temp.pop();
+    }
+    cout&lt;&lt;'\t'&lt;&lt;'\t';
+     while(!wd.empty())
+    {
+        temp.push(wd.top());
+        wd.pop();
+    }
+    while(!temp.empty())
+    {
+        cout&lt;&lt;getchar[temp.top()];
+        temp.pop();
+    }
+    cout&lt;&lt;'\t'&lt;&lt;'\t';
+    for(int j=i;j&lt;word.size();j++)
+        cout&lt;&lt;word[j];
+    cout&lt;&lt;'\t'&lt;&lt;'\t';
+}
+bool analyze()
+{
+    cout&lt;&lt;"       "&lt;&lt;word&lt;&lt;"的分析过程："&lt;&lt;endl;
+    cout&lt;&lt;"步骤\t\t"&lt;&lt;"状态栈\t\t"&lt;&lt;"符号栈\t\t"&lt;&lt;"输入串\t\t"&lt;&lt;"动作说明"&lt;&lt;endl;
+      stack&lt;int&gt;state;   //俩个栈：状态栈和符号栈
+      stack&lt;int&gt;wd;
+      int count=0;
+      state.push(0);     //初始化
+      wd.push(0);        //'#'
+    for(int i=0;;)       //i，读入文本的
+    {
+        int cur=state.top();
+        if(table[cur][getnum[word[i]]]==-1)    // 空白，报错误
+             return 0;
+        if(table[cur][getnum[word[i]]]==-3)  //接受态
+            {
+                print_now_state(count++,state,wd,i);
+                cout&lt;&lt;"      恭喜！acc!"&lt;&lt;endl;
+                return 1;
+            }
+        if(tb_s_r[cur][getnum[word[i]]]==-1)       //移进项
+        {
+            print_now_state(count++,state,wd,i);
+           int newstate=table[cur][getnum[word[i]]];
+            cout&lt;&lt;"action["&lt;&lt;cur&lt;&lt;","&lt;&lt;getnum[word[i]]&lt;&lt;"]="&lt;&lt;newstate;
+            cout&lt;&lt;"，状态"&lt;&lt;newstate&lt;&lt;"入栈"&lt;&lt;endl;
+            wd.push(getnum[word[i]]);
+            state.push(newstate);
+            i++;
+        }
+        else if(tb_s_r[cur][getnum[word[i]]]==-2)         //归约
+        {
+            print_now_state(count++,state,wd,i);
+
+             int numpro=table[cur][getnum[word[i]]];   //用该产生式归约
+            int len=proce[numpro].size()-1;
+            for(int ii=0;ii&lt;len;ii++)                 //弹栈
+             {
+                 wd.pop();
+                 state.pop();
+             }
+             wd.push(getnum[proce[numpro][0]]);    //新入
+             int cur=state.top();
+            cout&lt;&lt;"用"&lt;&lt;proce[numpro][0]&lt;&lt;"-&gt;";
+             for(int ii=1;ii&lt;=len;ii++)
+                 cout&lt;&lt;proce[numpro][ii];
+            cout&lt;&lt;"进行归约,"&lt;&lt;"goto["&lt;&lt;cur&lt;&lt;","&lt;&lt;getnum[word[i]]&lt;&lt;"]="&lt;&lt;table[cur][getnum[proce[numpro][0]]];
+            cout&lt;&lt;"入栈"&lt;&lt;endl;
+             state.push(table[cur][getnum[proce[numpro][0]]]);
+        }
+    }
+    return 1;
+}
+int main()
+{
+    clear();
+    readin();
+    getpp();
+    get_first();
+    get_xiangmujizu();
+    if(!get_table())
+    {
+    cout&lt;&lt;"此文法在生成分析表时候有多重入口，非LR(1)文法！"&lt;&lt;endl;
+        return 0;
+    }
+  // print_xmjizu();
+   print_table();
+   cout&lt;&lt;"请输入字："&lt;&lt;endl;
+   cin&gt;&gt;word;
+   word+='#';
+   if(!analyze())
+       cout&lt;&lt;"error!"&lt;&lt;endl;
+   else;
+    return 0;
+}
+</code></pre></div></div>
+
+:ET
