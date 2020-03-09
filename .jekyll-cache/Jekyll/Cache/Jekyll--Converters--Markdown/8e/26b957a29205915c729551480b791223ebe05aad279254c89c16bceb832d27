@@ -1,0 +1,115 @@
+I"�%<h1 id="vpn实验">VPN实验</h1>
+
+<h2 id="一实验任务及目的">一、实验任务及目的</h2>
+
+<p>通过指导学生上机实践，掌握SSL VPN的基本原理，掌握有关加密、完整性、认证、密钥管理、密钥交换、PKI等基本原理。在此基础上，基于Ubuntu系统，设计并编程一个简单的SSL VPN。要求采用TUN/TAP建立主机到主机之间的隧道、主机到网关的隧道、网关到网关的隧道，并编程验证隧道的可行性。利用OpenSSL建立VPN，设计并实现加密和解密操作、认证以及密钥交换过程，编程测试其正确性。</p>
+
+<h2 id="二实验方案设计">二、实验方案设计</h2>
+
+<h3 id="1-使用-创建主机到主机的-隧道-tun--tap">1、 使用 创建主机到主机的 隧道 TUN / TAP</h3>
+
+<p>TLS / SSL VPN的启用技术是TUN / TAP，现在在现代操作系统中已经广泛实施。 TUN和TAP是虚拟网络内核驱动程序;他们实施完全由软件支持的网络设备。 TAP（如在网络分接头中）模拟以太网设备，并使用以太网帧等第2层数据包进行操作; TUN（与网络TUNnel一样）模拟网络层设备，并使用IP-3等三层数据包进行操作。使用TUN / TAP，我们可以创建虚拟网络接口。用户空间程序通常附加到TUN / TAP虚拟网络接口。操作系统通过TUN / TAP网络接口发送的数据包被传送到用户空间程序。另一方面，程序通过TUN / TAP网络接口发送的数据包被注入操作系统网络堆栈;到操作系统，看起来数据包来自外部来源通过</p>
+
+<p>虚拟网络接口。</p>
+
+<p>当程序连接到TUN / TAP接口时，计算机发送到此接口的IP数据包将被传送到程序中;另一方面，程序发送到接口的IP数据包将被传送到计算机中，就好像它们通过这个虚拟网络接口从外部来的一样。程序可以使用标准的read（）和write（）系统调用来接收或发送数据包到虚拟接口。</p>
+
+<p>Davide Brini撰写了一篇优秀的教程文章，介绍如何使用TUN / TAP在两台机器之间创建隧道。本教程的URL是http://waldner.netsons.org/d2-tuntap.php。本教程提供了一个名为simpletun的程序，它使用TUN隧道技术连接两台计算机。学生应该阅读本教程。当您从教程中编译示例代码时，如果看到有关linux / if.h的错误消息，请尝试在include语句中将“&lt;linux / if.h&gt;”更改为“&lt;net / if.h&gt;”。</p>
+
+<p>为了方便本实验，我们修改了Brini的simpletun程序，并链接了实验室网页中的代码。学生可以简单地下载这个C程序并运行以下命令来编译它。我们将使用simpletun在本实验中创建隧道：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc -o simpletun simpletun.c
+
+
+</code></pre></div></div>
+
+<h3 id="2-创建主机到网关隧道">2、 创建主机到网关隧道</h3>
+
+<p>现在，您已经成功地在单台主机中的两台虚拟机上建立了隧道，您应该在两台不同主机上的两台虚拟机上建立一个类似的隧道。 您可以为此使用端口转发。 请参阅有关端口转发的指导。</p>
+
+<p>在此任务中，您需要在计算机和网关之间创建隧道，从而允许计算机访问连接到网关的专用网络。 为了演示这一点，你需要两台物理计算机。 在一台计算机上，您可以在计算机中运行多个虚拟机来设置网关和专用网络。 然后在另一台计算机上使用虚拟机与专用网络上的主机进行通信。 请参阅指南部分，了解如何设置网关和专用网络。 因为您需要两台物理计算机，所以如果您只有一台计算机，则可以与另一名学生合作。 但是，你必须独立完成你的工作。 团队合作只是为了演示目的。</p>
+
+<h3 id="3创建一个网关到网关的隧">3、创建一个网关到网关的隧</h3>
+
+<p>在这项任务中，您需要更进一步在不同私有网络的两个网关之间建立隧道。 通过此通道，来自一个专用网络的任何主机都可以使用该通道与另一个专用网络上的主机通信。 图2描述了这种网关到网关隧道的设置。</p>
+
+<h3 id="4创建虚拟专用网络vpn">4、创建虚拟专用网络（VPN）</h3>
+
+<p>此时，您已学会如何创建网络隧道。 现在，如果你可以保护这条隧道，你基本上会得到一个VPN。 这是我们在这项任务中要实现的目标。 为了巩固这条隧道，我们需要实现两个目标，保密性和完整性。 使用加密来实现机密性，即通过隧道的内容被加密。 真正的VPN软件通常支持多种不同的加密算法。 对于本实验中的MiniVPN，我们只需要支持AES加密算法，并使用密码块链接（CBC）模式。</p>
+
+<h3 id="5认证和密钥交换">5、认证和密钥交换</h3>
+
+<p>VPN建立之前，VPN客户端必须验证VPN服务器，确保服务器不是欺诈服务器。 另一方面，VPN服务器必须认证客户端（即用户），确保用户有权创建这样的VPN隧道。 认证完成后，客户端和服务器将就VPN隧道的会话密钥达成一致。 此会话密钥仅为客户端和服务器所知。 派生此会话密钥的过程称为密钥交换。</p>
+
+<h3 id="6支持多个vpn隧道">6、支持多个VPN隧道</h3>
+
+<p>在现实世界中，一台VPN服务器通常支持多个VPN隧道。 即，VPN服务器允许多个客户端同时连接到它; 每个客户端都与服务器有自己的VPN隧道，不同隧道中使用的会话密钥应该不同。 你的VPN服务器应该能够支持多个客户端。 你不能认为只有一个隧道和一个会话密钥。</p>
+
+<p>当数据包通过VPN隧道到达VPN服务器时，服务器需要确定数据包来自哪个VPN隧道。 没有这些信息，服务器无法知道应该使用哪个解密密钥（和IV）来解密数据包; 使用错误的密钥会导致数据包被丢弃，因为HMAC不匹配。 您可以查看IPSec协议并考虑IPSec如何支持多个隧道。 你可以使用类似的想法。</p>
+
+<h2 id="三实验过程记录">三、实验过程记录</h2>
+
+<h3 id="实验1建立用户间的vpn隧道">实验1：建立用户间的VPN隧道</h3>
+
+<p>第一步：按照要求将simpletun.c文件复制进去并编译</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153239-285369.png" alt="image-20200308153238989" /></p>
+
+<p>编译成功</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153245-184561.png" alt="image-20200308153244404" /></p>
+
+<p>第二步：启动隧道连接VPN</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153307-398161.png" alt="image-20200308153306165" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153312-98664.png" alt="image-20200308153312045" /></p>
+
+<p>第三步：让虚拟机Bl连接VPN</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153321-143128.png" alt="image-20200308153320402" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153326-787499.png" alt="image-20200308153325914" /></p>
+
+<p>第四步：观察虚拟机A和B的连接状态</p>
+
+<p>虚拟机A</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153335-523062.png" alt="image-20200308153335316" /></p>
+
+<p>虚拟机B</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153341-534453.png" alt="image-20200308153340726" /></p>
+
+<p>连接状态良好</p>
+
+<h3 id="实验2创建主机到网关的隧道">实验2：创建主机到网关的隧道</h3>
+
+<p>第一步：建立一个网关</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153402-212850.png" alt="image-20200308153401410" /></p>
+
+<p>第二步：Ping一下该网关，发现还无法正常接通</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153406-790893.png" alt="image-20200308153406081" /></p>
+
+<p>第三步：通过工具建立网关和主机间的隧道</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153411-715416.png" alt="image-20200308153411334" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153420-130589.png" alt="image-20200308153419557" /></p>
+
+<h3 id="实验3-创建网关到网关间的隧道">实验3： 创建网关到网关间的隧道</h3>
+
+<p>利用实验2建立好的机制添加网关设置，连接后就可以开始互相发送数据包了</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153428-380171.png" alt="image-20200308153427039" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153433-438404.png" alt="image-20200308153432788" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/153438-215229.png" alt="image-20200308153437929" /></p>
+
+<h2 id="四实验总结">四、实验总结</h2>
+
+<p>本次实验掌握SSL VPN的基本原理，以及有关加密、完整性、认证、密钥管理、密钥交换、PKI等基本原理。在此基础上，基于Ubuntu系统，设计并编程了一个简单的SSL VPN。采用TUN/TAP建立主机到主机之间的隧道、主机到网关的隧道、网关到网关的隧道，并编程验证隧道的可行性。利用OpenSSL建立VPN，设计并实现加密和解密操作、认证以及密钥交换过程，编程测试其正确性。对我以后的学习有很大的帮助。</p>
+:ET

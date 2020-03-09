@@ -1,0 +1,34 @@
+I"�<h1 id="网络监视和流量分析">网络监视和流量分析</h1>
+
+<p>4.1 实验目的</p>
+
+<p><strong>1. 理解什么是网络证据，应该采取什么办法收集网络证据。</strong></p>
+
+<p><strong>2. 了解网络监视和跟踪的目的，会用 WinDump 进行网络监视和跟踪。</strong></p>
+
+<p><strong>3. 使用 Ethereal 软件分析数据包，查看二进制捕获文件，找出有效的证据。</strong></p>
+
+<p>4.2 实验环境和设备</p>
+
+<p><strong>1. Windows XP 或 Windows 2000 Professional操作系统；</strong></p>
+
+<p><strong>2. 网络运行良好；</strong></p>
+
+<p><strong>3. WinPcap、WinDump 和 Ethereal 安装软件。</strong></p>
+
+<p>4.3 实验内容和步骤</p>
+
+<p><strong>1. 用 WinDump 和 Ethereal 模拟网络取证 1—— Telnet 连接抓包</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102307.png" alt="" />{width=”4.2in” height=”2.5618055555555554in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102308.png" alt="" />{width=”4.169444444444444in” height=”2.0381944444444446in”}</p>
+
+<p><strong>2. 用 WinDump 和 Ethereal 模拟网络取证 2—— SYN 泛洪攻击抓包</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102309.jpeg" alt="" />{width=”4.245833333333334in” height=”1.7847222222222223in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102310.png" alt="" />{width=”4.284722222222222in” height=”0.9076388888888889in”}</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102311.jpeg" alt="" />{width=”4.307638888888889in” height=”2.5in”}</p>
+:ET

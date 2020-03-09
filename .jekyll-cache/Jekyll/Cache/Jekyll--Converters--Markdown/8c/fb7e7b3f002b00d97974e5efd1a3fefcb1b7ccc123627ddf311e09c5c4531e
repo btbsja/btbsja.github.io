@@ -1,0 +1,168 @@
+I"�/<h1 id="tcpip攻击实验">TCP/IP攻击实验</h1>
+
+<h2 id="一实验任务及目的">一、实验任务及目的</h2>
+
+<p>通过指导学生上机实践，掌握TCP/IP网络协议的架构和原理，掌握捕包分析工具Wireshark和攻击工具Netwox。实现ARP攻击、ICMP重定向攻击、SYN泛洪攻击等攻击，查看攻击结果，通过包分析工具，捕获不同的网络包，发现攻击的特点。要求建立实验环境，完成各种攻击，并分析攻击的原理和攻击数据包的特点，总结实验过程中的问题和解决方法和收获。</p>
+
+<h2 id="二实验方案设计">二、实验方案设计</h2>
+
+<p>使用三台虚拟机做实验，其中一个用于攻击；另一个用于被攻击；第三个作为观察者使用；把三台主机放在同一个LAN中，其配置信息参照如下所示（实际在实验过程中有所改动）：</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/150851-721932.png" alt="image-20200308150849322" /></p>
+
+<p>用的是SEED实验室已经搭建好，并且已经安装好相关的netwox工具箱和Wireshark工具箱的Ubuntu 12.04系统。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/150908-570975.png" alt="image-20200308150907524" /></p>
+
+<h2 id="三实验过程记录">三、实验过程记录</h2>
+
+<h3 id="实验1apr缓存中毒">实验1：APR缓存中毒</h3>
+
+<p><strong>【实验背景】</strong></p>
+
+<p>ARP缓存是ARP协议的重要的一部分。作为一个ARP协议执行结果，一旦一个在MAC地址和IP地址之间的映射被决定，这个映射就被缓存。因此，如果影射已经存在在缓存中，就没有必要再重复ARP协议。然而，因为ARP协议是无状态的，缓存可以被轻易的通过恶意的ARP信息修改。这样的一种攻击叫做ARP欺骗。</p>
+
+<p>在这样一个攻击中，攻击者使用欺骗ARP信息来哄骗受害者接受一个无效的MAC-IP映射，并且在缓存中保存这个映射。取决于攻击者的目的不同，这里可能出现各种类型的后果。例如，攻击者将一个不存在的MAC地址关联受害者的默认网关的IP地址，通过此来启动一个Dos攻击。</p>
+
+<p><strong>【实验内容】</strong></p>
+
+<p>当发送方B需要向接收方C发送一个数据时，B会从自己的ARP表中通过C的IP地址来查找相应的C的MAC地址。如果C的MAC地址不在B的ARP表中，B就向全网发广播包，要求C主机返回它的MAC地址。当B接收到C返回的MAC地址时，B就将更新它的ARP表。同时，C主机也将B主机和它对应的MAC地址记录到C的ARP表中。ARP表的更新采用牛奶原则，也就是说，ARP表将无条件接受最后一次收到的ARP包作为ARP更新的数据。鉴于此，攻击者A可以利用一些工具伪造一个ARP包，将C的IP对应的MAC地址修改为自己的MAC地址，并将这个数据包发送给B。B在更新了ARP表之后，新的发往C的数据包就会被发送到B。</p>
+
+<p>查询netwox说明后得知，33号工具用于伪造ARP包。使用命令查看该工具的详细使用方法。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>netwox 33 --help2
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151258-770562.png" alt="image-20200308151256501" /></p>
+
+<p>在进行攻击之前，先在三台主机上互相ping。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151310-703606.png" alt="image-20200308151310445" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151338-857087.png" alt="image-20200308151316529" /></p>
+
+<p>然后使用arp –a命令查看ARP表</p>
+
+<p>之后，在三台主机全部开启的情况下，攻击机A发动攻击</p>
+
+<p>Netwox 80 -e “mac地址” -i “ip地址”</p>
+
+<p>之后，使用同样的方法，给C主机发送ARP欺骗包。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151437-517598.png" alt="image-20200308151436131" /></p>
+
+<h3 id="实验2icmp重定向攻击">实验2：ICMP重定向攻击</h3>
+
+<p><strong>【实验背景】</strong></p>
+
+<p>ICMP重定向被路由器用来向更新主机的路由信息，最开始只有最少的路由信息。当一台主机接收到一个ICMP重定向信息，他将会根据接收到的信息来修改路由表。因为缺少确认，如果攻击者希望受害者设置它的路由信息为一个特别形式，他们可以发送欺骗ICMP重定向信息给受害者，并且欺骗受害者修改它的路由表。</p>
+
+<p><strong>【实验内容】</strong></p>
+
+<p>ICMP重定向信息是路由器向主机提供实时的路由信息，当一个主机收到ICMP重定向信息时，它就会根据这个信息来更新自己的路由表。由于缺乏必要的合法性检查，如果一个黑客想要被攻击的主机修改它的路由表，黑客就会发送ICMP重定向信息给被攻击的主机，让该主机按照黑客的要求来修改路由表。</p>
+
+<p>在三台机器上搭建的路由指令</p>
+
+<p>A的路由配置指令</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo ifconfig eth0 *.*.220.128 netmask 225.225.225.0
+sudo ifconfig eth1 *.*.205.129 netmask 255.255.255.0
+sudo route add -net *.*.220.0/24 gw *.*.220.128
+sudo route add -net *.*.205.0/24 gw *.*.205.129
+sudo sysctl -w net.ipv4,ip_forward=1
+
+</code></pre></div></div>
+
+<p>B的路由配置指令</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo ifconfig eth0 *.*.205.128 netmask 255.255.255.0
+sudo route add default gw *.*.220.128
+sudo sysctl -w net.ipv4.ip_forward=1
+</code></pre></div></div>
+
+<p>C的路由配置指令</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo ifconfig eth0 *.*.205.128 netmask 255.255.255.0
+sudo route add default gw *.*.205.129
+sudo sysctl -w net.ipv4.ip_forward=1
+</code></pre></div></div>
+
+<p>使用netwox86号工具可以完成这个攻击。攻击机A指令</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo netwox 86 -f "host *.*.220.129" -g *.*.220.130 -c 1 -i *.*.220.131
+</code></pre></div></div>
+
+<p>-f “host 被攻击机的IP” –g 希望对方网关修改后的IP –c 类型 –i 源IP</p>
+
+<p>这个指令只有在按下ctrl+c时才会结束，否则一直发送ICMP包。</p>
+
+<p>此时，在被攻击机B中使用WIRESHRK监听eth0，发现不断收到ICMP包</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151642-409033.png" alt="image-20200308151641074" /></p>
+
+<h3 id="实验3syn洪流攻击">实验3：SYN洪流攻击</h3>
+
+<p><strong>【实验背景】</strong></p>
+
+<p>SYN洪流攻击是Dos攻击的一种形式，攻击者发送许多SYN请求给受害者的TCP端口，但是攻击者没有完成三次握手的意向。攻击者或者使用虚假的IP地址，或者不继续过程。在这个攻击中，攻击者可以使受害者的用于半开连接的队列溢出，例如，一个完成SYN，SYN-ACK但没有收到最后的ACK回复的连接。当这个队列满了的时候，受害者不能够在进行更多的连接。</p>
+
+<p>SYN 缓存策略：SYN缓存是是对抗SYN洪流攻击的一种防御机制。如果机器检测到它正在被SYN洪流攻击，这种机制将会kick in。</p>
+
+<p><strong>【实验内容】</strong></p>
+
+<p>如果一个TCP连接没有完成三次握手，它将被放入半开连接队列，而半开连接队列有最大长度，如果连接数量达到最大容量时，新的连接就不能够被建立。SYN洪泛攻击就是通过未完成的TCP请求来试图充满半开连接队列，使得正常的连接不能够被建立，达到攻击的效果。</p>
+
+<p>在这个实验中，使用telnet服务作为攻击目标，在23号端口发起SYN洪泛攻击。</p>
+
+<p>首先，尝试在主机B和C之间建立telnet连接，说明网络联通。主机B远程登录主机C的账户</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151714-607492.png" alt="image-20200308151713416" /></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>在主机C上，通过命令netstat –na</td>
+      <td>grep tcp 命令查看当前的TCP相关端口的状态，发现23号端口处于联通状态</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151729-365710.png" alt="image-20200308151724270" /></p>
+
+<p>在主机C上查看C的半开连接队列的最大长度为128，缓冲保护开启。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151744-521809.png" alt="image-20200308151740882" /></p>
+
+<p>在主机B中使用exit命令断开与C的telnet连接。之后在主机A中使用netwox76号工具发动针对主机C23号端口的SYN攻击。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151800-553542.png" alt="image-20200308151755523" /></p>
+
+<p>回到主机B中，尝试与主机C进行telnet远程连接，</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151809-793882.png" alt="image-20200308151808481" /></p>
+
+<p>从上图及实验过程可以看出，虽然连接的速度很慢，但是是可以连接上的。我在主机B上开启了两个终端，同时试图进行telnet连接。</p>
+
+<p>到主机C中查看端口连接情况，如图4.3.5和图4.3.6。发现，队列中充斥着大量半开连接，目的端口号都是C机的23号端口，但是源主机IP和端口却不一致，而且端口号都是不常用端口，可以判断出，这极有可能是一次SYN攻击。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/151827-965063.png" alt="image-20200308151826092" /></p>
+
+<h2 id="四实验结果分析">四、实验结果分析</h2>
+
+<p><strong>实验1：ARP 缓存中毒攻击</strong></p>
+
+<p>ARP缓存是ARP协议的重要组成部分。ARP协议运行的目标就是建立MAC地址和IP地址的映射，然后把这一映射关系保存在ARP缓存中，使得不必重复运行ARP协议。因为ARP缓存中的映射表并不是一直不变的，主机会定期发送ARP请求来更新它的ARP映射表，利用这个机制，攻击者可以伪造ARP应答帧使得主机错误的更新自己的ARP映射表，这个过程就是ARP缓存中毒。 这样的后果即使要么使主机发送MAC帧到错误的MAC地址，导致数据被窃听；要么由于MAC地址不存在，导致数据发送不成功。</p>
+
+<p><strong>实验2：ICMP 重定向攻击</strong></p>
+
+<p>ICMP重定向信息是路由器向主机提供实时的路由信息，当一个主机收到ICMP重定向信息时，它就会根据这个信息来更新自己的路由表。由于缺乏必要的合法性检查，如果一个黑客想要被攻击的主机修改它的路由表，黑客就会发送ICMP重定向信息给被攻击的主机，让该主机按照黑客的要求来修改路由表。</p>
+
+<p><strong>实验3：SYN 泛洪攻击</strong></p>
+
+<p>SYN洪流攻击是Dos攻击的一种形式，攻击者发送许多SYN请求给受害者的TCP端口，但是攻击者没有完成三次握手的意向。攻击者或者使用虚假的IP地址，或者不继续过程。在这个攻击中，攻击者可以使受害者的用于半开连接的队列溢出，例如，一个完成SYN，SYN-ACK但没有收到最后的ACK回复的连接。当这个队列满了的时候，受害者不能够在进行更多的连接。</p>
+
+<p>SYN 缓存策略：SYN缓存是是对抗SYN洪流攻击的一种防御机制。如果机器检测到它正在被SYN洪流攻击，这种机制将会kick in，</p>
+
+<p>如果一个TCP连接没有完成三次握手，它将被放入半开连接队列，而半开连接队列有最大长度，如果连接数量达到最大容量时，新的连接就不能够被建立。SYN洪泛攻击就是通过未完成的TCP请求来试图充满半开连接队列，使得正常的连接不能够被建立，达到攻击的效果。</p>
+
+:ET

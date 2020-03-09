@@ -1,0 +1,291 @@
+I"�#<h1 id="lsb与emd的信息隐藏算法">LSB与EMD的信息隐藏算法</h1>
+
+<h2 id="一实验环境">一、实验环境</h2>
+
+<p>1、计算机一台；</p>
+
+<p>2、Windows XP、windows8/10操作系统、C++或MATLAB7.5 </p>
+
+<h2 id="二实验内容与目的">二、实验内容与目的</h2>
+
+<p>1、学习并掌握图像信息隐藏的基本原理和方法</p>
+
+<p>2、学习下面基于LSB的信息隐藏和提取算法</p>
+
+<p>3、学习下面基于EMD的信息隐藏和提取算法</p>
+
+<p>4、按照下面新的LSB的替换规则实现LSB的信息隐藏和提取算法</p>
+
+<p>5、设计新的EMD中的模函数并实现基于新的模函数的EMD算法</p>
+
+<h2 id="三实验原理">三、实验原理</h2>
+
+<p>（1）. LSB（Least Significant Bit）算法是将秘密信息嵌入到载体图像像素值的最低有效位，也称最不显著位，改变这一位置对载体图像的品质影响最小。由于水印信号隐藏在最低位，相当于叠加了一个能量微弱的信号，因此在视觉和听觉上很难察觉。作为大数据量的信息隐藏方法，LSB在隐藏通信中仍占据相当重要的地位。</p>
+
+<p>LSB算法的基本原理：对空域的LSB做替换，用来替换LSB的序列就是需要加入的水印信息（参见图1）。由于水印信息嵌入的位置是LSB，为了满足水印的不可见性，允许嵌入的水印强度不可能太高。然而针对空域的各种处理，如游程编码前的预处理，会对不显著分量进行一定的压缩，所以LSB算法对这些操作很敏感。因此LSB算法可以看作是一种脆弱性水印算法。</p>
+
+<p>LSB算法中的替换规则如下：</p>
+
+<blockquote>
+  <p>1---&gt;0:通过-1处理</p>
+</blockquote>
+
+<blockquote>
+  <p>0---&gt;1:通过+1处理</p>
+</blockquote>
+
+<p>新的LSB算法中的替换规则如下：</p>
+
+<blockquote>
+  <p>1 ---&gt;0:通过+1处理</p>
+</blockquote>
+
+<blockquote>
+  <p>0---&gt;1:通过-1处理</p>
+</blockquote>
+
+<p>思考题：二个规则有何不同，一般情况下哪一个规则较好。用这二个规则分别隐藏相同的藏秘信息，分别得到的藏秘图像有什么特点，利用这个特点可否实现LSB算法的可逆呢？</p>
+
+<p><strong>LSB算法基本步骤：</strong></p>
+
+<p>1、先将载体图像的每一个十进制像素值转换为二进制数据；再将秘密信息也转换为二进制数据。</p>
+
+<p>2 、用二进制秘密信息中的每一比特信息替换与之相对应的载体数据的最低有效位；</p>
+
+<ol>
+  <li>将含秘密信息的二进制数据转换为十进制像素值，从而获得含秘密信息的图像。</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105449.png" alt="" />{width=”4.669444444444444in” height=”2.8in”}</p>
+
+<ol>
+  <li>、 EMD算法仅通过修改n个像素为一组像素中的一个像素的灰度值就可以嵌入一个2n+1进制的隐秘信息，具有图像像素值改变量小，嵌入信息量大的特点。</li>
+</ol>
+
+<p>实验中我们以n=2为代表进行实验，也即构造模函数如下：</p>
+
+<p>利用这个模函数可以构造256*256的魔方矩阵。大家也可考虑其他的模函数，如</p>
+
+<p>如何利用这个模函数构造256*256的魔方矩阵呢？</p>
+
+<p>传统的EMD的具体算法请参见ppt 课件。大家比较一下传统的EMD 算法与LSB matching算法的不同。</p>
+
+<h2 id="四实验步骤">四、<strong>实验步骤</strong></h2>
+
+<p>基本的LSB算法</p>
+
+<p><strong>4.1 LSB算法的信息嵌入</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Picture=imread(‘c:\\test.tif’);                   %读入载体图像 Double_Picture=Picture;
+Double_Picture=double(Double_Picture); %将图像转换为二进制
+ms_id=fopen(‘c:\\test.txt’,'r');           %读取秘密信息文件
+[msg,len]=fread(‘c:\\test.txt’_id,'ubit1');
+[m,n]=size(Double_Picture); 
+p=1;%p 为秘密信息的位计数器
+for  f2=1:n
+for  f1=1:m
+Double_Picture(f1,f2)=Double_Picture(f1,f2)-mod(Double_Picture(f1,f2),2)+msg(p,1);
+%将秘密信息按位隐藏入连续的像素中
+If  p==len
+   break;
+end
+p=p+1;
+end
+If  p==len
+   break;
+end
+end
+Double_Picture=uint8(Double_Picture);
+imwrite(Double_Picture,’c:\\result.tif’);  %生成秘密信息
+subplot(121);imshow(Picture);title('未嵌入信息的图片');
+subplot(122);imshow(Double_Picture);title('嵌入信息的图片');
+
+</code></pre></div></div>
+
+<p><strong>4.2LSB算法的信息提取</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Picture=imread(‘c:\\result.tif’);%读入隐秘信息的图像
+Picture=double(Picture); [m,n]=size(Picture);
+frr=fopen(‘c:\\result.txt’,'a');
+len=8;%设定隐秘信息长度
+p=1;
+for f2=1:n
+for f1=1:m
+    if bitand(Picture(f1,f2),1)==1
+    %顺序提取图像相应像素LSB 的秘密信息
+        fwrite(frr,1,'bit1');
+        result(p,1)=1;
+    else
+        fwrite(frr,0,'bit1');
+        result(p,1)=0;
+    end
+    if  p==len   %判断秘密信息是否读完
+        break;
+    end
+    p=p+1;
+end
+if p==len
+break;
+end
+end
+fclose(frr);
+</code></pre></div></div>
+
+<p><strong>EMD 算法的嵌入与提取代码由于比较长，请见下面附录</strong></p>
+
+<h2 id="五实验结果展示">五、实验结果展示</h2>
+
+<ol>
+  <li>LSB或EMD算法嵌入信息前后结果图</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105451.png" alt="" />{width=”1.2694444444444444in” height=”0.6458333333333334in”}</p>
+
+<p>2. 信噪比（PSNR）的计算</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A=double(Picture);
+[m,n]=size(Picture); 
+    D=0;
+    s=imread(['result.bmp']);
+    B=double(s);
+    for i=1:256
+        for j=1:256
+           D=D+(A(i,j)-B(i,j))^2;
+        end                                          
+    end
+    MSE = D / (m*n);
+    PSNR=10*log10((255^2)/MSE)
+End
+
+</code></pre></div></div>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105450.png" alt="" />{width=”4.707638888888889in” height=”2.6381944444444443in”}</p>
+
+<h2 id="附录基本的emd算法实现">附录：基本的EMD算法实现</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>function MY2()
+clc;clear;
+I=imread('coverlena.bmp');
+figure;subplot(1,2,1);imshow(I);
+title('原图');
+Secret=10;                           %待隐藏数据的大小
+data=round(rand(1,Secret));          %随机生成大小为Secret的待隐藏的2进制数据
+fprintf('隐藏数据：');disp(data);
+[length,width]=size(I);
+data3=Num2to5(data,Secret);          %将2进制数据转换为5进制
+fprintf('转换成5进制：');disp(data3);
+ 
+KimMatrix=newmatrixn();              %生成模5矩阵
+ 
+%进行信息隐藏
+point=1;
+for i=1:length
+    if point&gt;size(data3,2)
+            break;
+    end
+    for j=1:2:width
+        if point&gt;size(data3,2)
+            break;
+        end
+        
+        %找到对应点并对图像进行更新
+        if KimMatrix(I(i,j),I(i,j+1))==data3(point)
+        elseif KimMatrix(I(i,j)+1,I(i,j+1))==data3(point)
+            I(i,j)=I(i,j)+1;
+        elseif KimMatrix(I(i,j)-1,I(i,j+1))==data3(point)
+            I(i,j)=I(i,j)-1;
+        elseif KimMatrix(I(i,j),I(i,j+1)+1)==data3(point)
+            I(i,j+1)=I(i,j+1)+1;
+        elseif KimMatrix(I(i,j),I(i,j+1)-1)==data3(point)
+            I(i,j+1)=I(i,j+1)-1;
+        end
+        point=point+1;  
+    end
+end
+fprintf('信息隐藏成功!\r\n');
+subplot(1,2,2);imshow(I);
+title('隐藏后图像');
+ 
+%隐藏信息读取
+point=1;
+for i=1:length
+    if point&gt;size(data3,2)
+            break;
+    end
+    for j=1:2:width
+        if point&gt;size(data3,2)
+            break;
+        end
+        
+        Data2(point)=KimMatrix(I(i,j),I(i,j+1));
+        point=point+1;  
+    end
+end
+Data2=double(Data2);
+fprintf('提取数据：');disp(Data2);
+Data=Num5to2(Data2,Secret);         %将5进制数据转换为2进制
+fprintf('转换成2进制：');disp(Data);
+end
+ 
+function KimMatrix=newmatrixn()     %生成模5矩阵
+n=256;
+munit=uint8(zeros(5,5));
+for j=1:5
+    munit(1,j)=j-1;
+    munit(2,j)=mod(j+2,5);
+    munit(3,j)=mod(j+5,5);
+    munit(4,j)=mod(j+3,5);
+    munit(5,j)=mod(j+1,5);
+end
+nm=ceil(n/5);
+nn=ceil(n/5);
+KimMatrix=repmat(munit,nm,nn);
+KimMatrix=KimMatrix(1:256,1:256);
+end
+ 
+function data3=Num2to5(data,Secret)  %将2进制数据转换为5进制
+data1=0;
+num=1;
+for i=Secret:-1:1
+    data1=data1+data(i)*num;
+    num=num*2;
+end
+for i=Secret:-1:1
+    if data1==0
+        break;
+    end
+    data2(i)=mod(data1,5);
+    data1=(data1-mod(data1,5))/5;
+end
+for i=1:Secret
+    if data2(i)~=0
+        num=i;
+        break;
+    end
+end
+for i=1:Secret-num+1
+    data3(i)=data2(num+i-1);
+end
+end
+ 
+function Data=Num5to2(Data2,Secret)    %将5进制数据转换为2进制
+Data1=0;
+Data1=double(Data1);
+num=1;
+for i=size(Data2,2):-1:1
+    Data1=Data1+Data2(i)*num;
+    num=num*5;
+end
+Data=zeros(1,Secret);
+for i=Secret:-1:1
+    if Data1==0
+        break;
+    end
+    Data(i)=mod(Data1,2);
+    Data1=(Data1-mod(Data1,2))/2;
+end  
+end
+
+</code></pre></div></div>
+
+:ET

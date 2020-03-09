@@ -1,0 +1,186 @@
+I"�<h1 id="linux权限测试实验">Linux权限测试实验</h1>
+
+<h2 id="一实验任务及目的">一、实验任务及目的</h2>
+
+<p>通过指导学生上机实践，让学生掌握如何查看测试权能表，了解权能表在访问控制中的作用，并能分析Linux系统中基于权能体系的访问控制过程。分析Linux下权能体系结构以及权能体系的作用，熟练使用Lipcap工具，使用权能规则进行文件操作，测试规则所产生的作用。</p>
+
+<h2 id="二实验方案设计">二、实验方案设计</h2>
+
+<ul>
+  <li><strong>初始化</strong></li>
+</ul>
+
+<p>当用户登录进系统，新的会话被初始化。</p>
+
+<p>usr/src/commands/simple目录下的login.c文件。</p>
+
+<ul>
+  <li><strong>进程或者会话中的权能/角色</strong></li>
+</ul>
+
+<p>自从权能被系统用来做访问控制，操作系统需要知道进程有什么权能。我让操 作系统认识权能。角色/权能信息存放位置。它们能存储在内核空间（例如，权能链表），用户空间 （例如，加密令牌），或者两种空间（像文件描述符的实现，实际的权能存储在内核计算机安全教育实验空间，权能的指针被复制到用户空间）。三个地方定义：文件系统 （/usr/src/servers/fs），进程管理（/usr/src/servers/pm），内核（/usr/src/kernel）。 新创建的进程并获得它的角色。</p>
+
+<ul>
+  <li><strong>使用权能进行访问控制</strong></li>
+</ul>
+
+<p>当一个进程试图访问一个对象，操作系统检查进程的权能，决定是否允许访问。为了检查权能，需要修改在Minix内核中的一些地方，实验中实现的权能和Minix中存在的ACL访问控制机制并存。</p>
+
+<p>Root特权:超级用户root仍然拥有所有权利。</p>
+
+<h2 id="三实验过程记录">三、实验过程记录</h2>
+
+<ul>
+  <li><strong>以root身份登录并将/usr/bin/passwd从Set-UID程序转换为非Set-UID程序。</strong></li>
+</ul>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152334-739161.png" alt="image-20200308152333195" /></p>
+
+<p>getcap可以获得程序文件所具有的能力(CAP).</p>
+
+<p>getpcaps可以获得进程所具有的能力(CAP).</p>
+
+<p>setcap可以设置程序文件的能力(CAP).</p>
+
+<ul>
+  <li><strong>Linux内核中Capabilities的实现机制</strong></li>
+</ul>
+
+<p>Linux内核从2.2版本开始，就加进的Capabilities的概念与机制，并随着版本升高逐步得到改进。在linux中，root权限被分割成一下29种能力：</p>
+
+<p>CAP_CHOWN:修改文件属主的权限</p>
+
+<p>CAP_DAC_OVERRIDE:忽略文件的DAC访问限制</p>
+
+<p>CAP_DAC_READ_SEARCH:忽略文件读及目录搜索的DAC访问限制</p>
+
+<p>CAP_FOWNER：忽略文件属主ID必须和进程用户ID相匹配的限制</p>
+
+<p>CAP_FSETID:允许设置文件的setuid位</p>
+
+<p>CAP_KILL:允许对不属于自己的进程发送信号</p>
+
+<p>CAP_SETGID:允许改变进程的组ID</p>
+
+<p>CAP_SETUID:允许改变进程的用户ID</p>
+
+<p>CAP_SETPCAP:允许向其他进程转移能力以及删除其他进程的能力</p>
+
+<p>CAP_LINUX_IMMUTABLE:允许修改文件的IMMUTABLE和APPEND属性标志</p>
+
+<p>CAP_NET_BIND_SERVICE:允许绑定到小于1024的端口</p>
+
+<p>CAP_NET_BROADCAST:允许网络广播和多播访问</p>
+
+<p>CAP_NET_ADMIN:允许执行网络管理任务</p>
+
+<p>CAP_NET_RAW:允许使用原始套接字</p>
+
+<p>CAP_IPC_LOCK:允许锁定共享内存片段</p>
+
+<p>CAP_IPC_OWNER:忽略IPC所有权检查</p>
+
+<p>CAP_SYS_MODULE:允许插入和删除内核模块</p>
+
+<p>CAP_SYS_RAWIO:允许直接访问/devport,/dev/mem,/dev/kmem及原始块设备</p>
+
+<p>CAP_SYS_CHROOT:允许使用chroot()系统调用</p>
+
+<p>CAP_SYS_PTRACE:允许跟踪任何进程</p>
+
+<p>CAP_SYS_PACCT:允许执行进程的BSD式审计</p>
+
+<p>CAP_SYS_ADMIN:允许执行系统管理任务，如加载或卸载文件系统、设置磁盘配额等 CAP_SYS_BOOT:允许重新启动系统</p>
+
+<p>CAP_SYS_NICE:允许提升优先级及设置其他进程的优先级</p>
+
+<p>CAP_SYS_RESOURCE:忽略资源限制</p>
+
+<p>CAP_SYS_TIME:允许改变系统时钟</p>
+
+<p>CAP_SYS_TTY_CONFIG:允许配置TTY设备</p>
+
+<p>CAP_MKNOD:允许使用mknod()系统调用</p>
+
+<p>CAP_LEASE:允许修改文件锁的FL_LEASE标志</p>
+
+<ul>
+  <li><strong>调整权限</strong></li>
+</ul>
+
+<p>1)添加三个函数到 /home/seed/temp/libcap-2.21/libcap/cap_proc.c.</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152505-846094.png" alt="image-20200308152504416" /></p>
+
+<p>2) 运行命令来编译更新的libcap。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152517-130792.png" alt="image-20200308152516244" /></p>
+
+<p>然后安装:</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152529-210385.png" alt="image-20200308152528308" /></p>
+
+<p>首先创建use_cap.c文件</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152538-602535.png" alt="image-20200308152537889" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152543-647661.png" alt="image-20200308152542824" /></p>
+
+<p><strong>代码：</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;linux/capability.h&gt;
+#include &lt;sys/capability.h&gt;
+int main(void) 
+{    if (open ("/etc/shadow",O_RDONLY) &lt; 0)        
+            printf("(a) Open failed!\n");         
+     if (cap_enable(CAP_DAC_READ_SEARCH) &lt; 0)       
+            printf("(b) Open failed!\n");         
+     if (open ("/etc/shadow", O_RDONLY) &gt; 0)        
+            printf("(c) Open failed!\n");               
+     if (cap_enable(CAP_DAC_READ_SEARCH) &lt; 0)        
+            printf("(d) Open failed!\n");         
+     if (open ("/etc/shadow",O_RDONLY) &lt; 0)        
+            printf("(e) Open failed!\n");         
+     if (cap_drop(CAP_DAC_READ_SEARCH) &lt; 0)       
+             printf("(f) Open failed!\n");     
+     if (open ("/etc/shadow",O_RDONLY) &gt; 0)         
+             printf("(g) Open failed!\n");       
+     if (cap_enable(CAP_DAC_READ_SEARCH) == 0)        
+             printf("(h) Open failed!\n");        
+     printf("succeed!\n");    
+}
+</code></pre></div></div>
+
+<p>编译这个程序</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152636-78456.png" alt="image-20200308152635765" /></p>
+
+<p>将cap_dac_read_search功能分配给可执行文件“./use_cap”。作为普通用户登录，运行程序。</p>
+
+<p>因为刚开始没有设置</p>
+
+<p>setcap cap_dac_read_search=eip ./use_cap</p>
+
+<p>所以seed用户没有权限打开shadow，输出</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152653-359784.png" alt="image-20200308152651851" /></p>
+
+<p>如果换成Root用户，输出</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152707-866459.png" alt="image-20200308152706636" /></p>
+
+<p>设置setcap cap_dac_read_search=eip ./ﬁxuse_cap之后（授权普通用户可以用/bin/cat程序查看所有文件的内容）</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/152718-405539.png" alt="image-20200308152717219" /></p>
+
+<p>root用户输出相同，普通用户可以成功运行。</p>
+
+<h2 id="四实验结果分析">四、实验结果分析</h2>
+
+<p>默认情况下,root运行的进程是什么权限都有,而普通用户则什么权限都没有。Capabilities的主要思想在于分割root用户的特权，即将root的特权分割成不同的能力，每种能力代表一定的特权操作。在Capilities中，只有进程和可执行文件才具有能力</p>
+:ET

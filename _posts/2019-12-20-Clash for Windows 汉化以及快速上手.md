@@ -2,9 +2,9 @@
 layout:     post   				    # 使用的布局（不需要改）
 title:      Clash for Windows 汉化以及快速上手				    # 标题 
 subtitle:                 #副标题
-date:       2020-02-02			# 时间
+date:       2019-12-20			# 时间
 author:     Btbsja					# 作者
-header-img: img/bg-2020-01-27.jpg	    #这篇文章标题背景图片
+header-img: img/bg-2019-12-16.jpg	    #这篇文章标题背景图片
 catalog: true 						# 是否归档
 tags:								#标签
     - 工具
@@ -12,6 +12,7 @@ tags:								#标签
 
 ## Clash for Windows 汉化以及快速上手
 ### 资源：
+
 Clash for Windows 下载链接：[GitHub](https://github.com/Fndroid/clash_for_windows_pkg/releases) 或者 [CSDN](https://download.csdn.net/download/Btbsja/12174353)  
 汉化中文包：[下载](https://download.csdn.net/download/Btbsja/12174350)
 
@@ -39,4 +40,4 @@ Global——全局模式
 
 详细教程请参考：[Clash for Windows](https://docs.cfw.lbyczf.com/)
 
-机场推荐请移步：[自用机场推荐](http://btbsja.ml/2020/02/20/%E8%87%AA%E7%94%A8%E6%9C%BA%E5%9C%BA%E6%8E%A8%E8%8D%90/)
+机场推荐请移步下一篇：自用机场推荐

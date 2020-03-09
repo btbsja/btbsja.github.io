@@ -1,0 +1,54 @@
+I"<h1 id="事发现场收集易失性数据">事发现场收集易失性数据</h1>
+
+<p>1.1 实验目的</p>
+
+<p><strong>1. 会创建应急工具箱，并生成工具箱校验和；</strong></p>
+
+<p><strong>2. 能对突发事件进行初步调查，做出适当的响应；</strong></p>
+
+<p><strong>3. 能在最低限度地改变系统状态的情况下收集易失性数据。</strong></p>
+
+<p>1.2 实验环境和设备</p>
+
+<p><strong>1. Windows XP 或 Windows 2000 Professional 操作系统；</strong></p>
+
+<p><strong>2. 网络运行良好；</strong></p>
+
+<p><strong>3. 一张可用的软盘（或 U 盘）和 PsTools工具包。</strong></p>
+
+<p>1.3 实验内容和步骤</p>
+
+<ol>
+  <li><strong>将常用的响应工具存入U盘，创建应急工具盘。应急工具盘中的常用工具有cmd.exe; netstat.exe；fport.exe；nslookup.exe等</strong></li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102245.png" alt="" />{width=”4.684722222222222in” height=”3.4in”}</p>
+
+<p><strong>2. 创建应急工作盘，用命令md5sum 创建工具盘上所有命令的校验和，生成文本文件commandsums.txt：</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102246.png" alt="" />{width=”6.299305555555556in” height=”5.022222222222222in”}</p>
+
+<p><strong>3. 用 time 和 date 命令记录现场计算机的系统时间和日期：</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102247.png" alt="" />{width=”5.6in” height=”3.1381944444444443in”}</p>
+
+<p><strong>4. 用 dir 命令列出现场计算机系统上所有文件的目录清单，记录文件的大小、访问时间、修改时间和创建时间</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102248.png" alt="" />{width=”5.784722222222222in” height=”1.707638888888889in”}</p>
+
+<p><strong>5. 用 ipconfig 命令获取现场计算机的 IP 地址、子网掩码、 默认网关和网络接口信息：</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102249.png" alt="" />{width=”5.877083333333333in” height=”2.6847222222222222in”}</p>
+
+<p><strong>6. 用 netstat显示现场计算机的网络连接、 路由表和网络接口信息：</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102250.png" alt="" />{width=”5.177083333333333in” height=”3.3694444444444445in”}</p>
+
+<p><strong>7. 用 PsLoggedOn 命令查看当前哪些用户与系统保持着连接状态：</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102251.png" alt="" />{width=”6.299305555555556in” height=”4.1375in”}</p>
+
+<p><strong>8. 用 PsTools工具包中的 PsList 命令记录 所有正在运行的进程和当前的连接：</strong></p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102252.png" alt="" />{width=”6.299305555555556in” height=”3.829861111111111in”}</p>
+:ET

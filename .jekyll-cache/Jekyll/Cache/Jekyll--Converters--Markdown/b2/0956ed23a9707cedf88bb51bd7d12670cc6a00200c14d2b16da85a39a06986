@@ -1,0 +1,295 @@
+I"*<h1 id="神经网络">神经网络</h1>
+
+<h2 id="一实验目的">一、实验目的</h2>
+
+<p>理解反向传播网络的结构和原理，掌握反向传播算法对神经元的训练过程，了解反向传播公式。通过构建BP网络实例，熟悉前馈网络的原理及结构。</p>
+
+<h2 id="二实验内容">二、实验内容</h2>
+
+<ol>
+  <li>
+    <p>通过BP网络各项参数的不同设置，观察BP算法的学习效果。观察比较BP网络 拓朴结构及其它各项参数变化对于训练结果的影响。观察并分析不同训练数据对相同拓朴结构的BP网络建模的影响。</p>
+  </li>
+  <li>
+    <p>设计简单的感知器，实现简单的逻辑运算（与、或）等，也可做其他更复杂的问题。</p>
+  </li>
+</ol>
+
+<h2 id="三实验环境">三、实验环境</h2>
+
+<ol>
+  <li>神经网络可视化实验环境，如图3所示。</li>
+</ol>
+
+<blockquote>
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104505.png" alt="" />{width=”4.388888888888889in” height=”3.0416666666666665in”}</p>
+</blockquote>
+
+<p>图3神经网络可视化实验环境</p>
+
+<p>2. C＋＋语言编程环境，语言环境可以自选。</p>
+
+<h2 id="四实验步骤">四、实验步骤</h2>
+
+<blockquote>
+  <p>1.进入神经网络可视化实验环境，基本实验步骤如下：</p>
+
+  <p>(1)进入实验环境；</p>
+
+  <p>(2)选择相关的实验模块；</p>
+
+  <p>(3)设置相应地实验参数（如设置初始权值为随机值）；</p>
+
+  <p>(4)选择实验运行方式；</p>
+
+  <p>(5)观测运行过程；</p>
+
+  <p>(6)修改相应地参数重复第1~5步直到满意为止。</p>
+</blockquote>
+
+<p><strong>对设计型实验可参照以下步骤：</strong></p>
+
+<blockquote>
+  <p>(1)进入实验环境；</p>
+</blockquote>
+
+<p>(2)进入创建新模型工作窗；</p>
+
+<p>(3)创建网络拓朴结构；</p>
+
+<p>(4)设置相应的网络参数；</p>
+
+<p>(5)输入相应的训练数据集；</p>
+
+<p>(6)设置实验环境参数；</p>
+
+<p>(7)选择相应的运行方式；</p>
+
+<p>(8)观察实验过程</p>
+
+<p>(9)修改相关参数并重复1~8步直至满意为止。</p>
+
+<p>2.编写简单的感知器学习程序，训练感知器执行操作。</p>
+
+<h2 id="五实验结论">五、实验结论</h2>
+
+<p>包括做实验的目的、方法、过程等，具体要写成实验报告, 见后附表三。</p>
+
+<p>1、BP网络的基本结构及BP算法的训练过程。</p>
+
+<p>2、试述阈值函数和权值变化对BP网络推理结果的影响。</p>
+
+<p>3、训练数据集变化对网络训练结果的影响。</p>
+
+<h2 id="附神经网络实验报告表三">附：神经网络实验报告表三</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>实验目的</th>
+      <th style="text-align: left">理解反向传播网络的结构和原理，掌握反向传播算法对神经元的训练过程，了解反向传播公式。通过构建BP网络实例，熟悉前馈网络的原理及结构。</th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>网络  拓朴图</td>
+      <td style="text-align: left"><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104506.png" alt="image-20200309104226123" /></td>
+      <td><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104507.png" alt="image-20200309104222498" /></td>
+      <td><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104508.png" alt="image-20200309104236451" /></td>
+    </tr>
+    <tr>
+      <td>训练  数据集</td>
+      <td style="text-align: left">（输入节点 0，输入节点 1，输入节点 2，输出节点 5）  （0,0,0,0 ）（0,0,1,0 ）（0,1,1,1 ） （1,0,0,0 ）（1,0,1,1 ）（1,1,0,1 ） （1,1,1,1 ）</td>
+      <td>（输入节点 0，输入节点 1，输出节点 4） （0,0,0 ）（0,1,0 ）（1,0,1 ）</td>
+      <td>（Known，New，Short ，Home,Reads）   （1,1,0,1,0）  （0,1,1,0,1）（0,0,0,0,0 ）（1,0,0,1,0 ） （1,1,1,1,1 ）（1,0,0,0,0 ） （0,0,1,0,0 ）（0,1,1,0,1 ） （1,0,0,1,0 ）（1,1,0,0,0 ） （0,0,1,1,0 ）（1,1,0,0,0 ） （1,0,1,1,1 ）（1,1,1,0,1 ） （1,1,1,1,1 ）（1,0,1,0,1 ） （1,1,1,1,1 ）（0,1,1,0,1 ）</td>
+    </tr>
+    <tr>
+      <td>训练误差</td>
+      <td style="text-align: left">第 1 代误差   0.039   第 51 代误差   0.02   第 101 代误差   0.02   第 151 代误差   0.01   第 201 代误差   0.01</td>
+      <td>第 1 代误差   0.018   第 51 代误差   0.010   第 101 代误差   0.010   第 151 代误差   0.010   第 201 代误差   0.010</td>
+      <td>第 1 代误差   4.67 第 51代误差 0.66 第 101 代误差 0.12 第 151 代误差   0.06 第 201 代误差 0.03</td>
+    </tr>
+    <tr>
+      <td>模拟的问题或函数</td>
+      <td style="text-align: left">多数赞成表决器</td>
+      <td>异或问题</td>
+      <td>MailReading （邮件信息识别）</td>
+    </tr>
+    <tr>
+      <td>观测结果</td>
+      <td style="text-align: left">经过 100多代的进化，误差以明显的阶梯型降低  <img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104509.png" alt="image-20200309104311348" /></td>
+      <td>由于初始误差比较低，  故经过 50代的进化，误差已经极大地降低，几乎不再变化  <img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104510.png" alt="image-20200309104319052" /></td>
+      <td>经过200 代的进化，误差极大地降低  <img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104511.png" alt="image-20200309104326185" /></td>
+    </tr>
+    <tr>
+      <td>学生结论</td>
+      <td style="text-align: left">神经计算能够实现“多数赞成表决器”功能</td>
+      <td>单层的神经网络无法实现异或问题，但是含有中间层的BP网 络却可以很好的解决异或问题</td>
+      <td>经过训练的BP网络可以进行邮件识别，解决信息识别的难题，可以极大地提高生产力</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="感知器实现">感知器实现</h2>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309104512.png" alt="" />{width=”6.166666666666667in” height=”4.636111111111111in”}</p>
+
+<h2 id="源代码">源代码</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#include &lt;iostream&gt;
+#include &lt;stdlib.h&gt;
+ #include &lt;math.h&gt;
+using namespace std;
+const unsigned int nTests   =4; //训练数据的数量
+const unsigned int nInputs  =2; //输入端的数量
+const double alpha =0.3;   //学习参数
+double weight1[nInputs]={0.0};
+double weight2[nInputs]={0.0};
+double b=-0.8;      //阈值设为-0.8
+struct slp
+{
+    double inputs[nInputs];
+    double output;
+};
+
+//计算输出值
+double compute(double *inputs,double * weights,double b)
+{
+    double sum =0.0;
+    for (int i = 0 ; i &lt; nInputs; ++i)
+    {
+    sum += weights[i]*inputs[i];
+    }
+    //bias
+    sum +=b;
+    return sum;
+}
+int main(){
+    /*
+ *正确的“与”操作，“或”操作的训练数据，也就是所谓的“target”
+ */
+slp yu[nTests] = {
+    {0.0,0.0,0.0},
+    {0.0,1.0,0.0},
+    {1.0,0.0,0.0},
+    {1.0,1.0,1.0}
+};
+slp huo[nTests] = {
+    {0.0,0.0,0.0},
+    {0.0,1.0,1.0},
+    {1.0,0.0,1.0},
+    {1.0,1.0,1.0}
+};
+    bool bLearningOK = false;
+    int count1=0;
+  //感知器“与”操作学习算法
+    while(!bLearningOK)
+    {
+    bLearningOK = true;
+    for (int i = 0 ; i &lt; 4 ; i++)
+    {
+    double output = compute(yu[i].inputs,weight1,b);
+    while(output&gt;0)
+    {
+        weight1[0]=weight1[0]+alpha*(yu[i].output-output)*yu[i].inputs[0];
+        weight1[1]=weight1[1]+alpha*(yu[i].output-output)*yu[i].inputs[1];
+        output = compute(yu[i].inputs,weight1,b);
+        count1 ++;
+        if(count1 &gt;500){
+        cout&lt;&lt;"请重设参数"&lt;&lt;endl;
+        exit(0);
+        }
+    }
+    if(i==3){
+        while(output&lt;0){
+        weight1[0]=weight1[0]+alpha*(yu[i].output-output)*yu[i].inputs[0];
+        weight1[1]=weight1[1]+alpha*(yu[i].output-output)*yu[i].inputs[1];
+        output = compute(yu[i].inputs,weight1,b);
+        count1 ++;
+        if(count1 &gt;500){
+        cout&lt;&lt;"请重设参数"&lt;&lt;endl;
+        exit(0);
+        }
+        }
+    }
+    }
+    }
+    bLearningOK = false;
+    int count2=0;
+  //感知器“或”操作学习算法
+    while(!bLearningOK)
+    {
+    bLearningOK = true;
+    //第一种情况要求小于0
+    double output = compute(huo[0].inputs,weight2,b);
+    while(output&gt;=0){
+        //cout&lt;&lt;output;
+        weight2[0]=weight2[0]+alpha*(huo[0].output-output)*huo[0].inputs[0];
+        weight2[1]=weight2[1]+alpha*(huo[0].output-output)*huo[0].inputs[1];
+        output = compute(huo[0].inputs,weight2,b);
+        count2 ++;
+        if(count2 &gt;500){
+        cout&lt;&lt;"请重设参数"&lt;&lt;endl;
+        exit(0);
+        }
+        }
+    for (int i = 1 ; i &lt; 4 ; i++)
+    {
+    double output = compute(huo[i].inputs,weight2,b);
+    while(output&lt;0)
+    {
+        weight2[0]=weight2[0]+alpha*(huo[i].output-output)*huo[i].inputs[0];
+        weight2[1]=weight2[1]+alpha*(huo[i].output-output)*huo[i].inputs[1];
+        output = compute(huo[i].inputs,weight2,b);
+        count2 ++;
+        if(count2 &gt;500){
+        cout&lt;&lt;"请重设参数"&lt;&lt;endl;
+        exit(0);
+        }
+    }
+
+    }
+    }
+    cout&lt;&lt;"学习数据："&lt;&lt;endl;
+     for(int w = 0 ; w &lt; nInputs  ; ++w)
+    {
+    cout&lt;&lt;"yu_weight"&lt;&lt;w&lt;&lt;":"&lt;&lt;weight1[w] &lt;&lt;endl;
+    }
+    cout&lt;&lt;"\n";
+    for (int i = 0 ;i &lt; nTests ; ++i)
+    {
+    cout&lt;&lt;"yu_rightresult："&lt;&lt;yu[i].output&lt;&lt;"\t";
+    cout&lt;&lt;"yu_caculateresult:" &lt;&lt; compute(yu[i].inputs,weight1,b)&lt;&lt;endl;
+    }
+
+    for(int w = 0 ; w &lt; nInputs  ; ++w)
+    {
+    cout&lt;&lt;"huo_weight"&lt;&lt;w&lt;&lt;":"&lt;&lt;weight2[w] &lt;&lt;endl;
+    }
+    cout&lt;&lt;"\n";
+    for (int i = 0 ;i &lt; nTests ; ++i)
+    {
+    cout&lt;&lt;"huo_rightresult："&lt;&lt;huo[i].output&lt;&lt;"\t";
+    cout&lt;&lt;"huo_caculateresult:" &lt;&lt; compute(huo[i].inputs,weight2,b)&lt;&lt;endl;
+    }
+    cout&lt;&lt;endl&lt;&lt;"学习完毕，请输入两个值："&lt;&lt;endl;
+    double test[2];
+    cin&gt;&gt;test[0]&gt;&gt;test[1];
+    double yu_result;double huo_result;
+    if(compute(test,weight1,b)&gt;0)
+    yu_result=1;
+    else
+    yu_result=0;
+    if(compute(test,weight2,b)&gt;0)
+    huo_result=1;
+    else
+    huo_result=0;
+    cout&lt;&lt;"与操作结果:"&lt;&lt;yu_result&lt;&lt;endl;
+    cout&lt;&lt;"或操作结果:"&lt;&lt;huo_result&lt;&lt;endl;
+    return 0;
+}
+
+</code></pre></div></div>
+:ET
