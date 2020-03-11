@@ -1,0 +1,282 @@
+I"-<h1 id="操作系统-linux系统安全设置">操作系统-Linux系统安全设置</h1>
+
+<h2 id="一实验目的">（一）实验目的</h2>
+
+<p>1、了解Linux操作系统的安全性</p>
+
+<p>2、熟悉Linux操作系统的安全设置</p>
+
+<p>3、建立Linux操作系统的基本安全框架</p>
+
+<h2 id="二实验内容及要求">（二）实验内容及要求</h2>
+
+<h3 id="实验要求">实验要求</h3>
+
+<p>1、根据实验中的安全设置要求，详细观察并记录设置前后系统的变化，给出分析报告。</p>
+
+<p>2、使用RPM对系统的软件进行管理，验证系统内软件的完整性，并分析结果。</p>
+
+<p>3、比较Windows系统的安全设置和Linux系统安全设置的异同。</p>
+
+<h3 id="实验内容">实验内容</h3>
+
+<h4 id="1账户和口令安全">1、账户和口令安全</h4>
+
+<ol>
+  <li>查看和添加账户</li>
+</ol>
+
+<p>在终端下输入命令：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>useradd ***，建立一个新账户；
+
+cat /etc/shadaw, 查看系统中的账户列表；
+</code></pre></div></div>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/163947-138130.jpeg" alt="img" /></p>
+
+<ol>
+  <li>添加和更改密码：passwd命令</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/164107-319158.jpeg" alt="img" /></p>
+
+<ol>
+  <li>查看Linux系统中是否有用于检测密码安全的黑客技术语字典及密码检测模块：locate pam_cracklib.so dict|grep crack</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/164119-559507.jpeg" alt="img" /></p>
+
+<h4 id="2账户安全设置">2、账户安全设置</h4>
+
+<ol>
+  <li>强制用户首次登陆时修改口令，强制每90天更改一次口令，并提前10天提示：change命令</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/164856-28269.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/164906-450915.jpeg" alt="img" /></p>
+
+<ol>
+  <li>账户的禁用与恢复：passwd命令，锁定除root之外的不必要的超级用户</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/164914-572077.jpeg" alt="img" /></p>
+
+<p>把root用户密码设为空了，Linux中都不允许使用空密码</p>
+
+<ol>
+  <li>建立用户组，设置用户：groupadd命令、groupmod命令、gpasswd命令</li>
+</ol>
+
+<p>groupmod命令更改用户组信息命令，-n选项用于修改用户组组名，-g选项用于修改用户组的GID</p>
+
+<p>groupadd命令</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/164928-858630.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/164936-396141.jpeg" alt="img" /></p>
+
+<p>groupmod命令</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165537-647556.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165549-121218.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165554-755394.jpeg" alt="img" /></p>
+
+<p>gpasswd命令</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165608-22109.jpeg" alt="img" /></p>
+
+<ol>
+  <li>设置密码规则：/etc/login.defs文件编辑修改，设置用户的密码最长使用天数、最小密码长度等</li>
+</ol>
+
+<p>PASS_MAX_DAYS 90 #密码最长过期天数</p>
+
+<p>PASS_MIN_DAYS 80 #密码最小过期天数</p>
+
+<p>PASS_MIN_LEN 10 #密码最小长度</p>
+
+<p>PASS_WARN_AGE 7 #密码过期警告天数</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165337-440555.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165332-748727.png" alt="image-20200308165331714" /></p>
+
+<ol>
+  <li>为账户和组相关系统文件加上不可更改属性，防止非授权用户获取权限：chattr命令、</li>
+</ol>
+
+<p>文件的特殊属性 - 使用 "+" 设置权限，使用 "-" 用于取消</p>
+
+<p>chattr +a file1 只允许以追加方式读写文件</p>
+
+<p>chattr +c file1 允许这个文件能被内核自动压缩/解压</p>
+
+<p>chattr +d file1 在进行文件系统备份时，dump程序将忽略这个文件</p>
+
+<p>chattr +i file1 设置成不可变的文件，不能被删除、修改、重命名或者链接</p>
+
+<p>chattr +s file1 允许一个文件被安全地删除</p>
+
+<p>chattr +S file1 一旦应用程序对这个文件执行了写操作，使系统立刻把修改的结果写到磁盘</p>
+
+<p>chattr +u file1 若文件被删除，系统会允许你在以后恢复这个被删除的文件</p>
+
+<p>lsattr 显示特殊的属性</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165444-588962.jpeg" alt="img" /></p>
+
+<ol>
+  <li>删除用户和用户组：userdel命令、groupdel命令</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165626-792509.jpeg" alt="img" /></p>
+
+<p>删除用户组</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165632-261751.jpeg" alt="img" /></p>
+
+<p>删除用户</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165640-99942.jpeg" alt="img" /></p>
+
+<ol>
+  <li>限制su命令提权：/etc/pam.d/su文件，在头部添加命令：</li>
+</ol>
+
+<blockquote>
+  <p>auth required /lib/security/pam_wheel.so group=wheel</p>
+
+  <p>这样，只有wheel组的用户可以su到root用户</p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165651-635962.jpeg" alt="img" /></p>
+
+  <p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165656-925120.jpeg" alt="img" /></p>
+</blockquote>
+
+<ol>
+  <li>将用户加入到某个组：usermod命令</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165710-308896.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165715-906575.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165723-296551.jpeg" alt="img" /></p>
+
+<ol>
+  <li>
+    <p>确认shadow中的空口令帐号：awk命令</p>
+  </li>
+  <li>
+    <p>//中间有一个！表示密码为空</p>
+  </li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165731-782904.jpeg" alt="img" /></p>
+
+<h4 id="3文件系统管理安全">3、文件系统管理安全</h4>
+
+<ol>
+  <li>查看某个文件的权限：ls –l</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165743-581308.jpeg" alt="img" /></p>
+
+<ol>
+  <li>设置文件属主及属组等的权限：chmod命令</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165754-426493.jpeg" alt="img" /></p>
+
+<ol>
+  <li>切换用户，检查用户对文件的权限：su命令</li>
+</ol>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165807-302318.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165812-86334.jpeg" alt="img" /></p>
+
+<ol>
+  <li>修改文件的属主和属组：chown命令</li>
+</ol>
+
+<p>chmod ugo+rwx directory1 设置目录的所有人(u)、群组(g)以及其他人(o)以读（r ）、写(w)和执行(x)的权限<br />
+chmod go-rwx directory1 删除群组(g)与其他人(o)对目录的读写执行权限<br />
+chown user1 file1 改变一个文件的所有人属性<br />
+chown -R user1 directory1 改变一个目录的所有人属性并同时改变改目录下所有文件的属性<br />
+chgrp group1 file1 改变文件的群组<br />
+chown user1:group1 file1 改变一个文件的所有人和群组属性<br />
+find / -perm -u+s 罗列一个系统中所有使用了SUID控制的文件<br />
+chmod u+s /bin/file1 设置一个二进制文件的 SUID 位 - 运行该文件的用户也被赋予和所有者同样的权限<br />
+chmod u-s /bin/file1 禁用一个二进制文件的 SUID位<br />
+chmod g+s /home/public 设置一个目录的SGID 位 - 类似SUID ，不过这是针对目录的<br />
+chmod g-s /home/public 禁用一个目录的 SGID 位<br />
+chmod o+t /home/public 设置一个文件的 STIKY 位 - 只允许合法所有人删除文件<br />
+chmod o-t /home/public 禁用一个目录的 STIKY 位</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165824-523964.jpeg" alt="img" /></p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165830-168990.jpeg" alt="img" /></p>
+
+<ol>
+  <li>文件的打包备份和压缩、和解压：tar命令、gzip命令、gunzip命令</li>
+</ol>
+
+<p>tar -cvf archive.tar file1 创建一个非压缩的 tarball<br />
+tar -cvf archive.tar file1 file2 dir1 创建一个包含了 'file1', 'file2' 以及 'dir1'的档案文件<br />
+tar -tf archive.tar 显示一个包中的内容<br />
+tar -xvf archive.tar 释放一个包<br />
+tar -xvf archive.tar -C /tmp 将压缩包释放到 /tmp目录下<br />
+tar -cvfj archive.tar.bz2 dir1 创建一个bzip2格式的压缩包<br />
+tar -xvfj archive.tar.bz2 解压一个bzip2格式的压缩包<br />
+tar -cvfz archive.tar.gz dir1 创建一个gzip格式的压缩包<br />
+tar -xvfz archive.tar.gz 解压一个gzip格式的压缩包</p>
+
+<p>gzip file1 压缩一个叫做 'file1'的文件<br />
+gzip -9 file1 最大程度压缩</p>
+
+<p>gunzip file1.gz 解压一个叫做 'file1.gz'的文件</p>
+
+<p>备份<br />
+dump -0aj -f /tmp/home0.bak /home 制作一个 '/home' 目录的完整备份<br />
+dump -1aj -f /tmp/home0.bak /home 制作一个 '/home' 目录的交互式备份<br />
+restore -if /tmp/home0.bak 还原一个交互式备份</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165841-741754.png" alt="image-20200308165841620" /></p>
+
+<ol>
+  <li>设置应用于目录的SGID权限位：</li>
+</ol>
+
+<p>文件权限用 12 个二进制位表示，如果该位的值是 1，表示有相应的权限：</p>
+
+<p>11 10 9 8 7 6 5 4 3 2 1 0</p>
+
+<p>S G T r w x r w x r w x</p>
+
+<p>第 11 位为 SUID 位，第 10 位为 SGID 位，第 9 位为 sticky 位，第 8-0 位对应于上面的三组 rwx 位。</p>
+
+<p>上面的-rwsr-xr-x的值为： 1 0 0 1 1 1 1 0 1 1 0 1</p>
+
+<p>-rw-r-Sr--的值为： 0 1 0 1 1 0 1 0 0 1 0 0</p>
+
+<p>chmod g+s filename 设置SGID位</p>
+
+<p>chmod g-s filename 去掉SGID设置</p>
+
+<p>SUID作用：让本来没有相应权限的用户运行这个程序时，可以访问他没有权限访问的资源。</p>
+
+<p><img src="https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg@master/img202003/08/165855-272069.png" alt="image-20200308165854503" /></p>
+
+<h2 id="结束语">结束语</h2>
+
+<p>本次Linux 系统安全设置实验主要是了解 Linux操作系统的安全性和熟悉 Linux操作系统的安全设置以及建立 Linux操作系统的基本安全框架。按照实验指导书的要求根据实验中的安全设置要求，详细观察并记录设置前后系统的变化，给出分析报告。使用 RPM 对系统的软件进行管理，验证系统内软件的完整性，并分析结果。比较 Windows 系统的安全设置和 Linux系统安全设置的异同。</p>
+
+<h2 id="参考文献">参考文献</h2>
+
+<p>[1]潘峰. 操作系统与安全. 人民邮电出版社，2014</p>
+:ET

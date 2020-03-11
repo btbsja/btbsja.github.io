@@ -1,0 +1,167 @@
+I"L<h1 id="双蛋问题">双蛋问题</h1>
+
+<ul>
+  <li>
+    <p>一个100层的大楼存在一个临界层，以下楼层丢下鸡蛋不碎，以上楼层鸡蛋丢下会碎，怎样尽快确定临界层数。</p>
+  </li>
+  <li>
+    <p>设：有 N 个鸡蛋，共需要丢 M 次。</p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>一个鸡蛋 N=1</p>
+
+  <p>只能从1层开始一层一层试</p>
+
+  <p>最坏的情况 M=100</p>
+</blockquote>
+
+<blockquote>
+  <p>无限个鸡蛋 N=∞</p>
+
+  <p>二分法 2^M&gt;=100 M&gt;=log2(100)</p>
+
+  <p>M&gt;=6.64</p>
+
+  <p>最坏丢7次</p>
+</blockquote>
+
+<blockquote>
+  <p>N=2 双蛋问题</p>
+
+  <p>第一个蛋 A 的作用是一个个将范围缩小，然后用第二个蛋 B 去时试</p>
+
+  <p>A：10、20、30……100 最多10次</p>
+
+  <p>B：x1、x2……x9 最多9次</p>
+
+  <p>最好的情况10次</p>
+
+  <p>最坏的情况19次</p>
+</blockquote>
+
+<p>有什么更好的办法呢？如果它的间隔是不等的，A没多丢一次，不就可以减少B的次数？</p>
+
+<blockquote>
+  <p>设第一次间隔 n 层，以后每次都减少一层直到最后间隔为 1 层</p>
+
+  <p>1+2+3+……+n&gt;=100</p>
+
+  <p>n&gt;=13.65</p>
+
+  <p>n=14</p>
+
+  <p>A最多12次</p>
+
+  <p>最好的情况12次</p>
+
+  <p>最坏的情况14次</p>
+</blockquote>
+
+<p>那么我们来思考一个更复杂的问题，如果 N 的数量不确定呢？</p>
+
+<p><strong>递归思想</strong></p>
+
+<blockquote>
+  <p>T 层</p>
+
+  <p>N 蛋</p>
+
+  <p>M 次</p>
+</blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>T\N</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>……</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>3</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>……</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>首先，我们随便在第 K 层丢一个鸡蛋</p>
+
+<blockquote>
+  <p>碎——临界楼层在 K 前面</p>
+
+  <p>此时只剩下 K 层楼 N-1 个蛋</p>
+
+  <p>M(K,N-1)</p>
+</blockquote>
+
+<blockquote>
+  <p>不碎——临界楼层在 K 后面</p>
+
+  <p>M(T-K,N)</p>
+</blockquote>
+
+<p>则 Max +1 = Mk(T,N)</p>
+
+<p>那么我们如何确定第 K 层呢？</p>
+
+<p><strong>枚举</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>K</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>……</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Mk</td>
+      <td>M1</td>
+      <td>M2</td>
+      <td>M3</td>
+      <td>……</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>则 M(T,N)= min</p>
+:ET

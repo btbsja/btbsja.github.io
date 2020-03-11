@@ -1,0 +1,316 @@
+I"*)<h1 id="离散余弦变换dct算法隐藏信息">离散余弦变换（DCT）算法隐藏信息</h1>
+
+<h2 id="一实验环境"><strong>一、实验环境</strong></h2>
+
+<p>1、计算机一台；</p>
+
+<p>2、Windows XP、windows8/10操作系统、C++或MATLAB7.5 </p>
+
+<h2 id="二实验内容与目的"><strong>二、实验内容与目的</strong></h2>
+
+<p>1、掌握在频率域隐藏信息，在本实验中采用离散余弦变换（DCT）算法隐藏信息，同时理解DCT在图像处理中的应用原理，理解频率域的隐藏算法具有抗各种攻击性的特点，是一种稳健的信息隐藏算法。</p>
+
+<p>2、学习下面基于方法1的基于DCT的信息隐藏算法</p>
+
+<p>3、实现采用方法2或方法3的DCT的信息隐藏算法</p>
+
+<h2 id="三实验原理"><strong>三、实验原理</strong></h2>
+
+<p>(1) 预备知识：掌握DCT的工作原理</p>
+
+<blockquote>
+  <p>a.二维离散余弦变换-矩阵形式：</p>
+
+  <p>正变换:F=DfD’</p>
+
+  <p>反变换：f=D’FD</p>
+
+  <p>产生DCT矩阵的MATLAB函数：D=dctmtx(N);</p>
+
+  <p>b. 二维DCT变换。</p>
+
+  <p>格式：B = dct2 (A)</p>
+
+  <p>B = dct2 (A, m, n)</p>
+
+  <p>B = dct2 (A, ［m n］)</p>
+
+  <p>说明：B = dct2 (A)计算A的DCT变换B，A与B的大小相同；B = dct2 (A, m, n)和B = dct2 (A, ［m n］)通过对A补0或剪裁，使B的大小为m×n。</p>
+
+  <p>c. DCT反变换。</p>
+
+  <p>格式：B = idct2 (A)</p>
+
+  <p>B = idct2 (A, m, n)</p>
+
+  <p>B = idct2 (A, ［m n］)</p>
+
+  <p></p>
+
+  <p>d. 计算DCT变换矩阵。</p>
+
+  <p>格式：D = dctmtx (n)</p>
+
+  <p>说明：D = dctmtx (n)返回一个n×n的DCT变换矩阵，输出矩阵D 为double类型。</p>
+
+  <p>F=DfD’</p>
+
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105942.png" alt="" />{width=”2.571527777777778in” height=”1.43125in”}</p>
+
+  <p>图1原始图像</p>
+
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105944.png" alt="" />{width=”5.516666666666667in” height=”4.184722222222222in”}</p>
+
+  <p>图2余弦反变换恢复图像</p>
+
+  <p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309110339.png" alt="image-20200309110336801" /></p>
+
+  <p>图3余弦变换系数</p>
+
+</blockquote>
+
+<p>说明：DCT变换之后，系数的特点:</p>
+
+<blockquote>
+  <p>从左上角到右下角的，从低频到中频，再到高频，系数的绝对值逐渐变小，能量集中在低频成分。 低频系数体现图像中目标的轮廓和灰度分布特性,高频系数体现了目标形状的细节。</p>
+</blockquote>
+
+<p>(2) 掌握DCT隐藏信息的处理过程</p>
+
+<p>基于DCT变换的信息隐藏算法主要分为三种：</p>
+
+<p><strong>方法1：</strong></p>
+
+<p>隐藏方法：在中频系数中，以某种特定的选定方式进行挑选隐藏位置（可以是所有的中频系数或者某几个特定的、最大的几个中频系数）。在这些选定的中频系数中叠加秘密信息， 公式为： xi(i,j)=x(i,j)+a*mi ，其中 x(i,j)为选定的DCT系数，mi 为 第i个秘密信息比特（秘密消息表示为1和-1），xi(i,j)为隐藏后 的DCT系数，参数 a 的大小决定隐藏信息的强度。</p>
+
+<p>提取方法：秘密信息 mi 的提取，根据以上公式可知，只需将原始图像与隐藏信息图像一起做DCT变换，然后相应DCT系数相减并除以 a 就可以得到 mi 。显然，a 越大，隐藏信息的能量越强，但对载体图像的影响越明显。因此，为了达到隐藏算法在健壮性和可觉察性之间的平衡，需要选择合适的参数 a。</p>
+
+<p>注释说明：秘密信息也可选择只隐藏在高频或低频系数中。</p>
+
+<p><strong>方法2：</strong></p>
+
+<p>隐藏方法：在第一种算法中，选定 a 后对秘密信息的进行嵌入，不管所选定的DCT系数的大小，加上的值都是固定的，因此较大的DCT系数，对嵌入秘密信息的影响比较小，反之，较小的DCT系数，对嵌入秘密信息的影响则比较大。因此，一个改进的算法就是按照DCT系数的大小，成比例地嵌入秘密信息，使得嵌入信息对DCT系数的影响比较均匀。嵌入方法为： xi(i,j)=x(i,j)*(1+a*mi)。</p>
+
+<p>提取方法：与第一种DCT算法的提取方法大致相同，只不过是原载体图像和隐秘图像的DCT系数从相减变为了相除，算法的原理是一致的。</p>
+
+<p><strong>方法3：</strong></p>
+
+<p>隐藏方法：主要是利用载体中两个特定数的相对大小来表示隐藏信息。发送方和接收方事先约定好嵌入过程中所使用 的两个DCT系数的位置（为了隐藏的健壮性和不可觉察性，这两个DCT系数应该在DCT的中频系数中选择）。例如，设定 (u,v)和(m,n)为所选定的两个系数的坐标。</p>
+
+<p>嵌入过程为：如果 Bi(u,v)&gt;Bi(m,n),就代表隐藏信息”1”，如果 Bi(u,v)&lt;Bi(m,n)就代 表 隐 藏 信 息”0”。 如 果 需 要 隐 藏 的 信 息 位 为 1，但 是 Bi(u,v)&gt;Bi(m,n)那么就把这两个系数交换，最后发送方通过二维逆DCT变换将图像转化为空间域进行传输。</p>
+
+<p>提取方法：接收方接收到图像后，对图像进行二维DCT变 换，通过比较每一块中约定位置的DCT系数的相对大小，得到 隐藏信息的比特串，从而提取出秘密信息。 从上面的三种DCT算法可以看出：前两种在DCT域的信息 方法，其缺点是都需要原始载体作为参考，但在实际应用中，可 能无法得要原始载体，因此，这种算法有一定的局限性。而第 三种算法只需要有含有秘密信息的载体图像，通过对约定位置 的DCT系数进行比较，就可以得到秘密信息，这就不再需要与 原始载体进行计算比较，实现起来比较方便。所以下面就采用 这种算法来实现基于变换域的信息隐藏。。</p>
+
+<h2 id="四实验步骤"><strong>四、实验步骤</strong></h2>
+
+<p>方法一的实现</p>
+
+<p>离散余弦变换（DCT）算法隐藏信息的MATLAB程序</p>
+
+<p>size=512;</p>
+
+<p>N=32;</p>
+
+<p>K=8;</p>
+
+<p>D=zeros(size);</p>
+
+<p>E=0.01;</p>
+
+<p>I=imread('f:\lena.bmp');</p>
+
+<p>subplot(2,2,1);</p>
+
+<p>imshow(I);</p>
+
+<p>title('原始图像');</p>
+
+<p>I=double(I)/512;</p>
+
+<p>%读入水银</p>
+
+<p>J=imread('f:\1234.bmp');</p>
+
+<p>subplot(2,2,2);</p>
+
+<p>imshow(J);</p>
+
+<p>title('水印图像');</p>
+
+<p>%对水印缩放</p>
+
+<p>J=double(imresize(J,[64,64]));</p>
+
+<p>subplot(2,2,3);</p>
+
+<p>imshow(J);</p>
+
+<p>title('缩放水印图像');</p>
+
+<p>%%%%%%%%%%%%%%%%%%%%%%%嵌入水印%%%%%%%%%%%%%%%%%</p>
+
+<p>%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</p>
+
+<p>for p=1:size/K 18</p>
+
+<p>for q=1:size/K</p>
+
+<p>x=(p-1)*K+1;</p>
+
+<p>y=(q-1)*K+1;</p>
+
+<p>I_dct=I(x:x+K-1,y:y+K-1);</p>
+
+<p>I_dct1=dct2(I_dct);</p>
+
+<p>if J(p,q)==0</p>
+
+<p>alfa=-1;</p>
+
+<p>else</p>
+
+<p>alfa=1;</p>
+
+<p>end</p>
+
+<p>I_dct2=I_dct1+alfa*E; %%修改DCT变换系数，并把信息隐藏于此</p>
+
+<p>I_dct=idct2(I_dct2);</p>
+
+<p>D(x:x+K-1,y:y+K-1)=I_dct;</p>
+
+<p>end</p>
+
+<p>end</p>
+
+<p>subplot(1,3,3);</p>
+
+<p>imshow(D,[]);</p>
+
+<p>Title('含水印的图象');</p>
+
+<p>%%%%%%对加入水印的图像进行各种攻击</p>
+
+<p>%%%低通滤波攻击</p>
+
+<p>%hh=fspecial('gaussian',3,0.2);</p>
+
+<p>%hh=fspecial('gaussian',3,0.35);</p>
+
+<p>%hh=fspecial('gaussian',3,0.4);</p>
+
+<p>QQ=filter2(hh,D);</p>
+
+<p>%%%旋转攻击</p>
+
+<p>R=imrotate(D,10,'bilinear','crop');</p>
+
+<p>%R=imrotate(D,20,'bilinear','crop');</p>
+
+<p>%R=imrotate(D,45,'bilinear','crop');</p>
+
+<p>%%%%%剪切攻击</p>
+
+<p>%D(1:32,1:32)=0;</p>
+
+<p>Q2=D;</p>
+
+<p>%D(1:64,1:64)=0;</p>
+
+<p>Q2=D;</p>
+
+<p>%D(1:128,1:128)=0;</p>
+
+<p>Q2=D;</p>
+
+<p>\% 提取水印</p>
+
+<p>for p=1:size/K</p>
+
+<p>for q=1:size/K</p>
+
+<p>x=(p-1)*K+1;</p>
+
+<p>y=(q-1)*K+1;</p>
+
+<p>I1=I(x:x+K-1,y:y+K-1);</p>
+
+<p>I2=QQ(x:x+K-1,y:y+K-1);</p>
+
+<p>I_dct1=dct2(I1);</p>
+
+<p>I_dct2=dct2(I2);</p>
+
+<p>if I_dct2&gt;I_dct1</p>
+
+<p>W(p,q)=1;</p>
+
+<p>else</p>
+
+<p>W(p,q)=0;</p>
+
+<p>end</p>
+
+<p>end</p>
+
+<p>end</p>
+
+<p>figure;</p>
+
+<p>subplot(1,2,1);</p>
+
+<p>imshow(R,[]);</p>
+
+<p>title('低通滤波攻击');</p>
+
+<p>subplot(1,2,2);</p>
+
+<p>imshow(W,[]);</p>
+
+<p>title('图像中提取的水印');</p>
+
+<p>%%%%%%前后水印相似比较</p>
+
+<p>J=double(J);</p>
+
+<p>W=double(W);</p>
+
+<p>sumJ=0;</p>
+
+<p>sumW=0;</p>
+
+<p>for j=1:N</p>
+
+<p>for i=1:N</p>
+
+<p>sumJ=sumJ+J(j,i)*W(j,i);</p>
+
+<p>sumW=sumW+W(j,i)*W(j,i);</p>
+
+<p>end</p>
+
+<p>end</p>
+
+<p>CH=(sumW-sumJ)/sumJ</p>
+
+<h2 id="五实验结果展示"><strong>五、实验结果展示</strong></h2>
+
+<p>程序运行结果如下：</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105943.png" alt="" />{width=”2.5034722222222223in” height=”1.5673611111111112in”}</p>
+
+<ol>
+  <li>不同程度的低通滤波攻击图像及提出的水印信息：</li>
+</ol>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105945.png" alt="" />{width=”5.452083333333333in” height=”3.5520833333333335in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105946.png" alt="" />{width=”5.472916666666666in” height=”3.3958333333333335in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105947.png" alt="" />{width=”5.455555555555556in” height=”3.15625in”}</p>
+
+<p>3.不同程度的旋转攻击图像及提出的水印信息：</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105948.png" alt="" />{width=”4.863194444444445in” height=”2.8881944444444443in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105949.png" alt="" />{width=”4.894444444444445in” height=”2.4680555555555554in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105950.png" alt="" />{width=”4.913888888888889in” height=”2.515972222222222in”}</p>
+
+<p>4. 不同程度的剪切攻击图像及提出的水印信息：</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105951.png" alt="" />{width=”5.25625in” height=”2.6972222222222224in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105952.png" alt="" />{width=”5.2625in” height=”2.5631944444444446in”}<img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309105953.png" alt="" />{width=”5.481944444444444in” height=”2.8833333333333333in”}</p>
+
+:ET
