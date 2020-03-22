@@ -1,0 +1,109 @@
+I"<h1 id="xss及csrf攻击防御">XSS及CSRF攻击防御</h1>
+
+<h2 id="xss">XSS</h2>
+
+<h3 id="概念">概念</h3>
+
+<ul>
+  <li>跨站脚本攻击(Cross Site Scripting)</li>
+  <li>这类漏洞能够使得攻击者嵌入恶意脚本代码到正常用户会访问到的页面中，当正常用户访问该页面时，则可导致嵌入的恶意脚本代码的执行，从而达到恶意攻击用户的目的。</li>
+</ul>
+
+<h3 id="原理">原理</h3>
+
+<p>当动态页面中插入的内容含有这些特殊字符（如&lt;）时，用户浏览器会将其误认为是插入了HTML标签，当这些HTML标签引入了一段JavaScript脚本时，这些脚本程序就将会在用户浏览器中执行。所以，当这些特殊字符不能被动态页面检查或检查出现失误时，就将会产生XSS漏洞。</p>
+
+<h3 id="类型">类型</h3>
+
+<ul>
+  <li>存储型：跨站代码存储在服务器（数据库）</li>
+  <li>反射型：用户访问服务器-跨站链接-返回跨站代码</li>
+  <li>DOM：受害者端的网页脚本在修改本地页面DOM环境时未进行合理的处置，而使得攻击脚本被执行</li>
+</ul>
+
+<h3 id="攻击方式">攻击方式</h3>
+
+<ul>
+  <li>
+    <p>盗用<a href="https://baike.baidu.com/item/cookie/1119">cookie</a>，获取敏感信息。</p>
+  </li>
+  <li>
+    <p>利用植入Flash，通过crossdomain权限设置进一步获取更高权限；或者利用<a href="https://baike.baidu.com/item/Java/85979">Java</a>等得到类似的操作。</p>
+  </li>
+  <li>
+    <p>利用<a href="https://baike.baidu.com/item/iframe/4446518">iframe</a>、frame、<a href="https://baike.baidu.com/item/XMLHttpRequest/6788735">XMLHttpRequest</a>或上述Flash等方式，以（被攻击）用户的身份执行一些管理动作，或执行一些一般的如发微博、加好友、发私信等操作。</p>
+  </li>
+  <li>
+    <p>利用可被攻击的域受到其他域信任的特点，以受信任来源的身份请求一些平时不允许的操作，如进行不当的投票活动。</p>
+  </li>
+  <li>
+    <p>在访问量极大的一些页面上的XSS可以攻击一些小型网站，实现DDoS攻击的效果。</p>
+  </li>
+</ul>
+
+<h3 id="防御方法">防御方法</h3>
+
+<ol>
+  <li>基于特征的防御
+    <ul>
+      <li>针对“javascript”这个关键字进行检索</li>
+    </ul>
+  </li>
+  <li>基于代码修改的防御
+    <ul>
+      <li>用户向服务器上提交的信息要对URL和附带的的HTTP头、POST数据等进行查询，对不是规定格式、长度的内容进行过滤</li>
+      <li>实现Session标记（session tokens）、CAPTCHA系统或者HTTP引用头检查，以防功能被第三方网站所执行</li>
+      <li>确认接收的的内容被妥善的规范化，仅包含最小的、安全的Tag（没有javascript），去掉任何对远程内容的引用（尤其是样式表和javascript），使用HTTP only的cookie</li>
+    </ul>
+  </li>
+  <li>客户端分层防御策略
+    <ul>
+      <li>对每一个网页分配独立线程且分析资源消耗的“网页线程分析模块”</li>
+      <li>包含分层防御策略四个规则的用户输入分析模块</li>
+      <li>保存互联网上有关XSS恶意网站信息的XSS信息数据库。</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="csrf">CSRF</h2>
+
+<h3 id="概念-1">概念</h3>
+
+<ul>
+  <li>跨站请求伪造（Cross-site request forgery）</li>
+  <li>挟制用户在当前已登录的Web应用程序上执行非本意的操作。</li>
+</ul>
+
+<h3 id="原理-1">原理</h3>
+
+<p>攻击者通过一些技术手段欺骗用户的浏览器去访问一个自己曾经认证过的网站并运行一些操作（如发邮件，发消息，甚至财产操作如转账和购买商品）。由于浏览器曾经认证过，所以被访问的网站会认为是真正的用户操作而去运行。这利用了web中用户身份验证的一个漏洞：简单的身份验证只能保证请求发自某个用户的浏览器，却不能保证请求本身是用户自愿发出的。</p>
+
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200322212034.png" alt="" /></p>
+
+<h3 id="防御措施">防御措施</h3>
+
+<ol>
+  <li><strong>检查Referer字段</strong>
+    <ul>
+      <li>HTTP头中有一个Referer字段，这个字段用以标明请求来源于哪个地址。在处理敏感数据请求时，通常来说，Referer字段应和请求的地址位于同一域名下。</li>
+      <li>只接受本站的请求，服务器才做响应；如果不是，就拦截。</li>
+    </ul>
+  </li>
+  <li><strong>添加校验token</strong>
+    <ul>
+      <li>服务器发送给客户端一个token；</li>
+      <li>客户端提交的表单中带着这个token。</li>
+      <li>如果这个 token 不合法，那么服务器拒绝这个请求。</li>
+    </ul>
+  </li>
+</ol>
+
+<h2 id="区别">区别</h2>
+
+<ul>
+  <li>CSRF：需要用户先登录网站A，获取 cookie；</li>
+  <li>XSS：不需要登录。</li>
+  <li>CSRF：是利用网站A本身的漏洞，去请求网站A的api；</li>
+  <li>XSS：是向网站 A 注入 JS代码，然后执行 JS 里的代码，篡改网站A的内容。</li>
+</ul>
+:ET

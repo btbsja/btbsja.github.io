@@ -1,0 +1,28 @@
+I"�<h1 id="linux-uname命令">Linux uname命令</h1>
+
+<h2 id="语法">语法</h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uname [-amnrsv][--help][--version]
+</code></pre></div></div>
+
+<h2 id="参数">参数</h2>
+
+<ul>
+  <li>-a或–all 　显示全部的信息</li>
+  <li>-m或–machine 　显示电脑类型</li>
+  <li>-n或-nodename 　显示在网络上的主机名称</li>
+  <li>-r或–release 　显示操作系统的发行编号</li>
+  <li>-s或–sysname 　显示操作系统名称</li>
+  <li>-v 　显示操作系统的版本</li>
+  <li>–help 　显示帮助</li>
+  <li>–version 　显示版本信息</li>
+</ul>
+
+<h2 id="附录">附录</h2>
+
+<ul>
+  <li>who 可以查询当前登录在系统上的登录用户的信息</li>
+  <li>who am i 等同于 who -m，只打印执行该命令的登录用户的信息</li>
+  <li>whoami 可以查询当前有效用户的名字</li>
+</ul>
+:ET
