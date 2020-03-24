@@ -1,4 +1,4 @@
-I"<h1 id="事发现场收集易失性数据">事发现场收集易失性数据</h1>
+I"�<h1 id="事发现场收集易失性数据">事发现场收集易失性数据</h1>
 
 <p>1.1 实验目的</p>
 
@@ -22,11 +22,11 @@
   <li><strong>将常用的响应工具存入U盘，创建应急工具盘。应急工具盘中的常用工具有cmd.exe; netstat.exe；fport.exe；nslookup.exe等</strong></li>
 </ol>
 
-<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102245.png" alt="" />{width=”4.684722222222222in” height=”3.4in”}</p>
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102245.png" alt="" /></p>
 
 <p><strong>2. 创建应急工作盘，用命令md5sum 创建工具盘上所有命令的校验和，生成文本文件commandsums.txt：</strong></p>
 
-<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102246.png" alt="" />{width=”6.299305555555556in” height=”5.022222222222222in”}</p>
+<p><img src="https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/03/20200309102246.png" alt="" /></p>
 
 <p><strong>3. 用 time 和 date 命令记录现场计算机的系统时间和日期：</strong></p>
 
