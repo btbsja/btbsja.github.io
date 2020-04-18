@@ -26,8 +26,13 @@ Clash for Windows 下载链接：[GitHub](https://github.com/Fndroid/clash_for_w
 备份原来的 app.asar   
 用汉化包替换   
 打开软件汉化完成  
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200220145135900.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0J0YnNqYQ==,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/04/20200412080614.png)
+
+
+
 #### 3. 添加配置文件
+
 1. 机场直接提供 Clash 托管配置，直接复制托管。  
 2. 若托管不成功，则尝试下载 yaml 文件直接拖入。 
 

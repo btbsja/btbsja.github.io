@@ -22,9 +22,7 @@ tags:                #标签
 
 # Github+jsDelivr+PicGo搭建完美博客图床
 
-![图片来源于网络 侵删](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223131843.jpg)
-
-【图片来源于网络 侵删】
+![图片来源于网络 侵删](https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/04/20200412082402.png)
 
 ## 前言
 
@@ -42,9 +40,9 @@ tags:                #标签
 
 1.  新建一个仓库。
 
-2.  在个人设置里找到 Developer settings![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223120957.png)
+2.  在个人设置里找到 Developer settings![](https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/04/20200412082403.png)
    
-3.  点击 Personal access tokens![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121109.png)
+3.  点击 Personal access tokens![](https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/04/20200412082404.png)
 
 4.  Generate new token
 
@@ -58,7 +56,7 @@ tags:                #标签
 
 1.  下载 [PicGo](https://github.com/Molunerfinn/picgo/releases)
 
-2.  安装后打开 GitHub 图床设置![](https://cdn.jsdelivr.net/gh/btbsja/btbsjaimg/img/20200223121821.png)
+2.  安装后打开 GitHub 图床设置![](https://gitee.com/btbsja/BlogImg/raw/master/blog/2020/04/20200412082405.png)
 
 
 3.  把第一步得到的数据填入其中
